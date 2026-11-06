@@ -30,34 +30,34 @@ Daemon will be stopped at the end of the build
 > Task :app:mergeReleaseJniLibFolders
 > Task :app:processReleaseManifestForPackage
 > Task :app:mergeReleaseNativeLibs
-> Task :app:desugarReleaseFileDependencies
-> Task :app:processReleaseResources
-> Task :app:mergeReleaseStartupProfile
-> Task :app:checkReleaseDuplicateClasses
 
 > Task :app:stripReleaseDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
 
+> Task :app:processReleaseResources
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:desugarReleaseFileDependencies
 > Task :app:extractReleaseNativeSymbolTables
+> Task :app:mergeReleaseStartupProfile
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :app:compileReleaseKotlin
 > Task :app:mergeExtDexRelease
 > Task :app:compileReleaseJavaWithJavac NO-SOURCE
 > Task :app:generateReleaseLintVitalReportModel
-> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :app:dexBuilderRelease
 > Task :app:mergeReleaseArtProfile
-> Task :app:mergeReleaseGlobalSynthetics
 > Task :app:mergeReleaseShaders
 > Task :app:compileReleaseShaders NO-SOURCE
 > Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseGlobalSynthetics
 > Task :app:mergeReleaseAssets
 > Task :app:compressReleaseAssets
 > Task :app:extractReleaseVersionControlInfo
 > Task :app:processReleaseJavaRes
 > Task :app:mergeReleaseJavaResource
-> Task :app:optimizeReleaseResources
 > Task :app:collectReleaseDependencies
 > Task :app:sdkReleaseDependencyData
+> Task :app:optimizeReleaseResources
 > Task :app:validateSigningRelease
 > Task :app:writeReleaseAppMetadata
 > Task :app:writeReleaseSigningConfigVersions
@@ -69,12 +69,7 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:lintVitalReportRelease
 > Task :app:lintVitalRelease
 > Task :app:assembleRelease
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794005637080.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794006018892.json
 
-BUILD SUCCESSFUL in 2m 32s
+BUILD SUCCESSFUL in 2m 34s
 48 actionable tasks: 48 executed
-app/build/outputs/apk/release/app-release.apk
-total 6580
-drwxr-xr-x  2 runner runner    4096 Nov  6 22:53 .
-drwxr-xr-x 10 runner runner    4096 Nov  6 22:55 ..
--rw-r--r--  1 runner runner 6729724 Nov  6 22:56 Neptune.apk
