@@ -89,6 +89,11 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p ci screenshots
+          for p in "$ANDROID_HOME" "$ANDROID_SDK_ROOT" /usr/local/lib/android/sdk "$HOME/Android/Sdk"; do
+            if [ -d "$p/cmdline-tools" ] || [ -d "$p/platform-tools" ]; then export ANDROID_HOME="$p"; export ANDROID_SDK_ROOT="$p"; break; fi
+          done
+          export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$ANDROID_HOME/tools/bin:$PATH"
+          { echo "ANDROID_HOME=$ANDROID_HOME"; ls -la "$ANDROID_HOME" 2>&1; which adb sdkmanager avdmanager emulator 2>&1; ls -la /dev/kvm 2>&1; } > ci/sdk.log
           yes 2>/dev/null | sdkmanager --licenses > /dev/null 2>&1 || true
           sdkmanager "platform-tools" "emulator" "system-images;android-34;google_apis;x86_64" > ci/emu-install.log 2>&1 || true
           echo no | avdmanager create avd -n neptune -k "system-images;android-34;google_apis;x86_64" --device "pixel_6" --force > ci/avd.log 2>&1 || true
