@@ -142,7 +142,7 @@ class NeptuneState(context: Context) {
         positionMs = (positionMs + ms).coerceIn(0L, current.durationMs)
     }
 
-    fun setVolume(v: Float) {
+    fun changeVolume(v: Float) {
         volume = v.coerceIn(0f, 1f)
     }
 

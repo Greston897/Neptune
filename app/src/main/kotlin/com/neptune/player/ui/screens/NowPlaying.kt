@@ -261,13 +261,13 @@ fun NowPlayingScreen(state: NeptuneState, modifier: Modifier = Modifier) {
                         modifier = Modifier.clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
-                        ) { state.setVolume(if (state.volume > 0.02f) 0f else 0.72f) },
+                        ) { state.changeVolume(if (state.volume > 0.02f) 0f else 0.72f) },
                     )
                     Spacer(Modifier.width(12.dp))
                     Box(Modifier.weight(1f)) {
                         GlassSlider(
                             value = state.volume,
-                            onValueChange = { state.setVolume(it) },
+                            onValueChange = { state.changeVolume(it) },
                             accent = accent,
                             trackHeight = 5.dp,
                             thumb = 11.dp,
