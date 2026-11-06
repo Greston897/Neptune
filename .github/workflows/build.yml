@@ -1,0 +1,70 @@
+name: build
+
+on:
+  push:
+    paths-ignore:
+      - 'apk/**'
+      - 'ci/**'
+      - 'screenshots/**'
+      - 'README.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+
+      - name: Android SDK packages
+        run: |
+          yes 2>/dev/null | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0" > /dev/null 2>&1 || true
+
+      - name: Signing key
+        run: |
+          if [ ! -f app/neptune.jks ]; then
+            keytool -genkeypair -keystore app/neptune.jks -storepass neptune -keypass neptune \
+              -alias neptune -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Neptune, OU=Player, O=Neptune, L=Leipzig, C=DE"
+          fi
+
+      - name: Assemble release APK
+        run: |
+          set -o pipefail
+          gradle --no-daemon --console=plain assembleRelease 2>&1 | tee build.log | tail -n 80
+
+      - name: Collect artifacts
+        if: always()
+        run: |
+          mkdir -p ci apk
+          cp build.log ci/last-build.log 2>/dev/null || true
+          find app/build/outputs -name '*.apk' -print -exec cp {} apk/Neptune.apk \; >> ci/last-build.log 2>&1 || true
+          ls -la apk >> ci/last-build.log 2>&1 || true
+
+      - name: Commit artifacts
+        if: always()
+        run: |
+          git config user.name "neptune-ci"
+          git config user.email "ci@neptune.local"
+          git add -f ci apk app/neptune.jks 2>/dev/null || true
+          git commit -m "ci: apk + build log [skip ci]" || echo "nothing to commit"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || echo "push failed"
