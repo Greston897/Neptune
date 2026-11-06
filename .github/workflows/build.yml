@@ -82,48 +82,50 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+          ls -la /dev/kvm || true
 
-      - name: Capture UI
+      - name: Emulator screenshots
         if: ${{ contains(github.event.head_commit.message, '[shots]') || (github.event_name == 'workflow_dispatch' && inputs.shots) }}
         continue-on-error: true
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          target: google_apis
-          arch: x86_64
-          profile: pixel_6
-          disable-animations: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
-          script: |
-            mkdir -p ci screenshots
-            {
-              set -x
-              adb wait-for-device
-              adb devices -l
-              adb install -r apk/Neptune.apk
-              shot() {
-                adb shell am force-stop com.neptune.player
-                sleep 2
-                adb shell am start -W -n com.neptune.player/.MainActivity $1
-                sleep 8
-                adb exec-out screencap -p > "screenshots/$2.png"
-              }
-              shot "--es tab now --es playing true --ei track 0" 01-now
-              shot "--es tab library" 02-library
-              shot "--es tab search" 03-search
-              shot "--es tab tune" 04-tune
-              shot "--es tab now --es playing true --ei track 6 --ei position 96000" 05-now-amber
-              adb shell wm size
-              ls -la screenshots
-              adb logcat -d -s AndroidRuntime:E | tail -n 80
-            } 2>&1 | tee ci/shots.log
-            exit 0
+        run: |
+          mkdir -p ci screenshots
+          yes 2>/dev/null | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platform-tools" "emulator" "system-images;android-34;google_apis;x86_64" > ci/emu-install.log 2>&1 || true
+          echo no | avdmanager create avd -n neptune -k "system-images;android-34;google_apis;x86_64" --device "pixel_6" --force > ci/avd.log 2>&1 || true
+          nohup emulator -avd neptune -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect -camera-back none -camera-front none > ci/emulator.log 2>&1 &
+          adb wait-for-device > ci/shots.log 2>&1
+          for i in $(seq 1 90); do
+            b=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
+            echo "boot=$b attempt=$i" >> ci/shots.log
+            if [ "$b" = "1" ]; then break; fi
+            sleep 5
+          done
+          sleep 10
+          adb devices -l >> ci/shots.log 2>&1
+          adb install -r apk/Neptune.apk >> ci/shots.log 2>&1
+          shot() {
+            adb shell am force-stop com.neptune.player >> ci/shots.log 2>&1
+            sleep 2
+            adb shell am start -W -n com.neptune.player/.MainActivity $1 >> ci/shots.log 2>&1
+            sleep 8
+            adb exec-out screencap -p > "screenshots/$2.png"
+          }
+          shot "--es tab now --es playing true --ei track 0" 01-now
+          shot "--es tab library" 02-library
+          shot "--es tab search" 03-search
+          shot "--es tab tune" 04-tune
+          shot "--es tab now --es playing true --ei track 6 --ei position 96000" 05-now-amber
+          adb shell wm size >> ci/shots.log 2>&1
+          ls -la screenshots >> ci/shots.log 2>&1
+          adb logcat -d -s AndroidRuntime:E | tail -n 60 >> ci/shots.log 2>&1
+          kill %1 2>/dev/null || true
+          exit 0
 
       - name: Publish screenshots
         if: always() && (contains(github.event.head_commit.message, '[shots]') || (github.event_name == 'workflow_dispatch' && inputs.shots))
         run: |
           set -x
-          git add -f screenshots ci || true
+          git add -f screenshots ci apk || true
           git commit -m "ci: ui screenshots [skip ci]" || echo "nothing to commit"
           for i in 1 2 3; do
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
