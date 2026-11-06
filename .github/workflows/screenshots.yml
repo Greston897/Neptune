@@ -1,0 +1,58 @@
+name: screenshots
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  shots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Capture UI
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          script: |
+            set -x
+            adb install -r apk/Neptune.apk
+            mkdir -p screenshots
+            shot() {
+              adb shell am force-stop com.neptune.player
+              sleep 1
+              adb shell am start -n com.neptune.player/.MainActivity $1
+              sleep 6
+              adb exec-out screencap -p > "screenshots/$2.png"
+            }
+            shot "--es tab now --es playing true --ei track 0" 01-now
+            shot "--es tab library" 02-library
+            shot "--es tab search" 03-search
+            shot "--es tab tune" 04-tune
+            shot "--es tab now --es playing true --ei track 6 --ei position 96000" 05-now-amber
+            adb shell wm size
+            ls -la screenshots
+
+      - name: Commit screenshots
+        if: always()
+        run: |
+          git config user.name "neptune-ci"
+          git config user.email "ci@neptune.local"
+          git add -f screenshots || true
+          git commit -m "ci: ui screenshots [skip ci]" || echo "nothing to commit"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || echo "push failed"

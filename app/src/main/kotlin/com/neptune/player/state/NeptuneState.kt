@@ -111,14 +111,16 @@ class NeptuneState(context: Context) {
     }
 
     fun next(manual: Boolean = true) {
-        when {
-            repeatMode == 2 && !manual -> positionMs = 0L; return
-            shuffle -> {
-                var n = currentIndex
-                while (n == currentIndex && tracks.size > 1) n = (0 until tracks.size).random()
-                currentIndex = n
-            }
-            else -> currentIndex = (currentIndex + 1) % tracks.size
+        if (repeatMode == 2 && !manual) {
+            positionMs = 0L
+            return
+        }
+        if (shuffle) {
+            var n = currentIndex
+            while (n == currentIndex && tracks.size > 1) n = (0 until tracks.size).random()
+            currentIndex = n
+        } else {
+            currentIndex = (currentIndex + 1) % tracks.size
         }
         positionMs = 0L
     }

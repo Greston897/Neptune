@@ -3,6 +3,7 @@ package com.neptune.player.ui
 import android.graphics.Bitmap
 import android.os.Build
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
@@ -17,7 +18,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.matchParentSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
@@ -52,7 +53,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.asPath
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
@@ -104,6 +104,13 @@ class SquircleShape(private val radius: Dp, private val smoothing: Float = 0.62f
 }
 
 fun squircle(radius: Dp): Shape = SquircleShape(radius)
+
+/** Outline → Path (Compose only ships the reverse). */
+internal fun Outline.toNePath(): Path = when (this) {
+    is Outline.Generic -> path
+    is Outline.Rounded -> Path().apply { addRoundRect(roundRect) }
+    is Outline.Rectangle -> Path().apply { addRect(rect) }
+}
 
 /* ---------------------------------------------------------------------------------------------- */
 /* Backdrop: animated aurora sampled in root space so glass truly refracts what is behind it       */
@@ -223,7 +230,7 @@ fun LiquidGlass(
     glow: Boolean = LocalGlassStyle.current.glow,
     highlight: Float = 1f,
     accentEdge: Boolean = false,
-    content: @Composable BoxScope.() -> Unit,
+    content: @Composable BoxScope.() -> Unit = {},
 ) {
     val style = LocalGlassStyle.current
     val backdrop = LocalGlass.current
@@ -250,7 +257,7 @@ fun LiquidGlass(
             .drawWithContent {
                 drawContent()
                 // lens rim: specular light along the top-left edge
-                val path = resolved.createOutline(size, layoutDirection, this).asPath()
+                val path = resolved.createOutline(size, layoutDirection, this).toNePath()
                 drawPath(
                     path,
                     brush = Brush.linearGradient(
@@ -520,8 +527,8 @@ fun GlassSlider(
                 drawRoundRect(
                     brush = Brush.horizontalGradient(
                         listOf(accent.copy(alpha = 0.72f), accent, Color.White.copy(alpha = 0.92f)),
-                        start = Offset.Zero,
-                        end = Offset(fw.coerceAtLeast(1f), 0f),
+                        startX = 0f,
+                        endX = fw.coerceAtLeast(1f),
                     ),
                     topLeft = Offset(0f, cy - h / 2f),
                     size = Size(fw, h),

@@ -133,7 +133,7 @@ fun NowPlayingScreen(state: NeptuneState, modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(6.dp),
-                    corner = settings.radius * 1.15f,
+                    corner = (settings.radius * 1.15f).dp,
                     rings = settings.rings,
                     animate = settings.animations,
                 )
@@ -342,8 +342,8 @@ private fun PlayOrb(playing: Boolean, onClick: () -> Unit) {
                         accent.copy(alpha = 0.98f),
                         accent,
                     ),
-                    start = Offset(0f, 0f),
-                    end = Offset(0f, size.height),
+                    startY = 0f,
+                    endY = size.height,
                 ),
                 radius = r * 0.93f,
                 center = c,
