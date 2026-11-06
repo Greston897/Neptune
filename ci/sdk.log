@@ -1,0 +1,18 @@
+ANDROID_HOME=/usr/local/lib/android/sdk
+total 72
+drwxrwxrwx 11 root root  4096 Nov  1 21:33 .
+drwxr-xr-x  3 root root  4096 Nov  1 21:30 ..
+-rw-r--r--  1 root root    16 Nov  1 21:33 .knownPackages
+drwxrwxrwx  2 root root  4096 Nov  1 21:33 .temp
+drwxrwxrwx  8 root root  4096 Nov  1 21:30 build-tools
+drwxrwxrwx  4 root root  4096 Nov  1 21:33 cmake
+drwxrwxrwx  3 root root  4096 Nov  1 21:30 cmdline-tools
+drwxrwxrwx  4 root root  4096 Nov  1 21:33 extras
+drwxrwxrwx  2 root root  4096 Nov  1 21:30 licenses
+drwxrwxrwx  5 root root  4096 Nov  1 21:33 ndk
+-rw-r--r--  1 root root 23609 Nov  1 21:33 packages-list.txt
+drwxrwxrwx  3 root root  4096 Nov  1 21:30 platform-tools
+drwxrwxrwx 20 root root  4096 Nov  1 21:31 platforms
+/usr/local/lib/android/sdk/platform-tools/adb
+/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager
+/usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager
