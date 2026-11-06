@@ -88,6 +88,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Capture UI
+        continue-on-error: true
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -97,29 +98,36 @@ jobs:
           disable-animations: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           script: |
-            adb install -r apk/Neptune.apk
-            mkdir -p screenshots
-            shot() {
-              adb shell am force-stop com.neptune.player
-              sleep 1
-              adb shell am start -n com.neptune.player/.MainActivity $1
-              sleep 7
-              adb exec-out screencap -p > "screenshots/$2.png"
-            }
-            shot "--es tab now --es playing true --ei track 0" 01-now
-            shot "--es tab library" 02-library
-            shot "--es tab search" 03-search
-            shot "--es tab tune" 04-tune
-            shot "--es tab now --es playing true --ei track 6 --ei position 96000" 05-now-amber
-            adb shell wm size
-            ls -la screenshots
+            mkdir -p ci screenshots
+            {
+              set -x
+              adb wait-for-device
+              adb devices -l
+              adb install -r apk/Neptune.apk
+              shot() {
+                adb shell am force-stop com.neptune.player
+                sleep 2
+                adb shell am start -W -n com.neptune.player/.MainActivity $1
+                sleep 8
+                adb exec-out screencap -p > "screenshots/$2.png"
+              }
+              shot "--es tab now --es playing true --ei track 0" 01-now
+              shot "--es tab library" 02-library
+              shot "--es tab search" 03-search
+              shot "--es tab tune" 04-tune
+              shot "--es tab now --es playing true --ei track 6 --ei position 96000" 05-now-amber
+              adb shell wm size
+              ls -la screenshots
+              adb logcat -d -s AndroidRuntime:E | tail -n 80
+            } 2>&1 | tee ci/shots.log
+            exit 0
 
       - name: Commit screenshots
         if: always()
         run: |
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
-          git add -f screenshots || true
+          git add -f screenshots ci || true
           git commit -m "ci: ui screenshots [skip ci]" || echo "nothing to commit"
           git pull --rebase origin "${GITHUB_REF_NAME}" || true
           git push origin "HEAD:${GITHUB_REF_NAME}" || echo "push failed"
