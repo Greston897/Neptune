@@ -6,6 +6,7 @@ on:
       - 'apk/**'
       - 'ci/**'
       - 'screenshots/**'
+      - 'assets/**'
       - 'README.md'
   workflow_dispatch:
     inputs:
@@ -24,6 +25,7 @@ concurrency:
 jobs:
   apk:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,40 +56,35 @@ jobs:
       - name: Assemble release APK
         run: |
           set -o pipefail
-          gradle --no-daemon --console=plain assembleRelease 2>&1 | tee build.log | tail -n 80
+          gradle --no-daemon --console=plain assembleRelease 2>&1 | tee build.log | tail -n 100
 
-      - name: Collect artifacts
+      - name: Publish APK
         if: always()
         run: |
+          set -x
           mkdir -p ci apk
           cp build.log ci/last-build.log 2>/dev/null || true
-          find app/build/outputs -name '*.apk' -print -exec cp {} apk/Neptune.apk \; >> ci/last-build.log 2>&1 || true
-          ls -la apk >> ci/last-build.log 2>&1 || true
-
-      - name: Commit artifacts
-        if: always()
-        run: |
+          find app/build/outputs -name '*.apk' -print -exec cp {} apk/Neptune.apk \; || true
+          ls -la apk || true
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
-          git add -f ci apk app/neptune.jks 2>/dev/null || true
+          git add -f ci apk app/neptune.jks || true
           git commit -m "ci: apk + build log [skip ci]" || echo "nothing to commit"
-          git pull --rebase origin "${GITHUB_REF_NAME}" || true
-          git push origin "HEAD:${GITHUB_REF_NAME}" || echo "push failed"
-
-  shots:
-    if: ${{ contains(github.event.head_commit.message, '[shots]') || (github.event_name == 'workflow_dispatch' && inputs.shots) }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v4
+          for i in 1 2 3; do
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then echo "APK pushed"; break; fi
+            sleep 5
+          done
 
       - name: Enable KVM
+        if: ${{ contains(github.event.head_commit.message, '[shots]') || (github.event_name == 'workflow_dispatch' && inputs.shots) }}
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
       - name: Capture UI
+        if: ${{ contains(github.event.head_commit.message, '[shots]') || (github.event_name == 'workflow_dispatch' && inputs.shots) }}
         continue-on-error: true
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -122,12 +119,14 @@ jobs:
             } 2>&1 | tee ci/shots.log
             exit 0
 
-      - name: Commit screenshots
-        if: always()
+      - name: Publish screenshots
+        if: always() && (contains(github.event.head_commit.message, '[shots]') || (github.event_name == 'workflow_dispatch' && inputs.shots))
         run: |
-          git config user.name "neptune-ci"
-          git config user.email "ci@neptune.local"
+          set -x
           git add -f screenshots ci || true
           git commit -m "ci: ui screenshots [skip ci]" || echo "nothing to commit"
-          git pull --rebase origin "${GITHUB_REF_NAME}" || true
-          git push origin "HEAD:${GITHUB_REF_NAME}" || echo "push failed"
+          for i in 1 2 3; do
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then echo "shots pushed"; break; fi
+            sleep 5
+          done
