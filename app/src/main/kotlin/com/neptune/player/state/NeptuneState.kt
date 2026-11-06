@@ -1,170 +1,77 @@
 package com.neptune.player.state
 
-import android.content.Context
-import androidx.compose.runtime.Stable
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.neptune.player.model.DemoTracks
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.neptune.player.NeptuneApplication
+import com.neptune.player.data.LibraryLogic
+import com.neptune.player.model.Settings
 import com.neptune.player.model.Track
-import com.neptune.player.ui.Accent
-import com.neptune.player.ui.Settings
-import com.neptune.player.ui.Tab
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 
-private class SettingsStore(context: Context) {
-    private val prefs = context.applicationContext.getSharedPreferences("neptune.settings", Context.MODE_PRIVATE)
-
-    fun load(): Settings = Settings(
-        accentIndex = prefs.getInt("accent", 0),
-        blur = prefs.getFloat("blur", 24f),
-        tint = prefs.getFloat("tint", 0.14f),
-        radius = prefs.getFloat("radius", 26f),
-        bg = prefs.getFloat("bg", 1f),
-        speed = prefs.getFloat("speed", 1f),
-        grain = prefs.getBoolean("grain", true),
-        animations = prefs.getBoolean("animations", true),
-        glow = prefs.getBoolean("glow", true),
-        floatingNav = prefs.getBoolean("floatingNav", true),
-        haptics = prefs.getBoolean("haptics", true),
-        miniPlayer = prefs.getBoolean("miniPlayer", true),
-        showTimes = prefs.getBoolean("showTimes", true),
-        rings = prefs.getBoolean("rings", true),
-        labels = prefs.getBoolean("labels", true),
-    )
-
-    fun save(s: Settings) {
-        prefs.edit()
-            .putInt("accent", s.accentIndex)
-            .putFloat("blur", s.blur)
-            .putFloat("tint", s.tint)
-            .putFloat("radius", s.radius)
-            .putFloat("bg", s.bg)
-            .putFloat("speed", s.speed)
-            .putBoolean("grain", s.grain)
-            .putBoolean("animations", s.animations)
-            .putBoolean("glow", s.glow)
-            .putBoolean("floatingNav", s.floatingNav)
-            .putBoolean("haptics", s.haptics)
-            .putBoolean("miniPlayer", s.miniPlayer)
-            .putBoolean("showTimes", s.showTimes)
-            .putBoolean("rings", s.rings)
-            .putBoolean("labels", s.labels)
-            .apply()
-    }
-}
-
-@Stable
-class NeptuneState(context: Context) {
-
-    private val store = SettingsStore(context)
-
-    var settings by mutableStateOf(store.load())
-        private set
-
-    fun edit(block: (Settings) -> Settings) {
-        val next = block(settings)
-        if (next == settings) return
-        settings = next
-        store.save(next)
-    }
-
-    fun resetLook() = edit { Settings(accentIndex = it.accentIndex) }
-
-    val tracks: List<Track> = DemoTracks.all
-
-    var tab by mutableStateOf(Tab.Now)
-    var libraryTab by mutableStateOf(0)
+/** UI coordinator. Playback, metadata and persistence live behind repository boundaries. */
+class NeptuneState(application: Application) : AndroidViewModel(application) {
+    private val container = (application as NeptuneApplication).container
+    val settings = container.settings.state
+    val users = container.users.state
+    val library = container.library.state
+    val playback = container.playback.state
+    private val _messages = Channel<String>(Channel.BUFFERED)
+    val messages = _messages.receiveAsFlow()
     var search by mutableStateOf("")
-    var searchFocused by mutableStateOf(false)
+    var libraryTab by mutableStateOf(0)
+    var librarySort by mutableStateOf(0)
+    var contextTrack by mutableStateOf<Track?>(null)
+    var contextPlaylist by mutableStateOf<String?>(null)
 
-    var currentIndex by mutableStateOf(0)
-        private set
-    val current: Track get() = tracks[currentIndex]
-
-    var isPlaying by mutableStateOf(false)
-        private set
-    var positionMs by mutableStateOf(0L)
-        private set
-    var shuffle by mutableStateOf(false)
-        private set
-    var repeatMode by mutableStateOf(0) // 0 — выкл, 1 — вся медиатека, 2 — трек
-        private set
-    var volume by mutableStateOf(0.72f)
-        private set
-    var liked by mutableStateOf(setOf(0, 4))
-        private set
-
-    val accent: Accent get() = settings.accent
-    val progress: Float
-        get() = (positionMs.toFloat() / current.durationMs.toFloat()).coerceIn(0f, 1f)
-
-    fun play(index: Int = currentIndex) {
-        if (index != currentIndex) {
-            currentIndex = index.coerceIn(0, tracks.lastIndex)
-            positionMs = 0L
-        }
-        isPlaying = true
+    fun edit(block: (Settings) -> Settings) = container.settings.edit(block)
+    fun resetAppearance() { edit { it.resetAppearance() }; message("Внешний вид восстановлен") }
+    fun refreshLibrary() = container.library.refresh()
+    fun hasAudioPermission() = container.library.hasPermission()
+    fun message(text: String) { viewModelScope.launch { _messages.send(text) } }
+    fun play(tracks: List<Track>, index: Int = 0, shuffled: Boolean = false) {
+        if (tracks.isEmpty()) { message("Сначала добавьте музыку в медиатеку"); return }
+        container.playback.play(tracks, index, shuffled)
     }
-
-    fun toggle() {
-        isPlaying = !isPlaying
+    fun playTrack(track: Track, context: List<Track>) {
+        val queue = if (context.any { it.id == track.id }) context else listOf(track)
+        play(queue, queue.indexOfFirst { it.id == track.id }.coerceAtLeast(0))
     }
-
-    fun next(manual: Boolean = true) {
-        if (repeatMode == 2 && !manual) {
-            positionMs = 0L
-            return
-        }
-        if (shuffle) {
-            var n = currentIndex
-            while (n == currentIndex && tracks.size > 1) n = (0 until tracks.size).random()
-            currentIndex = n
-        } else {
-            currentIndex = (currentIndex + 1) % tracks.size
-        }
-        positionMs = 0L
+    fun togglePlayback() = container.playback.toggle()
+    fun nextTrack() = container.playback.next()
+    fun previousTrack() = container.playback.previous()
+    fun toggleShuffle() = container.playback.toggleShuffle()
+    fun cycleRepeat() = container.playback.cycleRepeat()
+    fun setVolume(v: Float) = container.playback.setVolume(v)
+    fun setSleepTimer(minutes: Int) = container.playback.setSleepTimer(minutes)
+    fun retryPlayback() = container.playback.retry()
+    fun seek(fraction: Float) = container.playback.seek(fraction)
+    fun like(track: Track) = container.users.toggleLike(track.id)
+    fun submitSearch() = container.users.rememberSearch(search)
+    fun clearSearches() = container.users.clearSearches()
+    fun clearHistory() { container.users.clearHistory(); message("История прослушивания очищена") }
+    fun createPlaylist(name: String) = container.users.createPlaylist(name).also { message("Плейлист «${it.name}» создан") }
+    fun renamePlaylist(id: String, name: String) = container.users.renamePlaylist(id, name)
+    fun deletePlaylist(id: String) { container.users.deletePlaylist(id); message("Плейлист удалён") }
+    fun addToPlaylist(id: String, track: Track) { container.users.addToPlaylist(id, track.id); message("Добавлено в плейлист") }
+    fun removeFromPlaylist(id: String, track: Track) = container.users.removeFromPlaylist(id, track.id)
+    fun playNext(track: Track) { container.playback.playNext(track); message("Будет играть следующим") }
+    fun enqueue(track: Track) { container.playback.enqueue(track); message("Добавлено в очередь") }
+    fun sorted(tracks: List<Track>) = when (librarySort) {
+        1 -> tracks.sortedBy { it.artist.lowercase() }
+        2 -> tracks.sortedByDescending { it.durationMs }
+        else -> tracks.sortedBy { it.title.lowercase() }
     }
-
-    fun prev() {
-        if (positionMs > 4000) {
-            positionMs = 0L
-            return
-        }
-        currentIndex = if (currentIndex == 0) tracks.lastIndex else currentIndex - 1
-        positionMs = 0L
-    }
-
-    fun seekTo(fraction: Float) {
-        positionMs = (current.durationMs * fraction.coerceIn(0f, 1f)).toLong()
-    }
-
-    fun seekBy(ms: Long) {
-        positionMs = (positionMs + ms).coerceIn(0L, current.durationMs)
-    }
-
-    fun changeVolume(v: Float) {
-        volume = v.coerceIn(0f, 1f)
-    }
-
-    fun toggleLike() {
-        liked = if (current.id in liked) liked - current.id else liked + current.id
-    }
-
-    fun toggleShuffle() {
-        shuffle = !shuffle
-    }
-
-    fun cycleRepeat() {
-        repeatMode = (repeatMode + 1) % 3
-    }
-
-    fun tick(deltaMs: Long) {
-        if (!isPlaying) return
-        val next = positionMs + deltaMs
-        if (next >= current.durationMs) {
-            next(manual = false)
-        } else {
-            positionMs = next
-        }
-    }
+    fun search(tracks: List<Track>) = LibraryLogic.search(tracks, search)
+    fun playbackJump(index: Int) = container.playback.jumpTo(index)
+    fun moveQueue(from: Int, to: Int) = container.playback.move(from, to)
+    fun removeQueue(index: Int) = container.playback.remove(index)
+    fun clearQueue() = container.playback.clear()
+    fun persist() = container.playback.persist()
+    override fun onCleared() { persist(); super.onCleared() }
 }

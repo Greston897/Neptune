@@ -1,105 +1,80 @@
 package com.neptune.player.ui
 
-import androidx.compose.runtime.Immutable
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.neptune.player.R
+import com.neptune.player.model.Settings
 
-/**
- * Neptune — obsidian + liquid glass.
- * Single typeface (Manrope, OFL) with a very tight optical scale.
- */
 val Manrope = FontFamily(
-    Font(R.font.manrope_regular, FontWeight.Normal),
-    Font(R.font.manrope_semibold, FontWeight.Medium),
-    Font(R.font.manrope_semibold, FontWeight.SemiBold),
-    Font(R.font.manrope_bold, FontWeight.Bold),
+    Font(R.font.manrope_regular, FontWeight.Normal), Font(R.font.manrope_semibold, FontWeight.Medium),
+    Font(R.font.manrope_semibold, FontWeight.SemiBold), Font(R.font.manrope_bold, FontWeight.Bold),
     Font(R.font.manrope_extrabold, FontWeight.ExtraBold),
 )
-
 object Ne {
-    val Void = Color(0xFF06060A)
-    val Ink = Color(0xFF0B0B11)
-    val Text = Color(0xFFF7F8FB)
-    val Dim = Color(0xA8F7F8FB)
-    val Faint = Color(0x70F7F8FB)
-    val Whisper = Color(0x3DF7F8FB)
-    val Line = Color(0x1FFFFFFF)
-    val Black = Color(0xFF000000)
+    val Void = Color(0xFF050505)
+    val Ink = Color(0xFF121212)
+    val Elevated = Color(0xFF1C1C1C)
+    val Text = Color(0xFFF5F5F5)
+    val Dim = Color(0xFFA5A5A5)
+    val Faint = Color(0xFF777777)
+    val Whisper = Color(0xFF555555)
+    val Line = Color(0xFF282828)
+    val Black = Color(0xFF080808)
+    val Error = Color(0xFFE6A3A3)
 }
+val LocalSettings = staticCompositionLocalOf { Settings() }
+val LocalHaptics = staticCompositionLocalOf<() -> Unit> { { } }
+@Composable fun accent() = LocalSettings.current.accent.let { Color(it.hex) }
+@Composable fun neRadius() = LocalSettings.current.radius.dp
 
-/** Accent tones available in «Внешний вид». */
-enum class Accent(val title: String, val color: Color) {
-    ICE("Лёд", Color(0xFF7FE6FF)),
-    AURORA("Аврора", Color(0xFF9E8CFF)),
-    NEON("Неон", Color(0xFF5AFFB8)),
-    SUNSET("Закат", Color(0xFFFF8A5C)),
-    GOLD("Золото", Color(0xFFFFD479)),
-    ROSE("Роза", Color(0xFFFF8FC7)),
-    SKY("Небо", Color(0xFF6EA8FF));
-
-    companion object {
-        fun of(index: Int): Accent = entries[index.coerceIn(0, entries.lastIndex)]
+@Composable
+fun NeptuneTheme(settings: Settings, content: @Composable () -> Unit) {
+    val accent = Color(settings.accent.hex)
+    val background = Color(settings.surface.hex)
+    val scheme = darkColorScheme(primary = accent, onPrimary = Ne.Black, background = background,
+        surface = background, surfaceVariant = Ne.Ink, onBackground = Ne.Text, onSurface = Ne.Text,
+        onSurfaceVariant = Ne.Dim, outline = Ne.Line, outlineVariant = Ne.Line, error = Ne.Error,
+        surfaceContainer = Ne.Ink, surfaceContainerHigh = Ne.Elevated, surfaceContainerHighest = Ne.Line,
+        secondary = accent, tertiary = accent)
+    val density = LocalDensity.current
+    CompositionLocalProvider(LocalSettings provides settings,
+        LocalDensity provides Density(density.density, density.fontScale * settings.fontScale)) {
+        MaterialTheme(colorScheme = scheme, typography = NeptuneTypography, content = content)
     }
 }
-
-enum class Tab(val title: String) {
-    Now("Сейчас"),
-    Library("Медиатека"),
-    Search("Поиск"),
-    Tune("Вид"),
-}
-
-@Immutable
-data class Settings(
-    val accentIndex: Int = 0,
-    val blur: Float = 24f,
-    val tint: Float = 0.14f,
-    val radius: Float = 26f,
-    val bg: Float = 1f,
-    val speed: Float = 1f,
-    val grain: Boolean = true,
-    val animations: Boolean = true,
-    val glow: Boolean = true,
-    val floatingNav: Boolean = true,
-    val haptics: Boolean = true,
-    val miniPlayer: Boolean = true,
-    val showTimes: Boolean = true,
-    val rings: Boolean = true,
-    val labels: Boolean = true,
-) {
-    val accent: Accent get() = Accent.of(accentIndex)
-}
-
-/* ---------------------------------------------------------------------------------------------- */
-/* Type                                                                                           */
-/* ---------------------------------------------------------------------------------------------- */
-
-@androidx.compose.runtime.Composable
+private val NeptuneTypography = Typography(
+    headlineLarge = TextStyle(fontFamily = Manrope, fontWeight = FontWeight.ExtraBold, fontSize = 32.sp, letterSpacing = (-1).sp),
+    headlineMedium = TextStyle(fontFamily = Manrope, fontWeight = FontWeight.Bold, fontSize = 26.sp, letterSpacing = (-0.6).sp),
+    titleLarge = TextStyle(fontFamily = Manrope, fontWeight = FontWeight.Bold, fontSize = 20.sp),
+    titleMedium = TextStyle(fontFamily = Manrope, fontWeight = FontWeight.Bold, fontSize = 16.sp),
+    bodyLarge = TextStyle(fontFamily = Manrope, fontWeight = FontWeight.Medium, fontSize = 15.sp),
+    bodyMedium = TextStyle(fontFamily = Manrope, fontWeight = FontWeight.Medium, fontSize = 13.sp),
+    bodySmall = TextStyle(fontFamily = Manrope, fontWeight = FontWeight.Medium, fontSize = 12.sp),
+    labelLarge = TextStyle(fontFamily = Manrope, fontWeight = FontWeight.Bold, fontSize = 14.sp),
+    labelSmall = TextStyle(fontFamily = Manrope, fontWeight = FontWeight.SemiBold, fontSize = 11.sp),
+)
+@Composable
 fun NeText(
-    text: String,
-    modifier: androidx.compose.ui.Modifier = androidx.compose.ui.Modifier,
-    size: androidx.compose.ui.unit.TextUnit = androidx.compose.ui.unit.TextUnit(14f, androidx.compose.ui.unit.TextUnitType.Sp),
-    weight: FontWeight = FontWeight.SemiBold,
-    color: Color = Ne.Text,
-    tracking: androidx.compose.ui.unit.TextUnit = androidx.compose.ui.unit.TextUnit(-0.2f, androidx.compose.ui.unit.TextUnitType.Sp),
-    align: androidx.compose.ui.text.style.TextAlign = androidx.compose.ui.text.style.TextAlign.Start,
-    maxLines: Int = 1,
-    lineHeight: androidx.compose.ui.unit.TextUnit = androidx.compose.ui.unit.TextUnit.Unspecified,
-) {
-    androidx.compose.material3.Text(
-        text = text,
-        modifier = modifier,
-        color = color,
-        fontFamily = Manrope,
-        fontWeight = weight,
-        fontSize = size,
-        letterSpacing = tracking,
-        textAlign = align,
-        maxLines = maxLines,
-        lineHeight = lineHeight,
-        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-    )
-}
+    text: String, modifier: androidx.compose.ui.Modifier = androidx.compose.ui.Modifier,
+    size: TextUnit = 14.sp, weight: FontWeight = FontWeight.SemiBold, color: Color = Ne.Text,
+    tracking: TextUnit = (-0.15).sp, align: TextAlign = TextAlign.Start, maxLines: Int = 1,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+) = androidx.compose.material3.Text(text, modifier, color = color, fontFamily = Manrope, fontWeight = weight,
+    fontSize = size, letterSpacing = tracking, textAlign = align, maxLines = maxLines,
+    lineHeight = if (lineHeight == TextUnit.Unspecified) size * 1.25f else lineHeight, overflow = TextOverflow.Ellipsis)

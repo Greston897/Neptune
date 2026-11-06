@@ -1,11 +1,8 @@
 package com.neptune.player.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,256 +16,110 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.background
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.neptune.player.model.DemoTracks
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.neptune.player.data.LibraryLogic
+import com.neptune.player.model.AvatarStyle
 import com.neptune.player.model.Track
-import com.neptune.player.model.formatTime
+import com.neptune.player.model.trackCount
 import com.neptune.player.state.NeptuneState
-import com.neptune.player.ui.ArtistAvatar
-import com.neptune.player.ui.EqualizerBars
-import com.neptune.player.ui.GlassSegments
-import com.neptune.player.ui.LiquidGlass
-import com.neptune.player.ui.Ne
-import com.neptune.player.ui.NeIcon
-import com.neptune.player.ui.NeIconView
-import com.neptune.player.ui.NeText
-import com.neptune.player.ui.NeptuneChip
-import com.neptune.player.ui.TrackArtwork
-import com.neptune.player.ui.TrackThumb
-import com.neptune.player.ui.rememberHaptics
+import com.neptune.player.ui.*
 
 @Composable
-fun LibraryScreen(state: NeptuneState, modifier: Modifier = Modifier) {
-    val accent = state.settings.accent.color
-    val haptic = rememberHaptics()
-    val tabs = listOf("Треки", "Альбомы", "Артисты")
-
-    LazyColumn(
-        modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
-        contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 10.dp, bottom = 26.dp),
-        verticalArrangement = Arrangement.spacedBy(9.dp),
-    ) {
+fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
+    val library by state.library.collectAsStateWithLifecycle()
+    val users by state.users.collectAsStateWithLifecycle()
+    val playback by state.playback.collectAsStateWithLifecycle()
+    val actions = LocalLibraryActions.current
+    var create by remember { mutableStateOf(false) }
+    var sortMenu by remember { mutableStateOf(false) }
+    val tracks = remember(library.tracks, state.librarySort) { state.sorted(library.tracks) }
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)) {
         item {
-            Row(
-                Modifier.fillMaxWidth().padding(bottom = 6.dp),
-                verticalAlignment = Alignment.Bottom,
-            ) {
-                Column(Modifier.weight(1f)) {
-                    NeText("Медиатека", size = 30.sp, weight = FontWeight.ExtraBold, tracking = (-1).sp)
-                    Spacer(Modifier.height(4.dp))
-                    NeText(
-                        text = "${state.tracks.size} трека · демо-библиотека",
-                        size = 11.5.sp,
-                        weight = FontWeight.SemiBold,
-                        color = Ne.Faint,
-                        tracking = 0.1.sp,
-                    )
-                }
-                NeptuneChip("FLAC")
-            }
-        }
-
-        item {
-            GlassSegments(
-                items = tabs,
-                selected = state.libraryTab,
-                onSelect = { haptic(); state.libraryTab = it },
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-
-        item { Spacer(Modifier.height(2.dp)) }
-
-        when (state.libraryTab) {
-            0 -> items(state.tracks, key = { it.id }) { track ->
-                TrackRow(
-                    track = track,
-                    playing = track.id == state.current.id,
-                    isPlaying = state.isPlaying,
-                    onClick = { haptic(); state.play(track.id) },
-                )
-            }
-
-            1 -> items(DemoTracks.albums.chunked(2)) { pair ->
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                    pair.forEach { (album, list) ->
-                        AlbumCard(
-                            album = album,
-                            artist = list.first().artist,
-                            count = list.size,
-                            track = list.first(),
-                            modifier = Modifier.weight(1f),
-                            onClick = { haptic(); state.play(list.first().id) },
-                        )
+            Row(Modifier.fillMaxWidth().height(56.dp), verticalAlignment = Alignment.CenterVertically) {
+                NeText("Медиатека", Modifier.weight(1f), size = 30.sp, weight = FontWeight.ExtraBold, tracking = (-1).sp)
+                NeIconButton(NeIcon.Plus, "Создать плейлист", { create = true })
+                androidx.compose.foundation.layout.Box {
+                    NeIconButton(NeIcon.Sort, "Сортировка", { sortMenu = true }, color = Ne.Dim)
+                    DropdownMenu(expanded = sortMenu, onDismissRequest = { sortMenu = false }, containerColor = Ne.Elevated) {
+                        listOf("По названию", "По исполнителю", "По длительности").forEachIndexed { i, label ->
+                            DropdownMenuItem(text = { NeText(label, size = 13.sp) }, onClick = { state.librarySort = i; sortMenu = false },
+                                trailingIcon = { if (state.librarySort == i) NeIconView(NeIcon.Check, 17.dp, accent()) })
+                        }
                     }
-                    if (pair.size == 1) Spacer(Modifier.weight(1f))
                 }
             }
-
-            else -> items(DemoTracks.artists, key = { it.first }) { (artist, list) ->
-                ArtistRow(
-                    name = artist,
-                    count = list.size,
-                    palette = list.first().palette,
-                    onClick = { haptic(); state.play(list.first().id) },
-                )
+        }
+        item {
+            Row(Modifier.horizontalScroll(rememberScrollState()).padding(vertical = 10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf("Треки", "Альбомы", "Артисты", "Плейлисты").forEachIndexed { i, title -> NeChip(title, state.libraryTab == i, { state.libraryTab = i }) }
             }
         }
+        if (!library.permission) item {
+            Panel(Modifier.padding(vertical = 10.dp)) {
+                SettingRow("Музыка с телефона", "Разрешите доступ, чтобы собрать вашу медиатеку", icon = NeIcon.Device, onClick = actions.permission,
+                    trailing = { NeText("Добавить", size = 11.sp, color = accent()) })
+            }
+        }
+        when (state.libraryTab) {
+            0 -> {
+                item { Row(Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    NeText(trackCount(tracks.size), Modifier.weight(1f), size = 11.sp, color = Ne.Faint)
+                    NeButton("Слушать всё", { state.play(tracks) }, icon = NeIcon.Play)
+                } }
+                items(tracks, key = { it.id }) { track -> TrackRow(track, playback.track?.id == track.id, playback.isPlaying,
+                    { state.playTrack(track, tracks) }, onMore = { state.contextTrack = track }) }
+            }
+            1 -> {
+                val albums = LibraryLogic.albums(tracks)
+                items(albums.chunked(2), key = { it.first().first.second + it.first().first.first }) { row ->
+                    Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        row.forEach { (meta, list) -> AlbumCard(meta.second, meta.first, list.first(),
+                            { onCollection("album", "${meta.first}\u0000${meta.second}") }, Modifier.weight(1f)) }
+                        if (row.size == 1) Spacer(Modifier.weight(1f))
+                    }
+                }
+            }
+            2 -> items(LibraryLogic.artists(tracks), key = { it.first }) { (artist, list) ->
+                Row(Modifier.fillMaxWidth().clickable { onCollection("artist", artist) }.padding(vertical = 12.dp, horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Avatar(AvatarStyle.entries[artist.hashCode().mod(AvatarStyle.entries.size)], Ne.Text, Modifier.size(48.dp))
+                    Spacer(Modifier.width(14.dp)); Column(Modifier.weight(1f)) { NeText(artist, size = 15.sp, weight = FontWeight.Bold); Spacer(Modifier.height(4.dp)); NeText(trackCount(list.size), size = 11.sp, color = Ne.Dim) }
+                    NeIconView(NeIcon.ChevronRight, 17.dp, Ne.Faint)
+                }
+            }
+            else -> {
+                item { CollectionLink("Любимые треки", trackCount(users.liked.size), NeIcon.HeartFill) { onCollection("liked", "") } }
+                items(users.playlists, key = { it.id }) { p -> CollectionLink(p.name, trackCount(p.trackIds.size), NeIcon.Music) { onCollection("playlist", p.id) } }
+                item { NeButton("Новый плейлист", { create = true }, Modifier.fillMaxWidth().padding(top = 18.dp), NeIcon.Plus, primary = false) }
+            }
+        }
+        if (library.loading) item { NeText("Обновляем медиатеку…", Modifier.padding(vertical = 20.dp), size = 12.sp, color = Ne.Dim) }
+        library.error?.let { error -> item { NeText(error, Modifier.padding(vertical = 16.dp), size = 12.sp, color = Ne.Error, maxLines = 3) } }
+    }
+    if (create) NameDialog("Новый плейлист", "Название", "", { create = false }) {
+        val p = state.createPlaylist(it); create = false; onCollection("playlist", p.id)
     }
 }
 
 @Composable
-fun TrackRow(
-    track: Track,
-    playing: Boolean,
-    isPlaying: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    index: Int? = null,
-) {
-    val accent = com.neptune.player.ui.LocalGlassStyle.current.accent
-    LiquidGlass(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .clip(com.neptune.player.ui.squircle(20.dp))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onClick,
-            ),
-        shape = com.neptune.player.ui.squircle(20.dp),
-        highlight = if (playing) 1.6f else 1f,
-        accentEdge = playing,
-    ) {
-        Row(
-            Modifier.fillMaxSize().padding(horizontal = 9.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            TrackThumb(track, 46.dp, 14.dp)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                NeText(
-                    text = track.title,
-                    size = 14.5.sp,
-                    weight = FontWeight.Bold,
-                    color = if (playing) accent else Ne.Text,
-                )
-                Spacer(Modifier.height(2.dp))
-                NeText(
-                    text = "${track.artist} · ${track.album}",
-                    size = 11.sp,
-                    weight = FontWeight.Medium,
-                    color = Ne.Faint,
-                    tracking = 0.sp,
-                )
-            }
-            if (playing) {
-                EqualizerBars(playing = isPlaying, color = accent, maxHeight = 15.dp)
-                Spacer(Modifier.width(12.dp))
-            }
-            NeText(
-                text = formatTime(track.durationMs),
-                size = 11.sp,
-                weight = FontWeight.Bold,
-                color = Ne.Faint,
-                tracking = 0.4.sp,
-                align = TextAlign.End,
-            )
-        }
-    }
-}
-
-@Composable
-private fun AlbumCard(
-    album: String,
-    artist: String,
-    count: Int,
-    track: Track,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    LiquidGlass(
-        modifier = modifier
-            .height(196.dp)
-            .clip(com.neptune.player.ui.squircle(22.dp))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onClick,
-            ),
-        shape = com.neptune.player.ui.squircle(22.dp),
-    ) {
-        Column(Modifier.fillMaxSize().padding(9.dp)) {
-            TrackArtwork(
-                track = track,
-                modifier = Modifier.fillMaxWidth().height(116.dp),
-                corner = 15.dp,
-                animate = false,
-            )
-            Spacer(Modifier.height(9.dp))
-            NeText(album, size = 13.sp, weight = FontWeight.Bold)
-            Spacer(Modifier.height(2.dp))
-            NeText(
-                text = "$artist · $count",
-                size = 10.5.sp,
-                weight = FontWeight.Medium,
-                color = Ne.Faint,
-                tracking = 0.sp,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ArtistRow(
-    name: String,
-    count: Int,
-    palette: List<Color>,
-    onClick: () -> Unit,
-) {
-    LiquidGlass(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(72.dp)
-            .clip(com.neptune.player.ui.squircle(22.dp))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onClick,
-            ),
-        shape = com.neptune.player.ui.squircle(22.dp),
-    ) {
-        Row(
-            Modifier.fillMaxSize().padding(horizontal = 11.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            ArtistAvatar(name, palette, 46.dp)
-            Spacer(Modifier.width(13.dp))
-            Column(Modifier.weight(1f)) {
-                NeText(name, size = 14.5.sp, weight = FontWeight.Bold)
-                Spacer(Modifier.height(2.dp))
-                NeText(
-                    text = "$count ${if (count == 1) "трек" else "трека"}",
-                    size = 11.sp,
-                    weight = FontWeight.Medium,
-                    color = Ne.Faint,
-                    tracking = 0.sp,
-                )
-            }
-            NeIconView(NeIcon.ChevronDown, size = 17.dp, color = Ne.Whisper)
-        }
+private fun CollectionLink(title: String, subtitle: String, icon: NeIcon, onClick: () -> Unit) {
+    Row(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        androidx.compose.foundation.layout.Box(Modifier.size(54.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(neRadius())).background(Ne.Ink), contentAlignment = Alignment.Center) { NeIconView(icon, 23.dp, accent()) }
+        Spacer(Modifier.width(14.dp)); Column(Modifier.weight(1f)) { NeText(title, size = 14.sp, weight = FontWeight.Bold); Spacer(Modifier.height(4.dp)); NeText(subtitle, size = 11.sp, color = Ne.Dim) }
+        NeIconView(NeIcon.ChevronRight, 17.dp, Ne.Faint)
     }
 }

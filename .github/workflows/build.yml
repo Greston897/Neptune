@@ -8,12 +8,7 @@ on:
       - 'screenshots/**'
       - 'assets/**'
       - 'README.md'
-  workflow_dispatch:
-    inputs:
-      shots:
-        description: 'Capture UI screenshots on an emulator'
-        type: boolean
-        default: false
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -56,7 +51,7 @@ jobs:
       - name: Assemble release APK
         run: |
           set -o pipefail
-          gradle --no-daemon --console=plain assembleRelease 2>&1 | tee build.log | tail -n 100
+          gradle --no-daemon --console=plain testDebugUnitTest assembleRelease 2>&1 | tee build.log | tail -n 100
 
       - name: Publish APK
         if: always()
@@ -73,71 +68,5 @@ jobs:
           for i in 1 2 3; do
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
             if git push origin "HEAD:${GITHUB_REF_NAME}"; then echo "APK pushed"; break; fi
-            sleep 5
-          done
-
-      - name: Enable KVM
-        if: ${{ contains(github.event.head_commit.message, '[shots]') || (github.event_name == 'workflow_dispatch' && inputs.shots) }}
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-          ls -la /dev/kvm || true
-
-      - name: Emulator screenshots
-        if: ${{ contains(github.event.head_commit.message, '[shots]') || (github.event_name == 'workflow_dispatch' && inputs.shots) }}
-        continue-on-error: true
-        run: |
-          set +e
-          set -x
-          mkdir -p ci screenshots
-          for p in "$ANDROID_HOME" "$ANDROID_SDK_ROOT" /usr/local/lib/android/sdk "$HOME/Android/Sdk"; do
-            if [ -d "$p/cmdline-tools" ] || [ -d "$p/platform-tools" ]; then export ANDROID_HOME="$p"; export ANDROID_SDK_ROOT="$p"; break; fi
-          done
-          export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$ANDROID_HOME/tools/bin:$PATH"
-          { echo "ANDROID_HOME=$ANDROID_HOME"; which adb sdkmanager avdmanager emulator; ls -la /dev/kvm; grep -c -E "vmx|svm" /proc/cpuinfo; } > ci/sdk.log 2>&1
-          sdkmanager "platform-tools" "emulator" "system-images;android-34;google_apis;x86_64" > ci/emu-install.log 2>&1
-          echo no | avdmanager create avd -n neptune -k "system-images;android-34;google_apis;x86_64" --device "pixel_6" --force > ci/avd.log 2>&1
-          if [ -e /dev/kvm ]; then GPU="swiftshader_indirect"; else GPU="swiftshader_indirect"; fi
-          nohup emulator -avd neptune -no-window -no-audio -no-boot-anim -no-snapshot -gpu $GPU -camera-back none -camera-front none -memory 2048 > ci/emulator.log 2>&1 &
-          adb wait-for-device > ci/shots.log 2>&1
-          ok=0
-          for i in $(seq 1 180); do
-            b=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
-            echo "boot=$b attempt=$i" >> ci/shots.log
-            if [ "$b" = "1" ]; then ok=1; break; fi
-            sleep 5
-          done
-          echo "booted=$ok" >> ci/shots.log
-          sleep 8
-          adb devices -l >> ci/shots.log 2>&1
-          adb install -r apk/Neptune.apk >> ci/shots.log 2>&1
-          shot() {
-            adb shell am force-stop com.neptune.player >> ci/shots.log 2>&1
-            sleep 2
-            adb shell am start -W -n com.neptune.player/.MainActivity $1 >> ci/shots.log 2>&1
-            sleep 9
-            adb exec-out screencap -p > "screenshots/$2.png"
-          }
-          shot "--es tab now --es playing true --ei track 0" 01-now
-          shot "--es tab library" 02-library
-          shot "--es tab search" 03-search
-          shot "--es tab tune" 04-tune
-          shot "--es tab now --es playing true --ei track 6 --ei position 96000" 05-now-amber
-          adb shell wm size >> ci/shots.log 2>&1
-          ls -la screenshots >> ci/shots.log 2>&1
-          adb logcat -d -s AndroidRuntime:E | tail -n 60 >> ci/shots.log 2>&1
-          kill %1 2>/dev/null
-          exit 0
-
-      - name: Publish screenshots
-        if: always() && (contains(github.event.head_commit.message, '[shots]') || (github.event_name == 'workflow_dispatch' && inputs.shots))
-        run: |
-          set -x
-          git add -f screenshots ci apk || true
-          git commit -m "ci: ui screenshots [skip ci]" || echo "nothing to commit"
-          for i in 1 2 3; do
-            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
-            if git push origin "HEAD:${GITHUB_REF_NAME}"; then echo "shots pushed"; break; fi
             sleep 5
           done

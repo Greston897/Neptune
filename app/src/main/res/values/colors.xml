@@ -1,6 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="neptune_void">#FF06060A</color>
-    <color name="neptune_ink">#FF0B0B11</color>
-    <color name="neptune_white">#FFFFFFFF</color>
-</resources>
+<resources><color name="neptune_void">#FF050505</color><color name="neptune_ink">#FF121212</color><color name="neptune_white">#FFF5F5F5</color></resources>

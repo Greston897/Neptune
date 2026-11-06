@@ -2,7 +2,6 @@ package com.neptune.player.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -13,34 +12,17 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 
 /** Hand-drawn icon set — everything is vector geometry in a 24×24 grid. */
 enum class NeIcon {
     Play, Pause, Next, Prev, Shuffle, Repeat, RepeatOne,
     Heart, HeartFill, Home, Search, Library, Sliders,
     ChevronDown, ChevronUp, More, Queue, Volume, Mute, Mic, Share,
-    Plus, Close, Check, Sparkle, Wave, Disc, Artist, Equalizer, Moon, Reset
+    Plus, Close, Check, Sparkle, Wave, Disc, Artist, Equalizer, Moon, Reset,
+    Back, Settings, Clock, Folder, Music, Palette, Info, Timer, Speed, ArrowUp, ArrowDown, Edit, Trash, Sort, Device, Bell, ChevronRight, Logout
 }
 
-@Composable
-fun NeIconView(
-    icon: NeIcon,
-    size: Dp = 24.dp,
-    color: Color = Ne.Text,
-    modifier: Modifier = Modifier,
-    weight: Float = 1.85f,
-) {
-    Canvas(modifier.size(size)) {
-        val k = this.size.minDimension / 24f
-        scale(k, k, pivot = Offset.Zero) {
-            drawIcon(icon, color, weight)
-        }
-    }
-}
-
-private fun DrawScope.drawIcon(icon: NeIcon, c: Color, w: Float) {
+internal fun DrawScope.drawNeIcon(icon: NeIcon, c: Color, w: Float) {
     val stroke = Stroke(width = w, cap = StrokeCap.Round, join = StrokeJoin.Round)
     fun line(x1: Float, y1: Float, x2: Float, y2: Float) =
         drawLine(c, Offset(x1, y1), Offset(x2, y2), strokeWidth = w, cap = StrokeCap.Round)
@@ -55,6 +37,58 @@ private fun DrawScope.drawIcon(icon: NeIcon, c: Color, w: Float) {
     }
 
     when (icon) {
+        NeIcon.Back -> {
+            line(19f, 12f, 5f, 12f)
+            strokePath(Path().apply { moveTo(11f, 5.5f); lineTo(4.5f, 12f); lineTo(11f, 18.5f) }, c, stroke)
+        }
+        NeIcon.ChevronRight -> strokePath(Path().apply { moveTo(9f, 5.5f); lineTo(15.5f, 12f); lineTo(9f, 18.5f) }, c, stroke)
+        NeIcon.Settings -> {
+            drawCircle(c, radius = 3.2f, center = Offset(12f, 12f), style = stroke)
+            val p = Path().apply {
+                moveTo(9.5f, 3.5f); lineTo(14.5f, 3.5f); lineTo(15.2f, 5.7f); lineTo(17.5f, 6.5f)
+                lineTo(19.5f, 8.5f); lineTo(18.5f, 10.7f); lineTo(18.5f, 13.3f); lineTo(19.5f, 15.5f)
+                lineTo(17.5f, 17.5f); lineTo(15.2f, 18.3f); lineTo(14.5f, 20.5f); lineTo(9.5f, 20.5f)
+                lineTo(8.8f, 18.3f); lineTo(6.5f, 17.5f); lineTo(4.5f, 15.5f); lineTo(5.5f, 13.3f)
+                lineTo(5.5f, 10.7f); lineTo(4.5f, 8.5f); lineTo(6.5f, 6.5f); lineTo(8.8f, 5.7f); close()
+            }
+            strokePath(p, c, stroke)
+        }
+        NeIcon.Clock, NeIcon.Timer -> {
+            drawCircle(c, radius = 8f, center = Offset(12f, 13f), style = stroke)
+            line(12f, 13f, 12f, 8.5f); line(12f, 13f, 15.5f, 15f)
+            if (icon == NeIcon.Timer) { line(9f, 2f, 15f, 2f); line(12f, 2f, 12f, 5f) }
+        }
+        NeIcon.Folder -> strokePath(Path().apply {
+            moveTo(3.5f, 7f); lineTo(3.5f, 5.5f); quadraticTo(3.5f, 4f, 5f, 4f); lineTo(9f, 4f)
+            lineTo(11f, 6f); lineTo(19f, 6f); quadraticTo(20.5f, 6f, 20.5f, 7.5f); lineTo(20.5f, 18f)
+            quadraticTo(20.5f, 19.5f, 19f, 19.5f); lineTo(5f, 19.5f); quadraticTo(3.5f, 19.5f, 3.5f, 18f); close()
+        }, c, stroke)
+        NeIcon.Music -> {
+            strokePath(Path().apply { moveTo(9f, 17f); lineTo(9f, 6f); lineTo(19f, 4f); lineTo(19f, 15f) }, c, stroke)
+            drawCircle(c, radius = 2.5f, center = Offset(6.5f, 17f), style = stroke)
+            drawCircle(c, radius = 2.5f, center = Offset(16.5f, 15f), style = stroke)
+        }
+        NeIcon.Palette -> {
+            drawArc(c, 35f, 320f, false, Offset(3f, 3f), Size(18f, 18f), style = stroke)
+            drawCircle(c, 1.2f, Offset(8f, 8f)); drawCircle(c, 1.2f, Offset(13f, 6.5f)); drawCircle(c, 1.2f, Offset(17f, 10f))
+            strokePath(Path().apply { moveTo(19.5f, 17f); cubicTo(15f, 15f, 14f, 20f, 17f, 20f) }, c, stroke)
+        }
+        NeIcon.Info -> { drawCircle(c, 8.5f, Offset(12f, 12f), style = stroke); line(12f, 11f, 12f, 16f); drawCircle(c, 1f, Offset(12f, 7.5f)) }
+        NeIcon.Speed -> {
+            drawArc(c, 150f, 240f, false, Offset(3f, 4f), Size(18f, 18f), style = stroke)
+            line(12f, 14f, 16f, 8f); drawCircle(c, 1.5f, Offset(12f, 14f))
+        }
+        NeIcon.ArrowUp -> { line(12f, 19f, 12f, 5f); strokePath(Path().apply { moveTo(6.5f, 10.5f); lineTo(12f, 5f); lineTo(17.5f, 10.5f) }, c, stroke) }
+        NeIcon.ArrowDown -> { line(12f, 5f, 12f, 19f); strokePath(Path().apply { moveTo(6.5f, 13.5f); lineTo(12f, 19f); lineTo(17.5f, 13.5f) }, c, stroke) }
+        NeIcon.Edit -> {
+            strokePath(Path().apply { moveTo(4f, 16f); lineTo(15.5f, 4.5f); lineTo(19.5f, 8.5f); lineTo(8f, 20f); lineTo(4f, 20f); close() }, c, stroke)
+            line(13f, 7f, 17f, 11f)
+        }
+        NeIcon.Trash -> { line(4f, 7f, 20f, 7f); line(9f, 4f, 15f, 4f); strokePath(Path().apply { moveTo(6f, 7f); lineTo(7f, 20f); lineTo(17f, 20f); lineTo(18f, 7f) }, c, stroke); line(10f, 10f, 10f, 17f); line(14f, 10f, 14f, 17f) }
+        NeIcon.Sort -> { line(4f, 6f, 20f, 6f); line(4f, 12f, 15f, 12f); line(4f, 18f, 10f, 18f) }
+        NeIcon.Device -> { drawRoundRect(c, Offset(6.5f, 2.5f), Size(11f, 19f), androidx.compose.ui.geometry.CornerRadius(2.5f), style = stroke); line(10f, 18.5f, 14f, 18.5f) }
+        NeIcon.Bell -> { strokePath(Path().apply { moveTo(5f, 17f); lineTo(6.5f, 14f); lineTo(6.5f, 9f); cubicTo(6.5f, 2f, 17.5f, 2f, 17.5f, 9f); lineTo(17.5f, 14f); lineTo(19f, 17f); close() }, c, stroke); drawArc(c, 0f, 180f, false, Offset(9.5f, 17f), Size(5f, 4f), style = stroke) }
+        NeIcon.Logout -> { strokePath(Path().apply { moveTo(10f, 4f); lineTo(4f, 4f); lineTo(4f, 20f); lineTo(10f, 20f) }, c, stroke); line(9f, 12f, 20f, 12f); strokePath(Path().apply { moveTo(16f, 8f); lineTo(20f, 12f); lineTo(16f, 16f) }, c, stroke) }
         NeIcon.Play -> {
             val p = Path().apply {
                 moveTo(8.4f, 5.0f); lineTo(19.0f, 12f); lineTo(8.4f, 19.0f); close()
