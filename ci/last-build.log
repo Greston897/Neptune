@@ -27,35 +27,40 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:javaPreCompileDebug
-> Task :app:javaPreCompileDebugUnitTest
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
-> Task :app:processDebugManifestForPackage
 > Task :app:generateReleaseBuildConfig
 > Task :app:checkReleaseAarMetadata
 > Task :app:generateReleaseResValues FROM-CACHE
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
-> Task :app:processDebugResources
-> Task :app:mergeReleaseResources
 > Task :app:packageReleaseResources
 > Task :app:parseReleaseLocalResources FROM-CACHE
 > Task :app:createReleaseCompatibleScreenManifests
+> Task :app:processDebugManifestForPackage
+> Task :app:mergeReleaseResources
 > Task :app:extractDeepLinksRelease FROM-CACHE
 > Task :app:processReleaseMainManifest
 > Task :app:processReleaseManifest
-> Task :app:processReleaseManifestForPackage
 > Task :app:javaPreCompileRelease FROM-CACHE
+> Task :app:processReleaseManifestForPackage
 > Task :app:extractProguardFiles
 > Task :app:mergeReleaseJniLibFolders
+> Task :app:processDebugResources
 > Task :app:processReleaseResources
 > Task :app:mergeReleaseNativeLibs
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
+
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :app:checkReleaseDuplicateClasses
 > Task :app:desugarReleaseFileDependencies
 > Task :app:mergeReleaseStartupProfile
 > Task :app:compileDebugKotlin
 > Task :app:compileReleaseKotlin
-> Task :app:stripReleaseDebugSymbols
 > Task :app:mergeExtDexRelease
 
 > Task :app:compileDebugKotlin
@@ -64,47 +69,53 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:compileReleaseKotlin
 w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/Media3PlaybackBackend.kt:189:51 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
 
-> Task :app:stripReleaseDebugSymbols
-Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
-
 > Task :app:compileDebugJavaWithJavac
+> Task :app:processDebugJavaRes
 > Task :app:bundleDebugClassesToCompileJar
 > Task :app:bundleDebugClassesToRuntimeJar
-> Task :app:processDebugJavaRes
 > Task :app:compileReleaseJavaWithJavac
 > Task :app:compileDebugUnitTestKotlin
 > Task :app:generateReleaseLintVitalReportModel
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes
 > Task :app:testDebugUnitTest
-> Task :app:extractReleaseNativeSymbolTables
 > Task :app:dexBuilderRelease
-> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :app:mergeReleaseArtProfile
 > Task :app:mergeReleaseGlobalSynthetics
 > Task :app:mergeReleaseShaders
 > Task :app:compileReleaseShaders NO-SOURCE
 > Task :app:generateReleaseAssets UP-TO-DATE
 > Task :app:mergeReleaseAssets
-> Task :app:extractReleaseVersionControlInfo
 > Task :app:compressReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
 > Task :app:processReleaseJavaRes
 > Task :app:mergeReleaseJavaResource
-> Task :app:optimizeReleaseResources
 > Task :app:collectReleaseDependencies
 > Task :app:sdkReleaseDependencyData
 > Task :app:validateSigningRelease
 > Task :app:writeReleaseAppMetadata
 > Task :app:writeReleaseSigningConfigVersions
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:optimizeReleaseResources
+> Task :app:processDebugAndroidTestManifest FAILED
 > Task :app:mergeDexRelease
-> Task :app:compileReleaseArtProfile
-> Task :app:packageRelease
-> Task :app:createReleaseApkListingFileRedirect
 > Task :app:lintVitalAnalyzeRelease
-> Task :app:lintVitalReportRelease
-> Task :app:lintVitalRelease
-> Task :app:assembleRelease
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794010611411.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794010952491.json
 
-BUILD SUCCESSFUL in 3m 47s
-74 actionable tasks: 70 executed, 4 from cache
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:processDebugAndroidTestManifest'.
+> Could not resolve all files for configuration ':app:debugAndroidTestRuntimeClasspath'.
+   > Could not find androidx.compose.ui:ui-test-junit4:.
+     Required by:
+         project :app
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 3m 39s
+70 actionable tasks: 65 executed, 5 from cache
