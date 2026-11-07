@@ -10,70 +10,136 @@ For more details see https://docs.gradle.org/8.11.1/release-notes.html
 
 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
 Daemon will be stopped at the end of the build 
-> Task :app:buildKotlinToolingMetadata
 > Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig
+> Task :app:checkDebugAarMetadata
+> Task :app:generateDebugResValues
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:mergeDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:parseDebugLocalResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebug
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
-> Task :app:generateReleaseResValues
+> Task :app:generateReleaseBuildConfig
+> Task :app:generateReleaseResValues FROM-CACHE
 > Task :app:checkReleaseAarMetadata
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
-> Task :app:packageReleaseResources
+> Task :app:processDebugResources
 > Task :app:mergeReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:parseReleaseLocalResources FROM-CACHE
 > Task :app:createReleaseCompatibleScreenManifests
-> Task :app:extractDeepLinksRelease
-> Task :app:parseReleaseLocalResources
+> Task :app:extractDeepLinksRelease FROM-CACHE
 > Task :app:processReleaseMainManifest
 > Task :app:processReleaseManifest
+> Task :app:javaPreCompileRelease FROM-CACHE
 > Task :app:processReleaseManifestForPackage
-> Task :app:javaPreCompileRelease
 > Task :app:extractProguardFiles
 > Task :app:mergeReleaseJniLibFolders
-> Task :app:processReleaseResources
 > Task :app:mergeReleaseNativeLibs
+> Task :app:processReleaseResources
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:desugarReleaseFileDependencies
+> Task :app:mergeReleaseStartupProfile
 
 > Task :app:stripReleaseDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
 
-> Task :app:extractReleaseNativeSymbolTables
-> Task :app:desugarReleaseFileDependencies
-> Task :app:checkReleaseDuplicateClasses
-> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :app:mergeReleaseStartupProfile
+> Task :app:compileDebugKotlin FAILED
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:87:59 Unresolved reference 'PlaybackSettingsScreen'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:88:46 Unresolved reference 'DataScreen'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:89:47 Unresolved reference 'AboutScreen'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:19:48 'fun plus(other: Job): Job' is deprecated. Operator '+' on two Job objects is meaningless. Job is a coroutine context element and `+` is a set-sum operator for coroutine contexts. The job to the right of `+` just replaces the job the left of `+`.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:19:67 Expression 'immediate' of type 'kotlinx.coroutines.MainCoroutineDispatcher' cannot be invoked as a function. Function 'invoke()' is not found.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/NeptunePlaybackService.kt:23:56 'fun plus(other: Job): Job' is deprecated. Operator '+' on two Job objects is meaningless. Job is a coroutine context element and `+` is a set-sum operator for coroutine contexts. The job to the right of `+` just replaces the job the left of `+`.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/NeptunePlaybackService.kt:23:75 Expression 'immediate' of type 'kotlinx.coroutines.MainCoroutineDispatcher' cannot be invoked as a function. Function 'invoke()' is not found.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/Artwork.kt:193:74 None of the following candidates is applicable:
+fun minus(other: Byte): Float
+fun minus(other: Double): Double
+fun minus(other: Float): Float
+fun minus(other: Int): Float
+fun minus(other: Long): Float
+fun minus(other: Short): Float
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/Artwork.kt:193:80 Cannot access 'constructor(packedValue: Long): Size': it is internal in 'androidx/compose/ui/geometry/Size'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:173:9 'fun item(key: Any? = ..., contentType: Any? = ..., content: @Composable() ComposableFunction1<LazyItemScope, Unit>): Unit' cannot be called in this context with an implicit receiver. Use an explicit receiver if necessary.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:173:16 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:200:139 None of the following candidates is applicable:
+fun Modifier.padding(paddingValues: PaddingValues): Modifier
+fun Modifier.padding(all: Dp): Modifier
+fun Modifier.padding(horizontal: Dp = ..., vertical: Dp = ...): Modifier
+fun Modifier.padding(start: Dp = ..., top: Dp = ..., end: Dp = ..., bottom: Dp = ...): Modifier
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:243:2 Syntax error: Expecting '}'.
 
 > Task :app:compileReleaseKotlin
-e: The daemon has terminated unexpectedly on startup attempt #1 with error code: 0. The daemon process output:
-    1. Kotlin compile daemon is ready
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:87:59 Unresolved reference 'PlaybackSettingsScreen'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:88:46 Unresolved reference 'DataScreen'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:89:47 Unresolved reference 'AboutScreen'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:19:48 'fun plus(other: Job): Job' is deprecated. Operator '+' on two Job objects is meaningless. Job is a coroutine context element and `+` is a set-sum operator for coroutine contexts. The job to the right of `+` just replaces the job the left of `+`.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:19:67 Expression 'immediate' of type 'kotlinx.coroutines.MainCoroutineDispatcher' cannot be invoked as a function. Function 'invoke()' is not found.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/NeptunePlaybackService.kt:23:56 'fun plus(other: Job): Job' is deprecated. Operator '+' on two Job objects is meaningless. Job is a coroutine context element and `+` is a set-sum operator for coroutine contexts. The job to the right of `+` just replaces the job the left of `+`.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/NeptunePlaybackService.kt:23:75 Expression 'immediate' of type 'kotlinx.coroutines.MainCoroutineDispatcher' cannot be invoked as a function. Function 'invoke()' is not found.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/Artwork.kt:193:74 None of the following candidates is applicable:
+fun minus(other: Byte): Float
+fun minus(other: Double): Double
+fun minus(other: Float): Float
+fun minus(other: Int): Float
+fun minus(other: Long): Float
+fun minus(other: Short): Float
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/Artwork.kt:193:80 Cannot access 'constructor(packedValue: Long): Size': it is internal in 'androidx/compose/ui/geometry/Size'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:173:9 'fun item(key: Any? = ..., contentType: Any? = ..., content: @Composable() ComposableFunction1<LazyItemScope, Unit>): Unit' cannot be called in this context with an implicit receiver. Use an explicit receiver if necessary.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:173:16 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:200:139 None of the following candidates is applicable:
+fun Modifier.padding(paddingValues: PaddingValues): Modifier
+fun Modifier.padding(all: Dp): Modifier
+fun Modifier.padding(horizontal: Dp = ..., vertical: Dp = ...): Modifier
+fun Modifier.padding(start: Dp = ..., top: Dp = ..., end: Dp = ..., bottom: Dp = ...): Modifier
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:243:2 Syntax error: Expecting '}'.
 
 > Task :app:mergeExtDexRelease
-> Task :app:compileReleaseJavaWithJavac NO-SOURCE
-> Task :app:generateReleaseLintVitalReportModel
-> Task :app:dexBuilderRelease
-> Task :app:mergeReleaseArtProfile
-> Task :app:mergeReleaseGlobalSynthetics
-> Task :app:mergeReleaseShaders
-> Task :app:compileReleaseShaders NO-SOURCE
-> Task :app:generateReleaseAssets UP-TO-DATE
-> Task :app:mergeReleaseAssets
-> Task :app:compressReleaseAssets
-> Task :app:extractReleaseVersionControlInfo
-> Task :app:processReleaseJavaRes
-> Task :app:optimizeReleaseResources
-> Task :app:mergeReleaseJavaResource
-> Task :app:collectReleaseDependencies
-> Task :app:sdkReleaseDependencyData
-> Task :app:validateSigningRelease
-> Task :app:writeReleaseAppMetadata
-> Task :app:writeReleaseSigningConfigVersions
-> Task :app:mergeDexRelease
-> Task :app:compileReleaseArtProfile
-> Task :app:packageRelease
-> Task :app:createReleaseApkListingFileRedirect
-> Task :app:lintVitalAnalyzeRelease
-> Task :app:lintVitalReportRelease
-> Task :app:lintVitalRelease
-> Task :app:assembleRelease
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794007169873.json
+> Task :app:compileReleaseKotlin FAILED
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794009583527.json
 
-BUILD SUCCESSFUL in 2m 5s
-48 actionable tasks: 48 executed
+FAILURE: Build completed with 2 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 2m 28s
+42 actionable tasks: 37 executed, 5 from cache
