@@ -81,7 +81,9 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
             }
             item { SectionHeader("Альбомы", Modifier.padding(top = NeSpace.lg)) }
             items(LibraryLogic.albums(library.tracks).chunked(2)) { row ->
-                Row(Modifier.fillMaxWidth().padding(vertical = NeSpace.sm), horizontalArrangement = Arrangement.spacedBy(NeSpace.md)) {
+                Row(Modifier.fillMaxWidth().padding(vertical = NeSpace.sm),
+                    horizontalArrangement = Arrangement.spacedBy(NeSpace.md),
+                    verticalAlignment = Alignment.Top) {
                     row.forEach { (meta, tracks) -> AlbumCard(meta.second, meta.first, tracks.first(), { onCollection("album", "${meta.first}\u0000${meta.second}") }, Modifier.weight(1f)) }
                     if (row.size == 1) Spacer(Modifier.weight(1f))
                 }
@@ -93,6 +95,7 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                 Row(
                     Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(vertical = NeSpace.lg),
                     horizontalArrangement = Arrangement.spacedBy(NeSpace.sm),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     listOf("Всё", "Треки", "Альбомы", "Артисты").forEachIndexed { i, title ->
                         NeChip(title, filter == i, { filter = i; state.submitSearch() })
@@ -102,7 +105,9 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
             if (results.isEmpty()) item { EmptyState(NeIcon.Search, "Ничего не найдено", "Попробуйте другое название или имя исполнителя. Поиск работает по всей вашей медиатеке.", action = "Сбросить", onAction = { state.search = "" }) }
             if (filter == 0 || filter == 1) items(results, key = { it.id }) { track -> TrackRow(track, playback.track?.id == track.id, playback.isPlaying, { state.playTrack(track, results); state.submitSearch() }, onMore = { state.contextTrack = track }) }
             if (filter == 0 || filter == 2) items(albums.chunked(2), key = { it.first().first.first + it.first().first.second }) { row ->
-                Row(Modifier.fillMaxWidth().padding(vertical = NeSpace.sm), horizontalArrangement = Arrangement.spacedBy(NeSpace.md)) {
+                Row(Modifier.fillMaxWidth().padding(vertical = NeSpace.sm),
+                    horizontalArrangement = Arrangement.spacedBy(NeSpace.md),
+                    verticalAlignment = Alignment.Top) {
                     row.forEach { (meta, tracks) -> AlbumCard(meta.second, meta.first, tracks.first(), { onCollection("album", "${meta.first}\u0000${meta.second}") }, Modifier.weight(1f)) }
                     if (row.size == 1) Spacer(Modifier.weight(1f))
                 }

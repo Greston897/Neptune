@@ -31,6 +31,8 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.HazeProgressive
+import androidx.compose.ui.graphics.BlendMode
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -49,12 +51,23 @@ val LocalContentHaze = staticCompositionLocalOf<HazeState?> { null }
 /** Bottom clearance reserved for the floating dock, so lists never end underneath the navbar. */
 val LocalBottomInset = staticCompositionLocalOf { 24.dp }
 
+/**
+ * Blur recipe.
+ *
+ * Two layers matter: a neutral dark tint that keeps the glass black, and a very soft `Overlay`
+ * pass that lifts the blurred highlights so the surface reads as glass rather than a flat scrim.
+ * `noiseFactor` adds the fine frost that makes a strong blur legible on a dark, low-detail
+ * backdrop — without it a heavy blur of a near-black gradient looks like nothing happened.
+ */
 @Composable
 fun glassStyle(settings: Settings): HazeStyle = HazeStyle(
     backgroundColor = Color(0xFF060606),
-    tints = listOf(HazeTint(Color(0xFF0D0D0D).copy(alpha = settings.glassTint))),
+    tints = listOf(
+        HazeTint(Color(0xFF0D0D0D).copy(alpha = settings.glassTint)),
+        HazeTint(Color.White.copy(alpha = 0.05f), BlendMode.Overlay),
+    ),
     blurRadius = settings.glassBlur.dp,
-    noiseFactor = 0.05f,
+    noiseFactor = 0.10f,
     fallbackTint = HazeTint(Color(0xFF121212).copy(alpha = 0.96f)),
 )
 
@@ -64,13 +77,23 @@ fun GlassPanel(
     corner: Dp = neRadius(),
     haze: HazeState? = LocalBackgroundHaze.current,
     rim: Boolean = true,
+    progressiveBlur: Boolean = false,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val s = LocalSettings.current
     val shape = RoundedCornerShape(corner)
     val base = Modifier.clip(shape)
-    val surface = if (s.glassEnabled && haze != null) base.hazeChild(haze, glassStyle(s)) {
+    val style = glassStyle(s)
+    val surface = if (s.glassEnabled && haze != null) base.hazeChild(haze, style) {
+        // RenderEffect blur needs API 31+; older devices get the opaque fallback instead of a crash.
         blurEnabled = Build.VERSION.SDK_INT >= 31
+        if (progressiveBlur) {
+            // The dock blurs hardest at its lower edge, where content passes behind it, and stays
+            // slightly clearer at the top so the panel edge does not read as a hard grey band.
+            progressive = HazeProgressive.verticalGradient(
+                startIntensity = 0.75f, endIntensity = 1f, preferPerformance = true,
+            )
+        }
     } else base.background(Color(0xFF121212).copy(alpha = if (s.glassEnabled) 0.94f else 1f))
     Box(modifier.then(surface)) {
         content()
@@ -121,14 +144,27 @@ fun AmbientBackground(modifier: Modifier = Modifier, phase: Float = rememberAmbi
                 center = c2, radius = w * 0.85f))
             // Fine orbital detail gives the blur something to resolve: smooth gradients alone look
             // identical before/after a Gaussian blur, which is why the glass previously read as flat.
-            val ring = Stroke(width = 1.dp.toPx())
-            drawCircle(Color.White.copy(alpha = 0.045f), radius = w * 0.62f, center = c1, style = ring)
-            drawCircle(Color.White.copy(alpha = 0.035f), radius = w * 0.44f, center = c1, style = ring)
-            drawCircle(Color.White.copy(alpha = 0.04f), radius = w * 0.52f, center = c2, style = ring)
-            for (i in 0 until 42) {
+            val ring = Stroke(width = 1.4.dp.toPx())
+            drawCircle(Color.White.copy(alpha = 0.07f), radius = w * 0.62f, center = c1, style = ring)
+            drawCircle(Color.White.copy(alpha = 0.055f), radius = w * 0.44f, center = c1, style = ring)
+            drawCircle(Color.White.copy(alpha = 0.06f), radius = w * 0.52f, center = c2, style = ring)
+            drawCircle(tint.copy(alpha = 0.10f), radius = w * 0.30f, center = c2, style = ring)
+            // Dense starfield: a blur has to smudge *something*. Sparse dots on a flat gradient
+            // survive a Gaussian almost unchanged, which is why the glass used to read as flat.
+            for (i in 0 until 150) {
                 val x = ((i * 73) % 997) / 997f * w
                 val y = ((i * 131) % 991) / 991f * h
-                drawCircle(Color.White.copy(alpha = 0.05f + (i % 4) * 0.025f), radius = if (i % 3 == 0) 1.6.dp.toPx() else 1.dp.toPx(), center = Offset(x, y))
+                val r = when (i % 5) { 0 -> 2.2.dp.toPx(); 1 -> 1.5.dp.toPx(); else -> 1.dp.toPx() }
+                drawCircle(Color.White.copy(alpha = 0.06f + (i % 4) * 0.035f), radius = r, center = Offset(x, y))
+            }
+            // A few soft light streaks give the blur directional smear, like real frosted glass.
+            for (i in 0 until 5) {
+                val y = h * (0.16f + i * 0.17f)
+                drawLine(
+                    Color.White.copy(alpha = 0.035f),
+                    start = Offset(w * 0.05f, y), end = Offset(w * 0.95f, y + h * 0.03f),
+                    strokeWidth = 2.5.dp.toPx(),
+                )
             }
             drawRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.03f), Color.Transparent, Color.Black.copy(alpha = 0.25f))))
         }

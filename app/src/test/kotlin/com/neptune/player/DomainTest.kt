@@ -27,7 +27,7 @@ class DomainTest {
     }
     @Test fun glassSettingsClampToSafeRanges() {
         val s = Settings(glassBlur = 999f, glassTint = -1f, glassRim = 5f, avatarSize = 9f).validated()
-        assertEquals(36f, s.glassBlur, 0.0001f)
+        assertEquals(56f, s.glassBlur, 0.0001f)
         assertEquals(0.35f, s.glassTint, 0.0001f)
         assertEquals(1f, s.glassRim, 0.0001f)
         assertEquals(1.25f, s.avatarSize, 0.0001f)
@@ -53,8 +53,8 @@ class DomainTest {
     @Test fun visibleGlassRecipeIsTheDefault() {
         val s = Settings()
         assertTrue(s.glassEnabled); assertTrue(s.ambientGlow); assertTrue(s.accentGlow)
-        assertEquals(30f, s.glassBlur, 0.0001f)
-        assertEquals(0.42f, s.glassTint, 0.0001f)
+        assertEquals(40f, s.glassBlur, 0.0001f)
+        assertEquals(0.38f, s.glassTint, 0.0001f)
         assertEquals(0.85f, s.glassRim, 0.0001f)
         val reset = Settings(glassBlur = 9f, glassTint = 0.8f, glassRim = 0.1f).resetAppearance()
         assertEquals(s.glassBlur, reset.glassBlur, 0.0001f)

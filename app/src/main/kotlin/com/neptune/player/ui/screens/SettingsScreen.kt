@@ -101,7 +101,7 @@ fun SettingsScreen(state: NeptuneState, onProfile: () -> Unit, onAppearance: () 
 fun SettingsGroup(title: String, content: @Composable () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(top = NeSpace.xxl)) {
         NeText(
-            title, Modifier.padding(start = NeSpace.xs, bottom = NeSpace.sm),
+            title, Modifier.padding(start = NeRow.panelInset, bottom = NeSpace.sm),
             size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Faint, tracking = 1.2.sp, weight = FontWeight.Bold,
         )
         GlassPanel(Modifier.fillMaxWidth()) { Column(Modifier.fillMaxWidth()) { content() } }
@@ -133,7 +133,7 @@ fun AppearanceScreen(state: NeptuneState, onBack: () -> Unit) {
         item { SettingsGroup("АКЦЕНТ") { AccentPicker(s.accentIndex) { i -> state.edit { it.copy(accentIndex = i) } } } }
         item { SettingsGroup("LIQUID GLASS") {
             ToggleRow("Чёрное стекло", "Настоящее размытие фона на Android 12+, мягкая панель на старых версиях", s.glassEnabled) { v -> state.edit { it.copy(glassEnabled = v) } }
-            SettingSlider("Размытие", s.glassBlur, 8f..36f, "${s.glassBlur.toInt()} dp", { v -> state.edit { it.copy(glassBlur = v) } })
+            SettingSlider("Размытие", s.glassBlur, 8f..56f, "${s.glassBlur.toInt()} dp", { v -> state.edit { it.copy(glassBlur = v) } })
             SettingSlider("Плотность стекла", s.glassTint, 0.35f..0.88f, "${(s.glassTint * 100).toInt()}%", { v -> state.edit { it.copy(glassTint = v) } })
             SettingSlider("Световой кант", s.glassRim, 0f..1f, "${(s.glassRim * 100).toInt()}%", { v -> state.edit { it.copy(glassRim = v) } })
             ToggleRow("Фоновое свечение", "Едва заметные блики на чёрном фоне", s.ambientGlow) { v -> state.edit { it.copy(ambientGlow = v) } }
@@ -165,7 +165,7 @@ fun AccentPicker(selected: Int, onSelect: (Int) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(NeSpace.md),
     ) {
         Accent.entries.chunked(6).forEach { row ->
-            Row(Modifier.fillMaxWidth()) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
                 row.forEach { a ->
                     val isSelected = selected == a.ordinal
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -211,7 +211,8 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit) {
             NeButton("Сохранить имя", { state.edit { it.copy(profileName = name) }; state.message("Имя сохранено") }, Modifier.fillMaxWidth().padding(top = 12.dp), enabled = name.isNotBlank() && name.trim() != s.profileName)
         } } }
         item { SettingsGroup("ФОРМА АВАТАРА") { Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(NeSpace.sm),
+                verticalAlignment = Alignment.Top) {
                 AvatarShape.entries.forEach { shape ->
                     val selected = s.avatarShape == shape
                     Column(

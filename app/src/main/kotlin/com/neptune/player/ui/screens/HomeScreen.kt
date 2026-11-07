@@ -103,7 +103,8 @@ fun HomeScreen(
             }
         }
         item {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(NeSpace.md)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(NeSpace.md),
+                verticalAlignment = Alignment.CenterVertically) {
                 QuickCollection("Любимое", trackCount(users.liked.size), NeIcon.HeartFill, Modifier.weight(1f)) { onCollection("liked", "") }
                 QuickCollection("Недавнее", trackCount(recent.size), NeIcon.Clock, Modifier.weight(1f)) { onCollection("recent", "") }
             }
@@ -177,10 +178,10 @@ fun HomeScreen(
                             TrackRow(
                                 track, playback.track?.id == track.id, playback.isPlaying,
                                 { state.playTrack(track, recent) },
-                                modifier = Modifier.padding(horizontal = 6.dp), onMore = { state.contextTrack = track },
+                                modifier = Modifier.padding(horizontal = NeRow.panelInset), onMore = { state.contextTrack = track },
                             )
                             if (index < shown.lastIndex) {
-                                HorizontalDivider(Modifier.padding(horizontal = NeSpace.lg), color = Color.White.copy(alpha = 0.05f))
+                                HorizontalDivider(Modifier.padding(horizontal = NeRow.panelInset), color = Color.White.copy(alpha = 0.05f))
                             }
                         }
                     }

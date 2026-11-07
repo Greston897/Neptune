@@ -81,7 +81,8 @@ fun CollectionScreen(state: NeptuneState, kind: String, key: String, onBack: () 
                 NeText("${trackCount(tracks.size)} · ${formatTime(tracks.sumOf { it.durationMs })}", size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 1)
                 Spacer(Modifier.height(NeSpace.xl))
                 // Two equal cells: the pair can never overflow, whatever the font scale.
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(NeSpace.sm)) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(NeSpace.sm),
+                    verticalAlignment = Alignment.CenterVertically) {
                     NeButton("Слушать", { state.play(tracks) }, Modifier.weight(1f), icon = NeIcon.Play, enabled = tracks.isNotEmpty())
                     NeButton("Вперемешку", { state.play(tracks, shuffled = true) }, Modifier.weight(1f), icon = NeIcon.Shuffle, primary = false, enabled = tracks.isNotEmpty())
                 }

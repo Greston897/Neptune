@@ -6,6 +6,8 @@ keeps the upstream optical grid: 24x24 viewport, 2dp stroke, round caps/joins.
 """
 import pathlib, re, xml.etree.ElementTree as ET
 
+from icon_metrics import centre_offset
+
 SRC = pathlib.Path("ci/lucide")
 DST = pathlib.Path("app/src/main/res/drawable")
 DST.mkdir(parents=True, exist_ok=True)
@@ -62,6 +64,14 @@ def convert(svg: pathlib.Path, name: str, filled: bool, stroke: str = "2"):
                       'android:strokeLineCap="round"', 'android:strokeLineJoin="round"',
                       'android:fillColor="#00000000"']
         body.append("    <path\n        " + "\n        ".join(attrs) + " />")
+    # Optical centring. Upstream glyphs share a baseline, not a centre, so rendering them verbatim
+    # in a square box leaves some sitting high and others low ("иконки то ниже то выше"). Measuring
+    # the real ink box and translating it onto (12,12) makes every glyph land dead centre.
+    dx, dy = centre_offset(svg)
+    if abs(dx) > 0.005 or abs(dy) > 0.005:
+        inner = "\n".join("    " + line for line in "\n".join(body).split("\n"))
+        body = [f'    <group android:translateX="{num(round(dx, 3))}" android:translateY="{num(round(dy, 3))}">\n'
+                + inner + '\n    </group>']
     xml = ('<vector xmlns:android="http://schemas.android.com/apk/res/android"\n'
            '    android:width="24dp"\n    android:height="24dp"\n'
            '    android:viewportWidth="24"\n    android:viewportHeight="24">\n' + "\n".join(body) + "\n</vector>\n")

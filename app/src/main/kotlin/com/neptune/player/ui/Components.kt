@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
@@ -77,9 +76,14 @@ fun NeIconButton(
     background: Color = Color.Transparent,
 ) {
     val haptic = LocalHaptics.current
-    IconButton(
-        onClick = { haptic(); onClick() }, enabled = enabled,
-        modifier = modifier.size(size).clip(CircleShape).background(background).semantics { contentDescription = label },
+    // Material3's IconButton centres its content inside a 40dp inner box and then pads the ripple
+    // out to 48dp. When a caller asks for a 44dp button those two boxes disagree and the glyph ends
+    // up a pixel or two off centre. A plain Box centres the glyph in exactly the requested square.
+    Box(
+        modifier = modifier.size(size).clip(CircleShape).background(background)
+            .clickable(enabled = enabled, role = Role.Button, onClickLabel = label) { haptic(); onClick() }
+            .semantics { contentDescription = label },
+        contentAlignment = Alignment.Center,
     ) {
         NeIconView(icon, iconSize, if (enabled) color else Ne.Whisper)
     }
@@ -140,13 +144,14 @@ fun NeChip(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modif
 fun SectionHeader(title: String, modifier: Modifier = Modifier, action: String? = null, onAction: (() -> Unit)? = null) {
     Row(modifier.fillMaxWidth().heightIn(min = 40.dp), verticalAlignment = Alignment.CenterVertically) {
         NeText(
-            title, Modifier.weight(1f), size = NeType.section, lineHeight = NeType.sectionLine,
+            title, Modifier.weight(1f).alignByBaseline(), size = NeType.section, lineHeight = NeType.sectionLine,
             weight = FontWeight.Bold, tracking = (-0.3).sp, maxLines = 1,
         )
         if (action != null && onAction != null) {
             NeText(
                 action,
-                Modifier.clip(CircleShape).clickable(onClick = onAction).padding(horizontal = NeSpace.sm, vertical = 6.dp),
+                Modifier.alignByBaseline().clip(CircleShape).clickable(onClick = onAction)
+                    .padding(start = NeSpace.sm, top = 6.dp, bottom = 6.dp),
                 size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, weight = FontWeight.SemiBold,
             )
         }
@@ -174,7 +179,7 @@ fun TrackRow(
             .clip(RoundedCornerShape(12.dp))
             .background(if (current) tint.copy(alpha = 0.10f) else Color.Transparent)
             .clickable(role = Role.Button, onClick = onClick)
-            .padding(start = NeSpace.sm, end = NeSpace.xs, top = 6.dp, bottom = 6.dp),
+            .padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TrackThumb(track, if (compact) NeRow.thumbCompact else NeRow.thumb, 10.dp)
@@ -201,7 +206,7 @@ fun TrackRow(
             trailing()
         } else if (onMore == null) {
             NeText(
-                formatTime(track.durationMs), Modifier.padding(horizontal = NeSpace.sm).widthIn(min = 36.dp),
+                formatTime(track.durationMs), Modifier.padding(start = NeSpace.sm).widthIn(min = 36.dp),
                 size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Faint, align = TextAlign.End,
             )
         }
@@ -216,7 +221,7 @@ fun TrackRow(
 
 @Composable
 fun AlbumCard(album: String, artist: String, track: Track, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Column(modifier.clip(RoundedCornerShape(12.dp)).clickable(onClick = onClick).padding(NeSpace.xs)) {
+    Column(modifier.clip(RoundedCornerShape(12.dp)).clickable(onClick = onClick)) {
         TrackArtwork(track, Modifier.fillMaxWidth().aspectRatio(1f), 12.dp)
         Spacer(Modifier.height(NeSpace.sm))
         NeText(album, size = NeType.label, lineHeight = NeType.labelLine, weight = FontWeight.SemiBold, maxLines = 1)
@@ -264,7 +269,7 @@ fun SettingRow(
     Row(
         modifier.fillMaxWidth().heightIn(min = NeRow.setting)
             .then(if (onClick != null) Modifier.clickable(role = Role.Button) { haptic(); onClick() } else Modifier)
-            .padding(horizontal = NeSpace.lg, vertical = NeSpace.md),
+            .padding(horizontal = NeRow.panelInset, vertical = NeSpace.md),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (icon != null) {
@@ -311,11 +316,16 @@ fun SettingSlider(
     title: String, value: Float, range: ClosedFloatingPointRange<Float>, valueText: String,
     onChange: (Float) -> Unit, steps: Int = 0, onFinished: (() -> Unit)? = null,
 ) {
-    Column(Modifier.fillMaxWidth().padding(horizontal = NeSpace.lg, vertical = NeSpace.sm)) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            NeText(title, Modifier.weight(1f), size = NeType.label, lineHeight = NeType.labelLine, maxLines = 1)
+    Column(Modifier.fillMaxWidth().padding(horizontal = NeRow.panelInset, vertical = NeSpace.sm)) {
+        // Label and value are different sizes: centre-aligning their boxes leaves the baselines
+        // visibly offset, so they are aligned on the shared text baseline instead.
+        Row(Modifier.fillMaxWidth()) {
+            NeText(title, Modifier.weight(1f).alignByBaseline(), size = NeType.label, lineHeight = NeType.labelLine, maxLines = 1)
             Spacer(Modifier.width(NeSpace.sm))
-            NeText(valueText, size = NeType.caption, lineHeight = NeType.captionLine, color = accent(), weight = FontWeight.SemiBold)
+            NeText(
+                valueText, Modifier.alignByBaseline(), size = NeType.caption, lineHeight = NeType.captionLine,
+                color = accent(), weight = FontWeight.SemiBold,
+            )
         }
         Slider(
             value = value, onValueChange = onChange, valueRange = range, steps = steps,

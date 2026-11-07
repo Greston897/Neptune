@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
-import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.neptune.player.data.LibraryLogic
-import com.neptune.player.model.Track
 import com.neptune.player.model.trackCount
 import com.neptune.player.state.NeptuneState
 import com.neptune.player.ui.*
@@ -66,7 +64,11 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
             }
         }
         item {
-            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(vertical = NeSpace.sm), horizontalArrangement = Arrangement.spacedBy(NeSpace.sm)) {
+            Row(
+                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(vertical = NeSpace.sm),
+                horizontalArrangement = Arrangement.spacedBy(NeSpace.sm),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 listOf("Треки", "Альбомы", "Артисты", "Плейлисты").forEachIndexed { i, title -> NeChip(title, state.libraryTab == i, { state.libraryTab = i }) }
             }
         }
@@ -88,7 +90,9 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
             1 -> {
                 val albums = LibraryLogic.albums(tracks)
                 items(albums.chunked(2), key = { it.first().first.second + it.first().first.first }) { row ->
-                    Row(Modifier.fillMaxWidth().padding(vertical = NeSpace.sm), horizontalArrangement = Arrangement.spacedBy(NeSpace.md)) {
+                    Row(Modifier.fillMaxWidth().padding(vertical = NeSpace.sm),
+                        horizontalArrangement = Arrangement.spacedBy(NeSpace.md),
+                        verticalAlignment = Alignment.Top) {
                         row.forEach { (meta, list) -> AlbumCard(meta.second, meta.first, list.first(),
                             { onCollection("album", "${meta.first}\u0000${meta.second}") }, Modifier.weight(1f)) }
                         if (row.size == 1) Spacer(Modifier.weight(1f))

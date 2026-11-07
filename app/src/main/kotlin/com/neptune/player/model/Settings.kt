@@ -42,8 +42,8 @@ data class Settings(
     val speed: Float = 1f,
     val skipSilence: Boolean = false,
     val glassEnabled: Boolean = true,
-    val glassBlur: Float = 30f,
-    val glassTint: Float = 0.42f,
+    val glassBlur: Float = 40f,
+    val glassTint: Float = 0.38f,
     val glassRim: Float = 0.85f,
     val ambientGlow: Boolean = true,
     val accentGlow: Boolean = true,
@@ -60,12 +60,12 @@ data class Settings(
         avatarSize = avatarSize.coerceIn(0.8f, 1.25f),
         profileName = profileName.trim().take(24).ifBlank { "Слушатель" },
         speed = speed.coerceIn(0.75f, 1.5f),
-        glassBlur = glassBlur.coerceIn(8f, 36f),
+        glassBlur = glassBlur.coerceIn(8f, 56f),
         glassTint = glassTint.coerceIn(0.35f, 0.88f),
         glassRim = glassRim.coerceIn(0f, 1f),
     )
     fun resetAppearance() = copy(accentIndex = 0, surfaceIndex = 1, radius = 22f, fontScale = 1f,
         animations = true, haptics = true, compact = false, navLabels = true,
-        artworkMotion = true, showRemaining = true, glassEnabled = true, glassBlur = 30f,
-        glassTint = 0.42f, glassRim = 0.85f, ambientGlow = true, accentGlow = true)
+        artworkMotion = true, showRemaining = true, glassEnabled = true, glassBlur = 40f,
+        glassTint = 0.38f, glassRim = 0.85f, ambientGlow = true, accentGlow = true)
 }

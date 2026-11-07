@@ -74,12 +74,17 @@ private val NeptuneTypography = Typography(
 /**
  * The single text primitive.
  *
- * Two things used to break copy: `includeFontPadding` added a phantom top/bottom gap that made
- * rows look misaligned, and the default line box clipped descenders on Cyrillic at large sizes.
- * `PlatformTextStyle(includeFontPadding = false)` plus a proportional, trimmed line box removes
- * both, so every label sits exactly on the grid and wraps instead of being cut in half.
+ * Three things used to make labels sit "то ниже, то выше":
+ *  1. `includeFontPadding` added a phantom, font-dependent gap above and below the glyphs.
+ *  2. `LineHeightStyle.Trim.Both` trimmed the box back to ascent+descent, which *silently ignored*
+ *     the explicit `lineHeight`. Every label therefore had a slightly different box height and
+ *     `Alignment.CenterVertically` centred a different box each time.
+ *  3. `Alignment.Proportional` distributed the leading asymmetrically, shifting the glyphs inside
+ *     their own box.
  *
- * `lineHeight` defaults to 1.3× the size; call sites pass whole-sp tokens from [NeType].
+ * With `Trim.None` + `Alignment.Center` the box is exactly `lineHeight` tall with the leading split
+ * evenly, so every label of a given token has an identical, predictable box and centres cleanly
+ * against icons and neighbouring text.
  */
 @Composable
 fun NeText(
@@ -97,8 +102,8 @@ fun NeText(
             letterSpacing = tracking, textAlign = align, lineHeight = resolvedLine,
             platformStyle = PlatformTextStyle(includeFontPadding = false),
             lineHeightStyle = LineHeightStyle(
-                alignment = LineHeightStyle.Alignment.Proportional,
-                trim = LineHeightStyle.Trim.Both,
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
             ),
         ),
         maxLines = maxLines,

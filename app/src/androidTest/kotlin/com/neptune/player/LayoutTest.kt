@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
@@ -161,6 +163,88 @@ class LayoutTest {
         compose.onNodeWithContentDescription("Следующий трек").assertIsDisplayed()
         val title = compose.onNodeWithText(longTrack.title, useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
         assertTrue("mini-player title must not be collapsed", title.width > 0f)
+    }
+
+    /**
+     * The left edge of list content must not depend on which screen renders it. TrackRow used to
+     * add its own 8dp inset (and Home added 6dp more), so artwork sat at 28/34dp while section
+     * headers sat at 20dp — the "не выровнено" symptom.
+     */
+    @Test fun trackRowContentStartsAtTheRowEdge() {
+        host {
+            Box(Modifier.width(320.dp)) {
+                TrackRow(longTrack, current = false, playing = false, onClick = {},
+                    modifier = Modifier.testTag("row"))
+            }
+        }
+        val row = compose.onNodeWithTag("row", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val title = compose.onNodeWithText(longTrack.title, useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val density = compose.density.density
+        // Artwork (52dp) + gap (12dp) is the only inset before the title.
+        val expected = (NeRow.thumb + NeSpace.md).value * density
+        assertEquals("title inset must come only from artwork + gap", expected, title.left - row.left, 2.5f)
+    }
+
+    /** Glyph and label must share one centre line inside a button-like row. */
+    @Test fun iconAndLabelShareACentreLine() {
+        host {
+            Row(Modifier.width(240.dp).testTag("cell"), verticalAlignment = Alignment.CenterVertically) {
+                NeIconView(NeIcon.Timer, NeIconSize.md, modifier = Modifier.testTag("ico"))
+                NeText("Таймер сна", Modifier.testTag("txt"), size = NeType.body, lineHeight = NeType.bodyLine)
+            }
+        }
+        val ico = compose.onNodeWithTag("ico", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val txt = compose.onNodeWithTag("txt", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        assertEquals("icon and label centres must agree", ico.center.y, txt.center.y, 1.5f)
+    }
+
+    /**
+     * An icon button must occupy exactly the square it was given. Material3's IconButton centred
+     * its content in a 40dp inner box and then padded the ripple out to 48dp, so a 44dp request
+     * produced a 48dp box whose glyph sat off the caller's centre line.
+     */
+    @Test fun iconButtonUsesExactlyTheRequestedSquare() {
+        host {
+            Row {
+                NeIconButton(NeIcon.Heart, "like", {}, size = NeTouch.min, modifier = Modifier.testTag("b44"))
+                NeIconButton(NeIcon.Queue, "queue", {}, size = NeTouch.standard, modifier = Modifier.testTag("b48"))
+            }
+        }
+        val density = compose.density.density
+        listOf("b44" to NeTouch.min, "b48" to NeTouch.standard).forEach { (tag, size) ->
+            val b = compose.onNodeWithTag(tag, useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+            assertEquals("$tag width must equal the request", size.value * density, b.width, 1.0f)
+            assertEquals("$tag height must equal the request", size.value * density, b.height, 1.0f)
+        }
+    }
+
+    /** A glyph placed in a centred square must land on that square's centre. */
+    @Test fun glyphSitsOnTheCentreOfItsBox() {
+        host {
+            Box(Modifier.size(56.dp).testTag("holder"), contentAlignment = Alignment.Center) {
+                NeIconView(NeIcon.Settings, NeIconSize.lg, modifier = Modifier.testTag("g"))
+            }
+        }
+        val holder = compose.onNodeWithTag("holder", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val g = compose.onNodeWithTag("g", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        assertEquals("glyph centre X", holder.center.x, g.center.x, 0.75f)
+        assertEquals("glyph centre Y", holder.center.y, g.center.y, 0.75f)
+    }
+
+    /** Labels of the same token must produce identical box heights, or rows drift. */
+    @Test fun sameTokenLabelsHaveIdenticalHeights() {
+        host {
+            Column {
+                NeText("Йогурт", Modifier.testTag("a"), size = NeType.body, lineHeight = NeType.bodyLine)
+                NeText("МАТЬ", Modifier.testTag("b"), size = NeType.body, lineHeight = NeType.bodyLine)
+                NeText("без выносных", Modifier.testTag("c"), size = NeType.body, lineHeight = NeType.bodyLine)
+            }
+        }
+        val hs = listOf("a", "b", "c").map {
+            compose.onNodeWithTag(it, useUnmergedTree = true).fetchSemanticsNode().boundsInRoot.height
+        }
+        // Descenders and capitals must not change the box: Trim.Both used to make each one differ.
+        assertTrue("label boxes differ: $hs", hs.max() - hs.min() <= 1.0f)
     }
 
     @Test fun noPromotionalCopyIsRendered() {

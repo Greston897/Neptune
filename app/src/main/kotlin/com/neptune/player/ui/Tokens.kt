@@ -43,6 +43,11 @@ object NeTouch {
 }
 
 object NeRow {
+    /**
+     * Horizontal padding *inside* a grouped glass panel. Group captions use the same value so the
+     * caption and the row content share one left edge.
+     */
+    val panelInset: Dp = 16.dp
     val compact: Dp = 60.dp
     val track: Dp = 72.dp
     val setting: Dp = 68.dp
