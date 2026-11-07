@@ -50,10 +50,8 @@ Daemon will be stopped at the end of the build
 > Task :app:stripDebugDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
 
-> Task :app:mergeDebugJavaResource
 > Task :app:validateSigningDebug
 > Task :app:writeDebugAppMetadata
-> Task :app:mergeProjectDexDebug
 > Task :app:writeDebugSigningConfigVersions
 > Task :app:mergeDebugAndroidTestShaders UP-TO-DATE
 > Task :app:compileDebugAndroidTestShaders NO-SOURCE
@@ -62,6 +60,8 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:compressDebugAndroidTestAssets UP-TO-DATE
 > Task :app:desugarDebugAndroidTestFileDependencies UP-TO-DATE
 > Task :app:dexBuilderDebugAndroidTest UP-TO-DATE
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeDebugJavaResource
 > Task :app:mergeDebugAndroidTestGlobalSynthetics UP-TO-DATE
 > Task :app:processDebugAndroidTestJavaRes UP-TO-DATE
 > Task :app:mergeDebugAndroidTestJavaResource UP-TO-DATE
@@ -92,16 +92,16 @@ emulator-5554 - 14 Tests 2/4 completed. (0 skipped) (0 failed)
 
 com.neptune.player.PlayerFlowTest > sleepTimerOpensOnlyFromItsRowAndAlwaysCloses[emulator-5554 - 14] [31mFAILED [0m
 	java.lang.AssertionError: Timed out waiting for 'Таймер сна'. Roots: Printing with useUnmergedTree = 'true'
-	Node #897 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+	Node #1011 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
 
-emulator-5554 - 14 Tests 3/4 completed. (0 skipped) (1 failed)
+emulator-5554 - 14 Tests 4/4 completed. (0 skipped) (1 failed)
 Finished 4 tests on emulator-5554 - 14
 
 > Task :app:connectedDebugAndroidTest
 Tests on emulator-5554 - 14 failed: There was 1 failure(s).
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794056021266.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794056567345.json
 
 FAILURE: Build failed with an exception.
 
@@ -115,5 +115,5 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 1m 59s
+BUILD FAILED in 2m 2s
 67 actionable tasks: 15 executed, 3 from cache, 49 up-to-date
