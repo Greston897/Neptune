@@ -54,7 +54,13 @@ jobs:
         timeout-minutes: 14
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
+          # Match targetSdk. API 34 took the guest down at the SAME test in three runs
+          # (bundledAudioActuallyPlaysAndBackReturnsHome, ~4s in, on NowPlaying composition) while an
+          # identical app build passed once -- so not a deterministic app bug. Host evidence rules out
+          # memory: 8.4 GB of 16 GB still available, empty dmesg OOM section, qemu RSS flat at 4.7 GB
+          # up to the sample where the process simply vanishes. The API 34 google_apis image is the
+          # unreliable component, and 35 is the level the app actually ships against.
+          api-level: 35
           target: google_apis
           arch: x86_64
           profile: pixel_6
@@ -74,6 +80,8 @@ jobs:
           cp build.log ci/last-build.log 2>/dev/null || true
           cp emulator-tests.log ci/emulator-tests.log 2>/dev/null || true
           cp ci/logcat.txt ci/logcat.txt 2>/dev/null || true
+          # Drop previous results first, or an old device's XML lingers beside the current one.
+          rm -f ci/TEST-*.xml
           find app/build/outputs/androidTest-results -name '*.xml' -exec cp {} ci/ \; || true
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
@@ -90,6 +98,8 @@ jobs:
           # permanently showing the last FAILED run, which reads as "still broken" after a green one.
           cp emulator-tests.log ci/emulator-tests.log
           cp app/build/outputs/apk/release/app-release.apk apk/Neptune.apk
+          # Drop previous results first, or an old device's XML lingers beside the current one.
+          rm -f ci/TEST-*.xml
           find app/build/outputs/androidTest-results -name '*.xml' -exec cp {} ci/ \; || true
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
