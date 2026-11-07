@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.neptune.player.PlayerFlowTest" tests="3" failures="1" errors="0" skipped="0" time="16.622" timestamp="2026-11-07T00:52:30" hostname="localhost">
+  <properties>
+    <property name="device" value="emulator-5554 - 14" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="5.146">
+    <failure>java.lang.AssertionError: Failed to inject touch input.
+Reason: Expected exactly '1' node but found '2' nodes that satisfy: (ContentDescription = 'Настройки' (ignoreCase: false))
+Nodes found:
+1) Node #18 at (l=901.0, t=160.0, r=1027.0, b=286.0)px
+Role = 'Button'
+Focused = 'false'
+ContentDescription = '[Настройки]'
+Actions = [OnClick, RequestFocus]
+MergeDescendants = 'true'
+Has 10 siblings
+2) Node #112 at (l=799.0, t=2169.0, r=1059.0, b=2321.0)px
+Selected = 'false'
+ContentDescription = '[Настройки]'
+Role = 'Tab'
+Focused = 'false'
+Text = '[Настройки]'
+Actions = [OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+MergeDescendants = 'true'
+Has 4 siblings
+
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
+at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
+at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
+at com.neptune.player.PlayerFlowTest.settingsBackReturnsToPreviousPageThenHome(PlayerFlowTest.kt:24)
+</failure>
+  </testcase>
+  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="4.823" />
+  <testcase name="vectorAvatarChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="4.979" />
+</testsuite>

@@ -32,8 +32,8 @@ Daemon will be stopped at the end of the build
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
 > Task :app:generateReleaseBuildConfig
-> Task :app:generateReleaseResValues FROM-CACHE
 > Task :app:checkReleaseAarMetadata
+> Task :app:generateReleaseResValues FROM-CACHE
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
 > Task :app:processDebugResources
@@ -44,22 +44,21 @@ Daemon will be stopped at the end of the build
 > Task :app:extractDeepLinksRelease FROM-CACHE
 > Task :app:processReleaseMainManifest
 > Task :app:processReleaseManifest
-> Task :app:processReleaseManifestForPackage
 > Task :app:javaPreCompileRelease FROM-CACHE
 > Task :app:extractProguardFiles
 > Task :app:mergeReleaseJniLibFolders
-> Task :app:processReleaseResources
+> Task :app:processReleaseManifestForPackage
 > Task :app:mergeReleaseNativeLibs
 
 > Task :app:stripReleaseDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
 
+> Task :app:processReleaseResources
 > Task :app:extractReleaseNativeSymbolTables
+> Task :app:checkReleaseDuplicateClasses
 > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :app:desugarReleaseFileDependencies
 > Task :app:mergeReleaseStartupProfile
-> Task :app:checkReleaseDuplicateClasses
-> Task :app:mergeReleaseArtProfile
 > Task :app:compileDebugKotlin
 > Task :app:compileReleaseKotlin
 > Task :app:mergeExtDexRelease
@@ -72,8 +71,8 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 
 > Task :app:compileDebugJavaWithJavac
 > Task :app:bundleDebugClassesToCompileJar
-> Task :app:processDebugJavaRes
 > Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:processDebugJavaRes
 > Task :app:compileReleaseJavaWithJavac
 > Task :app:compileDebugUnitTestKotlin
 > Task :app:generateReleaseLintVitalReportModel
@@ -81,22 +80,24 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:processDebugUnitTestJavaRes
 > Task :app:testDebugUnitTest
 > Task :app:dexBuilderRelease
+> Task :app:mergeReleaseArtProfile
 > Task :app:mergeReleaseGlobalSynthetics
 > Task :app:mergeReleaseShaders
 > Task :app:compileReleaseShaders NO-SOURCE
 > Task :app:generateReleaseAssets UP-TO-DATE
 > Task :app:mergeReleaseAssets
-> Task :app:compressReleaseAssets
 > Task :app:extractReleaseVersionControlInfo
 > Task :app:processReleaseJavaRes
-> Task :app:optimizeReleaseResources
+> Task :app:compressReleaseAssets
 > Task :app:mergeReleaseJavaResource
 > Task :app:collectReleaseDependencies
 > Task :app:sdkReleaseDependencyData
 > Task :app:validateSigningRelease
 > Task :app:writeReleaseAppMetadata
 > Task :app:writeReleaseSigningConfigVersions
+> Task :app:optimizeReleaseResources
 > Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:mergeDexRelease
 > Task :app:processDebugAndroidTestManifest
 > Task :app:generateDebugAndroidTestBuildConfig
 > Task :app:checkDebugAndroidTestAarMetadata
@@ -111,11 +112,11 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:compressDebugAndroidTestAssets
 > Task :app:desugarDebugAndroidTestFileDependencies
 > Task :app:mergeDebugAndroidTestResources
-> Task :app:checkDebugAndroidTestDuplicateClasses
-> Task :app:mergeDexRelease
 > Task :app:compileReleaseArtProfile
+> Task :app:checkDebugAndroidTestDuplicateClasses
 > Task :app:processDebugAndroidTestResources
 > Task :app:lintVitalAnalyzeRelease
+> Task :app:packageRelease
 > Task :app:mergeExtDexDebugAndroidTest
 > Task :app:lintVitalReportRelease
 > Task :app:lintVitalRelease
@@ -123,24 +124,23 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:mergeDebugAndroidTestJniLibFolders
 > Task :app:mergeDebugJniLibFolders
 > Task :app:mergeDebugNativeLibs
-> Task :app:validateSigningDebugAndroidTest
-> Task :app:compileDebugAndroidTestKotlin
-> Task :app:mergeDebugAndroidTestNativeLibs NO-SOURCE
-> Task :app:compileDebugAndroidTestJavaWithJavac
-> Task :app:packageRelease
 > Task :app:createReleaseApkListingFileRedirect
 > Task :app:assembleRelease
+> Task :app:mergeDebugAndroidTestNativeLibs NO-SOURCE
+> Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
+> Task :app:compileDebugAndroidTestKotlin
+> Task :app:validateSigningDebugAndroidTest
+> Task :app:compileDebugAndroidTestJavaWithJavac
 > Task :app:dexBuilderDebugAndroidTest
 > Task :app:mergeDebugAndroidTestGlobalSynthetics
 > Task :app:processDebugAndroidTestJavaRes
-> Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
 > Task :app:writeDebugAndroidTestSigningConfigVersions
 > Task :app:mergeProjectDexDebugAndroidTest
 > Task :app:mergeDebugAndroidTestJavaResource
 > Task :app:packageDebugAndroidTest
 > Task :app:createDebugAndroidTestApkListingFileRedirect
 > Task :app:assembleDebugAndroidTest
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794011953251.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794012414425.json
 
-BUILD SUCCESSFUL in 3m 4s
+BUILD SUCCESSFUL in 3m 6s
 104 actionable tasks: 97 executed, 7 from cache
