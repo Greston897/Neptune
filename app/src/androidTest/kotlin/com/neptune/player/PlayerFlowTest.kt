@@ -38,11 +38,15 @@ class PlayerFlowTest {
             runCatching { compose.onAllNodes(hasText(text)).fetchSemanticsNodes().isEmpty() }.getOrDefault(false)
         }
     }
+    private fun clickText(text: String) {
+        waitText(text)
+        compose.onNodeWithText(text).performClick()
+    }
 
     @Test fun settingsBackReturnsToPreviousPageThenHome() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
         compose.waitUntil(5000) { compose.onAllNodes(hasText("Внешний вид")).fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithText("Внешний вид").assertIsDisplayed().performClick()
+        clickText("Внешний вид")
         compose.onNodeWithText("ЦВЕТ ОСНОВЫ").assertIsDisplayed()
         back()
         compose.onNodeWithText("Всё под тебя. Без лишнего.").assertIsDisplayed()
@@ -53,7 +57,7 @@ class PlayerFlowTest {
     @Test fun avatarShapeChoicePersistsAndBackWorks() {
         compose.onNodeWithContentDescription("Профиль и аватар").performClick()
         compose.onNodeWithText("Твой профиль").assertIsDisplayed()
-        compose.onNodeWithText("Круг").performClick()
+        clickText("Круг")
         compose.waitUntil(5000) {
             var value = false
             compose.activityRule.scenario.onActivity { value = container(it).settings.state.value.avatarIndex == 0 }
@@ -66,26 +70,26 @@ class PlayerFlowTest {
     @Test fun sleepTimerOpensOnlyFromItsRowAndAlwaysCloses() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
         waitText("Воспроизведение")
-        compose.onNodeWithText("Воспроизведение").performClick()
+        clickText("Воспроизведение")
         waitText("Настоящий звук. Полный контроль.")
         // Other rows must not open the sleep dialog.
-        compose.onNodeWithText("Повтор очереди").performClick()
+        clickText("Повтор очереди")
         compose.onAllNodes(hasText("Музыка мягко остановится по таймеру.")).fetchSemanticsNodes().let { assertEquals(0, it.size) }
-        compose.onNodeWithText("Таймер сна").performClick()
+        clickText("Таймер сна")
         waitText("Музыка мягко остановится по таймеру.")
-        compose.onNodeWithText("15 минут").performClick()
+        clickText("15 минут")
         waitGone("Музыка мягко остановится по таймеру.")
         compose.waitUntil(5000) {
             var active = false
             compose.activityRule.scenario.onActivity { active = container(it).playback.state.value.sleepRemainingMs > 0 }
             active
         }
-        compose.onNodeWithText("Таймер сна").performClick()
+        clickText("Таймер сна")
         waitText("Закрыть")
-        compose.onNodeWithText("Закрыть").performClick()
+        clickText("Закрыть")
         waitGone("Музыка мягко остановится по таймеру.")
-        compose.onNodeWithText("Таймер сна").performClick()
-        compose.onNodeWithText("Выключить таймер").performClick()
+        clickText("Таймер сна")
+        clickText("Выключить таймер")
         compose.waitUntil(5000) {
             var off = false
             compose.activityRule.scenario.onActivity { off = container(it).playback.state.value.sleepRemainingMs == 0L }
@@ -96,7 +100,7 @@ class PlayerFlowTest {
     }
 
     @Test fun bundledAudioActuallyPlaysAndBackReturnsHome() {
-        compose.onNodeWithText("Слушать").performClick()
+        clickText("Слушать")
         compose.onNodeWithText("СЕЙЧАС ИГРАЕТ").assertIsDisplayed()
         compose.waitUntil(20000) {
             var playing = false
