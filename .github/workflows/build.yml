@@ -1,22 +1,13 @@
 name: build
-
 on:
   push:
-    paths-ignore:
-      - 'apk/**'
-      - 'ci/**'
-      - 'screenshots/**'
-      - 'assets/**'
-      - 'README.md'
+    paths-ignore: ['apk/**', 'ci/**', 'assets/**', 'README.md']
   workflow_dispatch: {}
-
 permissions:
   contents: write
-
 concurrency:
   group: apk-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -25,21 +16,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
-
       - name: Android SDK packages
         run: |
           yes 2>/dev/null | sdkmanager --licenses > /dev/null 2>&1 || true
           sdkmanager "platforms;android-35" "build-tools;35.0.0" > /dev/null 2>&1 || true
-
       - name: Signing key
         run: |
           if [ ! -f app/neptune.jks ]; then
@@ -47,39 +34,47 @@ jobs:
               -alias neptune -keyalg RSA -keysize 2048 -validity 10000 \
               -dname "CN=Neptune, OU=Player, O=Neptune, L=Leipzig, C=DE"
           fi
-
       - name: Unit tests and release APK
         run: |
           set -o pipefail
-          gradle --no-daemon --console=plain testDebugUnitTest assembleRelease 2>&1 | tee build.log | tail -n 100
-
+          gradle --no-daemon --console=plain testDebugUnitTest assembleRelease assembleDebugAndroidTest 2>&1 | tee build.log | tail -n 100
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Android UI and playback tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: gradle --no-daemon --console=plain connectedDebugAndroidTest
       - name: Preserve build diagnostics
         if: failure()
         run: |
           mkdir -p ci
-          cp build.log ci/last-build.log
+          cp build.log ci/last-build.log 2>/dev/null || true
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
           git add -f ci/last-build.log
           git commit -m "ci: build diagnostics [skip ci]" || exit 0
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
-
       - name: Publish APK
         if: success()
         run: |
-          set -x
           mkdir -p ci apk
           cp build.log ci/last-build.log
-          find app/build/test-results -name '*.xml' -exec cp {} ci/ \; || true 2>/dev/null || true
-          find app/build/outputs -name '*.apk' -print -exec cp {} apk/Neptune.apk \; || true
-          ls -la apk || true
+          cp app/build/outputs/apk/release/app-release.apk apk/Neptune.apk
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
-          git add -f ci apk app/neptune.jks || true
-          git commit -m "ci: apk + build log [skip ci]" || echo "nothing to commit"
+          git add -f ci/last-build.log apk/Neptune.apk app/neptune.jks
+          git commit -m "ci: verified apk [skip ci]" || echo "nothing to commit"
           for i in 1 2 3; do
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
-            if git push origin "HEAD:${GITHUB_REF_NAME}"; then echo "APK pushed"; break; fi
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then break; fi
             sleep 5
           done
