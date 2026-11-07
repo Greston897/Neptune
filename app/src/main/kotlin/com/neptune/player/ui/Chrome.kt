@@ -84,7 +84,7 @@ fun NeptuneNavBar(route: String?, onSelect: (Tab) -> Unit) {
     val activeTint = accent()
     GlassPanel(
         Modifier.fillMaxWidth().height(DockMetrics.NavHeight), corner = 26.dp,
-        haze = LocalContentHaze.current, progressiveBlur = true,
+        haze = LocalContentHaze.current,
     ) {
         Row(
             Modifier.fillMaxSize().padding(horizontal = 6.dp, vertical = NeSpace.sm),
@@ -138,7 +138,7 @@ fun MiniPlayerContent(playback: PlaybackState, onToggle: () -> Unit, onNext: () 
     var drag by remember { mutableFloatStateOf(0f) }
     GlassPanel(
         Modifier.fillMaxWidth().height(DockMetrics.MiniHeight), corner = 20.dp,
-        haze = LocalContentHaze.current, progressiveBlur = true,
+        haze = LocalContentHaze.current,
     ) {
         Column(
             Modifier.fillMaxSize()

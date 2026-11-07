@@ -31,7 +31,6 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeChild
-import dev.chrisbanes.haze.HazeProgressive
 import androidx.compose.ui.graphics.BlendMode
 import kotlin.math.cos
 import kotlin.math.sin
@@ -77,23 +76,17 @@ fun GlassPanel(
     corner: Dp = neRadius(),
     haze: HazeState? = LocalBackgroundHaze.current,
     rim: Boolean = true,
-    progressiveBlur: Boolean = false,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val s = LocalSettings.current
     val shape = RoundedCornerShape(corner)
     val base = Modifier.clip(shape)
     val style = glassStyle(s)
+    // Uniform RenderEffect blur only. Haze's progressive/shader path looks marginally nicer but
+    // collapses to a crawl on software renderers (and some low-end GPUs), so it is not worth it.
     val surface = if (s.glassEnabled && haze != null) base.hazeChild(haze, style) {
         // RenderEffect blur needs API 31+; older devices get the opaque fallback instead of a crash.
         blurEnabled = Build.VERSION.SDK_INT >= 31
-        if (progressiveBlur) {
-            // The dock blurs hardest at its lower edge, where content passes behind it, and stays
-            // slightly clearer at the top so the panel edge does not read as a hard grey band.
-            progressive = HazeProgressive.verticalGradient(
-                startIntensity = 0.75f, endIntensity = 1f, preferPerformance = true,
-            )
-        }
     } else base.background(Color(0xFF121212).copy(alpha = if (s.glassEnabled) 0.94f else 1f))
     Box(modifier.then(surface)) {
         content()
@@ -151,15 +144,15 @@ fun AmbientBackground(modifier: Modifier = Modifier, phase: Float = rememberAmbi
             drawCircle(tint.copy(alpha = 0.10f), radius = w * 0.30f, center = c2, style = ring)
             // Dense starfield: a blur has to smudge *something*. Sparse dots on a flat gradient
             // survive a Gaussian almost unchanged, which is why the glass used to read as flat.
-            for (i in 0 until 150) {
+            for (i in 0 until 72) {
                 val x = ((i * 73) % 997) / 997f * w
                 val y = ((i * 131) % 991) / 991f * h
                 val r = when (i % 5) { 0 -> 2.2.dp.toPx(); 1 -> 1.5.dp.toPx(); else -> 1.dp.toPx() }
                 drawCircle(Color.White.copy(alpha = 0.06f + (i % 4) * 0.035f), radius = r, center = Offset(x, y))
             }
             // A few soft light streaks give the blur directional smear, like real frosted glass.
-            for (i in 0 until 5) {
-                val y = h * (0.16f + i * 0.17f)
+            for (i in 0 until 3) {
+                val y = h * (0.22f + i * 0.26f)
                 drawLine(
                     Color.White.copy(alpha = 0.035f),
                     start = Offset(w * 0.05f, y), end = Offset(w * 0.95f, y + h * 0.03f),
