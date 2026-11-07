@@ -268,7 +268,7 @@ fun PlaybackSettingsScreen(state: NeptuneState, onBack: () -> Unit) {
 }
 
 @Composable
-fun DataScreen(state: NeptuneState, onBack: () -> Unit, onRecent: () -> Unit = {}) {
+fun DataScreen(state: NeptuneState, onBack: () -> Unit, onRecent: () -> Unit) {
     val library by state.library.collectAsStateWithLifecycle()
     val users by state.users.collectAsStateWithLifecycle()
     val actions = LocalLibraryActions.current

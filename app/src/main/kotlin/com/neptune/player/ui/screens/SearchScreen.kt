@@ -124,8 +124,8 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                 }
             }
             if (results.isEmpty()) item { EmptyState(NeIcon.Search, "Ничего не найдено", "Попробуйте другое название или имя исполнителя. Поиск работает по всей вашей медиатеке.", action = "Сбросить", onAction = { state.search = "" }) }
-            if (filter == 0 || filter == 1) items(results, key = { it.id }) { track -> TrackRow(track, playback.track?.id == track.id, playback.isPlaying, { state.playTrack(track, results); state.submitSearch() }, onMore = { state.contextTrack = track }) }
-            if (filter == 0 || filter == 2) items(albums.chunked(2), key = { it.first().first.first + it.first().first.second }) { row ->
+            if (filter == 0 || filter == 1) items(results, key = { ListKeys.track(it.id) }) { track -> TrackRow(track, playback.track?.id == track.id, playback.isPlaying, { state.playTrack(track, results); state.submitSearch() }, onMore = { state.contextTrack = track }) }
+            if (filter == 0 || filter == 2) items(albums.chunked(2), key = { ListKeys.album(it.first().first.first, it.first().first.second) }) { row ->
                 Row(Modifier.fillMaxWidth().padding(vertical = NeSpace.sm),
                     horizontalArrangement = Arrangement.spacedBy(NeSpace.md),
                     verticalAlignment = Alignment.Top) {
@@ -133,7 +133,7 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                     if (row.size == 1) Spacer(Modifier.weight(1f))
                 }
             }
-            if (filter == 0 || filter == 3) items(artists, key = { it.first }) { (artist, tracks) ->
+            if (filter == 0 || filter == 3) items(artists, key = { ListKeys.artist(it.first) }) { (artist, tracks) ->
                 Panel(Modifier.padding(vertical = NeSpace.xs)) { SettingRow(artist, trackCount(tracks.size), NeIcon.Artist, onClick = { onCollection("artist", artist) }) }
             }
         }

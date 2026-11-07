@@ -404,6 +404,28 @@ class LayoutTest {
         assertTrue("sheen inflated panel height: ${b.height} vs $expected", kotlin.math.abs(b.height - expected) <= 1.5f)
     }
 
+    /**
+     * A track with no embedded cover must still render a full square. The brand mark is the base
+     * layer under Coil, so there is no empty frame and nothing to crash on.
+     */
+    @Test fun trackWithoutArtworkRendersTheBrandFallback() {
+        val bare = longTrack.copy(artworkUri = null)
+        host { TrackArtwork(bare, Modifier.testTag("art").size(96.dp), 12.dp) }
+        val b = compose.onNodeWithTag("art", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val expected = 96f * compose.density.density
+        assertTrue("fallback must fill the requested square: ${b.width} vs $expected",
+            kotlin.math.abs(b.width - expected) <= 1.5f)
+        assertTrue("fallback must stay square", kotlin.math.abs(b.width - b.height) <= 1.5f)
+    }
+
+    /** An unreadable content URI must not blank the tile either. */
+    @Test fun trackWithBrokenArtworkUriStillRenders() {
+        val broken = longTrack.copy(artworkUri = "content://neptune.missing/cover/404")
+        host { TrackArtwork(broken, Modifier.testTag("art").size(96.dp), 12.dp) }
+        val b = compose.onNodeWithTag("art", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        assertTrue("broken artwork collapsed the tile", b.width > 0f && b.height > 0f)
+    }
+
     @Test fun noPromotionalCopyIsRendered() {
         host {
             Column {

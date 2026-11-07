@@ -9,14 +9,11 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.printToString
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasContentDescription
-import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.isSelectable
-import androidx.compose.ui.test.onFirst
 import android.Manifest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,6 +46,28 @@ class PlayerFlowTest {
     private fun clickText(text: String) {
         waitText(text)
         compose.onNodeWithText(text).performClick()
+    }
+
+    /**
+     * Regression: opening ANY collection used to crash the app.
+     *
+     * The collection header's back button carried `Modifier.padding(start = -8.dp)`. Compose's
+     * PaddingValues requires every side to be >= 0, so composing CollectionScreen threw
+     * IllegalArgumentException("Padding must be non-negative") — «Любимое», «Недавнее», альбомы,
+     * артисты и плейлисты были недоступны. No earlier test opened a collection, which is exactly why
+     * CI stayed green while the feature was broken. This walks two of them and back.
+     */
+    @Test fun likedAndRecentCollectionsOpenAndReturn() {
+        clickText("Любимое")
+        waitText("Любимые треки")
+        compose.onNodeWithText("ПОДБОРКА").assertIsDisplayed()
+        compose.onNodeWithContentDescription("Назад").assertIsDisplayed()
+        back()
+        clickText("Недавнее")
+        waitText("Недавно слушали")
+        compose.onNodeWithText("ПОДБОРКА").assertIsDisplayed()
+        back()
+        compose.onNodeWithContentDescription("Профиль и аватар").assertIsDisplayed()
     }
 
     @Test fun settingsBackReturnsToPreviousPageThenHome() {

@@ -3,6 +3,7 @@ package com.neptune.player
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neptune.player.ui.DockMetrics
+import com.neptune.player.ui.ListKeys
 import com.neptune.player.ui.NeIcon
 import com.neptune.player.ui.NeIconSize
 import com.neptune.player.ui.NeMotion
@@ -91,6 +92,26 @@ class DesignSystemTest {
      * 9000ms it shipped with, yet slow enough to read as a reflection instead of a flicker; screen
      * transitions must be slower than colour changes so hierarchy stays legible.
      */
+    /**
+     * LazyColumn throws "Key ... was already used" on a duplicate. Two real collisions are pinned
+     * here: artist+album without a separator, and an empty album tag making an album key equal the
+     * bare artist key inside the single search list.
+     */
+    @Test fun listKeysCannotCollideAcrossOrWithinDomains() {
+        assertNotEquals(ListKeys.album("A", "BC"), ListKeys.album("AB", "C"))
+        assertNotEquals("empty album tag must not alias the artist key",
+            ListKeys.album("AB", ""), ListKeys.artist("AB"))
+        assertNotEquals(ListKeys.track("x"), ListKeys.artist("x"))
+        assertNotEquals(ListKeys.track("x"), ListKeys.playlist("x"))
+        assertNotEquals(ListKeys.album("x", "y"), ListKeys.playlist("x"))
+        val keys = listOf(
+            ListKeys.track("1"), ListKeys.track("2"),
+            ListKeys.album("A", "BC"), ListKeys.album("AB", "C"), ListKeys.album("AB", ""),
+            ListKeys.artist("AB"), ListKeys.artist("A"), ListKeys.playlist("1"),
+        )
+        assertEquals("keys collide: $keys", keys.size, keys.toSet().size)
+    }
+
     @Test fun motionScaleIsOrderedAndTheSheenIsBriskNotFlickery() {
         assertTrue("colour < layout < screen", NeMotion.Quick < NeMotion.Standard)
         assertTrue("layout < screen", NeMotion.Standard < NeMotion.Emphasized)

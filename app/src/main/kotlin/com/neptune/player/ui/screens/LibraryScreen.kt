@@ -85,12 +85,12 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                     NeText(trackCount(tracks.size), Modifier.weight(1f), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint, maxLines = 1)
                     NeButton("Слушать всё", { state.play(tracks) }, icon = NeIcon.Play)
                 } }
-                items(tracks, key = { it.id }) { track -> TrackRow(track, playback.track?.id == track.id, playback.isPlaying,
+                items(tracks, key = { ListKeys.track(it.id) }) { track -> TrackRow(track, playback.track?.id == track.id, playback.isPlaying,
                     { state.playTrack(track, tracks) }, onMore = { state.contextTrack = track }) }
             }
             1 -> {
                 val albums = LibraryLogic.albums(tracks)
-                items(albums.chunked(2), key = { it.first().first.second + it.first().first.first }) { row ->
+                items(albums.chunked(2), key = { ListKeys.album(it.first().first.first, it.first().first.second) }) { row ->
                     Row(Modifier.fillMaxWidth().padding(vertical = NeSpace.sm),
                         horizontalArrangement = Arrangement.spacedBy(NeSpace.md),
                         verticalAlignment = Alignment.Top) {
@@ -116,7 +116,7 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
             }
             else -> {
                 item { CollectionLink("Любимые треки", trackCount(users.liked.size), NeIcon.HeartFill) { onCollection("liked", "") } }
-                items(users.playlists, key = { it.id }) { p -> CollectionLink(p.name, trackCount(p.trackIds.size), NeIcon.Music) { onCollection("playlist", p.id) } }
+                items(users.playlists, key = { ListKeys.playlist(it.id) }) { p -> CollectionLink(p.name, trackCount(p.trackIds.size), NeIcon.Music) { onCollection("playlist", p.id) } }
                 item { NeButton("Новый плейлист", { create = true }, Modifier.fillMaxWidth().padding(top = NeSpace.lg), NeIcon.Plus, primary = false) }
             }
         }

@@ -11,10 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DropdownMenu
@@ -61,7 +60,10 @@ fun CollectionScreen(state: NeptuneState, kind: String, key: String, onBack: () 
     var delete by remember { mutableStateOf(false) }
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item { Row(Modifier.fillMaxWidth().heightIn(min = NeRow.header), verticalAlignment = Alignment.CenterVertically) {
-            NeIconButton(NeIcon.Back, "Назад", onBack, modifier = Modifier.padding(start = -8.dp))
+            // Negative padding throws: PaddingValues requires every side >= 0, so this crashed the
+            // whole screen on open ("Любимое", "Недавнее", альбомы, плейлисты — все подборки).
+            // offset accepts negative values and shifts the glyph without changing the hit box.
+            NeIconButton(NeIcon.Back, "Назад", onBack, modifier = Modifier.offset(x = (-8).dp))
             NeText("ПОДБОРКА", Modifier.weight(1f).padding(horizontal = NeSpace.sm), size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Dim, tracking = 1.2.sp, weight = FontWeight.Bold)
             if (kind == "playlist" && playlist != null) Box {
                 NeIconButton(NeIcon.More, "Действия с плейлистом", { menu = true })
@@ -88,7 +90,7 @@ fun CollectionScreen(state: NeptuneState, kind: String, key: String, onBack: () 
                 }
             }
         }
-        items(tracks, key = { it.id }) { track -> TrackRow(track, playback.track?.id == track.id, playback.isPlaying, { state.playTrack(track, tracks) },
+        items(tracks, key = { ListKeys.track(it.id) }) { track -> TrackRow(track, playback.track?.id == track.id, playback.isPlaying, { state.playTrack(track, tracks) },
             onMore = { state.contextTrack = track; state.contextPlaylist = if (kind == "playlist") key else null }) }
         if (tracks.isEmpty()) item { EmptyState(NeIcon.Music, if (kind == "liked") "Здесь будут любимые" else "Пока пусто",
             if (kind == "playlist") "Откройте меню любого трека и выберите «В плейлист»." else "Добавляйте музыку сердечком, и она всегда будет под рукой.") }
