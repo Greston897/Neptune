@@ -51,10 +51,6 @@ class PlayerFlowTest {
         waitText(text)
         compose.onNodeWithText(text).performClick()
     }
-    private fun logUi(event: String) {
-        val tree = runCatching { compose.onRoot(useUnmergedTree = true).printToString(maxDepth = 4) }.getOrDefault("unavailable")
-        android.util.Log.e("TestRunner", "NEPTUNE_UI $event\n$tree")
-    }
 
     @Test fun settingsBackReturnsToPreviousPageThenHome() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
@@ -87,20 +83,20 @@ class PlayerFlowTest {
         waitText("Настоящий звук. Полный контроль.")
         // Other rows must not open the sleep dialog.
         clickText("Повтор очереди")
+        // The row must stay on playback settings: an overlapping dock used to swallow this tap
+        // and open the full player instead.
+        waitText("Настоящий звук. Полный контроль.")
         compose.onAllNodes(hasText("Музыка мягко остановится по таймеру.")).fetchSemanticsNodes().let { assertEquals(0, it.size) }
         clickText("Таймер сна")
         waitText("Музыка мягко остановится по таймеру.")
-        logUi("before-confirm")
         clickText("15 минут")
-        logUi("after-confirm")
         waitGone("Музыка мягко остановится по таймеру.")
-        logUi("dialog-gone")
         compose.waitUntil(5000) {
             var active = false
             compose.activityRule.scenario.onActivity { active = container(it).playback.state.value.sleepRemainingMs > 0 }
             active
         }
-        logUi("timer-active")
+        waitText("Настоящий звук. Полный контроль.")
         clickText("Таймер сна")
         waitText("Закрыть")
         clickText("Закрыть")

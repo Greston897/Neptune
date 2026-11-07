@@ -28,8 +28,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.background
@@ -62,27 +60,27 @@ fun SleepDialog(playback: PlaybackState, onDismiss: () -> Unit, onConfirm: (Int)
     // being redispatched to the window underneath while the dialog is tearing down.
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = false, usePlatformDefaultWidth = false)) {
         Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.58f)).clickable(onClick = onDismiss), contentAlignment = Alignment.Center) {
-        GlassPanel(Modifier.fillMaxWidth().padding(horizontal = 24.dp).pointerInput(Unit) { detectTapGestures { } }, corner = 28.dp, haze = null) {
-            Column(Modifier.fillMaxWidth().padding(20.dp)) {
-                NeText("Таймер сна", size = 20.sp, weight = androidx.compose.ui.text.font.FontWeight.Bold)
-                Spacer(Modifier.height(6.dp))
-                NeText("Музыка мягко остановится по таймеру.", size = 12.sp, color = Ne.Dim, maxLines = 2)
-                Spacer(Modifier.height(14.dp))
-                listOf(0, 15, 30, 45, 60, 90).forEach { minutes ->
-                    val active = if (minutes == 0) playback.sleepRemainingMs == 0L
-                        else playback.sleepRemainingMs in ((minutes - 15) * 60_000L + 1)..(minutes * 60_000L)
-                    Row(Modifier.fillMaxWidth().heightIn(min = 52.dp).clip(RoundedCornerShape(14.dp))
-                        .background(if (active) Color.White.copy(alpha = 0.07f) else Color.Transparent)
-                        .clickable { android.util.Log.e("TestRunner", "SLEEP_CONFIRM $minutes"); onConfirm(minutes); onDismiss() }.padding(horizontal = 14.dp, vertical = 10.dp),
-                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                        NeText(if (minutes == 0) "Выключить таймер" else "$minutes минут", Modifier.weight(1f), size = 14.sp)
-                        if (active) NeIconView(NeIcon.Check, 18.dp, accent())
+            GlassPanel(Modifier.fillMaxWidth().padding(horizontal = 24.dp).pointerInput(Unit) { detectTapGestures { } }, corner = 28.dp, haze = null) {
+                Column(Modifier.fillMaxWidth().padding(20.dp)) {
+                    NeText("Таймер сна", size = 20.sp, weight = androidx.compose.ui.text.font.FontWeight.Bold)
+                    Spacer(Modifier.height(6.dp))
+                    NeText("Музыка мягко остановится по таймеру.", size = 12.sp, color = Ne.Dim, maxLines = 2)
+                    Spacer(Modifier.height(14.dp))
+                    listOf(0, 15, 30, 45, 60, 90).forEach { minutes ->
+                        val active = if (minutes == 0) playback.sleepRemainingMs == 0L
+                            else playback.sleepRemainingMs in ((minutes - 15) * 60_000L + 1)..(minutes * 60_000L)
+                        Row(Modifier.fillMaxWidth().heightIn(min = 52.dp).clip(RoundedCornerShape(14.dp))
+                            .background(if (active) Color.White.copy(alpha = 0.07f) else Color.Transparent)
+                            .clickable { onConfirm(minutes); onDismiss() }.padding(horizontal = 14.dp, vertical = 10.dp),
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                            NeText(if (minutes == 0) "Выключить таймер" else "$minutes минут", Modifier.weight(1f), size = 14.sp)
+                            if (active) NeIconView(NeIcon.Check, 18.dp, accent())
+                        }
                     }
+                    Spacer(Modifier.height(14.dp))
+                    NeButton("Закрыть", onDismiss, Modifier.fillMaxWidth(), primary = false)
                 }
-                Spacer(Modifier.height(14.dp))
-                NeButton("Закрыть", onDismiss, Modifier.fillMaxWidth(), primary = false)
             }
-        }
         }
     }
 }

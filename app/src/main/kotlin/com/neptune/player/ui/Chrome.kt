@@ -64,7 +64,7 @@ object DockMetrics {
         route in Tab.entries.map { it.route } || route?.startsWith("collection/") == true
 
     fun showsMiniPlayer(route: String?, hasTrack: Boolean): Boolean =
-        hasTrack && route != "player" && route != "queue"
+        hasTrack && showsNavbar(route)
 
     fun height(route: String?, hasTrack: Boolean): Dp {
         val nav = showsNavbar(route)

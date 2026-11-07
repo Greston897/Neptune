@@ -66,7 +66,10 @@ class DomainTest {
         assertEquals(0.dp, DockMetrics.height("queue", hasTrack = true))
         assertEquals(DockMetrics.Bottom + DockMetrics.NavHeight, DockMetrics.height("home", hasTrack = false))
         assertEquals(DockMetrics.Bottom + DockMetrics.MiniHeight + DockMetrics.Gap + DockMetrics.NavHeight, DockMetrics.height("home", hasTrack = true))
-        assertEquals(DockMetrics.Bottom + DockMetrics.MiniHeight + DockMetrics.Gap, DockMetrics.height("appearance", hasTrack = true))
+        assertEquals(0.dp, DockMetrics.height("appearance", hasTrack = true))
+        assertEquals(0.dp, DockMetrics.height("playback-settings", hasTrack = true))
+        assertTrue(DockMetrics.showsMiniPlayer("home", hasTrack = true))
+        assertFalse(DockMetrics.showsMiniPlayer("playback-settings", hasTrack = true))
         assertTrue(DockMetrics.showsNavbar("collection/liked/-"))
         assertFalse(DockMetrics.showsMiniPlayer("player", hasTrack = true))
     }
