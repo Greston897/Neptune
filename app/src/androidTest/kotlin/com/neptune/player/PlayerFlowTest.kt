@@ -7,6 +7,10 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.isSelectable
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onFirst
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -21,7 +25,7 @@ class PlayerFlowTest {
     private fun container(activity: MainActivity) = (activity.application as NeptuneApplication).container
 
     @Test fun settingsBackReturnsToPreviousPageThenHome() {
-        compose.onNodeWithContentDescription("Настройки").performClick()
+        compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
         compose.waitUntil(5000) { compose.onAllNodes(hasText("Внешний вид")).fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("Внешний вид").assertIsDisplayed().performClick()
         compose.onNodeWithText("ЦВЕТ ОСНОВЫ").assertIsDisplayed()
