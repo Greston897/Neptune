@@ -65,7 +65,7 @@ fun ScreenTitle(title: String, onBack: (() -> Unit)? = null, subtitle: String? =
 @Composable
 fun SettingsScreen(state: NeptuneState, onProfile: () -> Unit, onAppearance: () -> Unit, onPlayback: () -> Unit, onData: () -> Unit, onAbout: () -> Unit) {
     val settings = LocalSettings.current
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Настройки", subtitle = "Всё под тебя. Без лишнего.") }
         item {
             Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(neRadius())).background(Ne.Ink).clickable(onClick = onProfile).padding(vertical = 22.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -96,7 +96,7 @@ fun SettingsGroup(title: String, content: @Composable () -> Unit) {
 fun AppearanceScreen(state: NeptuneState, onBack: () -> Unit) {
     val s = LocalSettings.current
     var reset by remember { mutableStateOf(false) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Внешний вид", onBack, "Спокойная основа. Акцент — на твоей музыке.") }
         item { SettingsGroup("ЦВЕТ ОСНОВЫ") { Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Surface.entries.forEach { surface ->
@@ -159,7 +159,7 @@ fun AccentPicker(selected: Int, onSelect: (Int) -> Unit) {
 fun ProfileScreen(state: NeptuneState, onBack: () -> Unit) {
     val s = LocalSettings.current
     var name by remember { mutableStateOf(s.profileName) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Твой профиль", onBack) }
         item { Column(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             ProfileAvatar(Modifier.size(112.dp), animated = true)
@@ -194,7 +194,7 @@ fun PlaybackSettingsScreen(state: NeptuneState, onBack: () -> Unit) {
     var sleep by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val notifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted -> state.message(if (granted) "Уведомление плеера включено" else "Плеер работает и без уведомления") }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Воспроизведение", onBack, "Настоящий звук. Полный контроль.") }
         item { SettingsGroup("ЗВУК") {
             SettingSlider("Скорость", s.speed, 0.75f..1.5f, "×${"%.2f".format(s.speed)}", { v -> state.edit { it.copy(speed = v) } }, steps = 5)
@@ -221,7 +221,7 @@ fun DataScreen(state: NeptuneState, onBack: () -> Unit, onRecent: () -> Unit = {
     val users by state.users.collectAsStateWithLifecycle()
     val actions = LocalLibraryActions.current
     var clear by remember { mutableStateOf(false) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Музыка и данные", onBack, "Твоя коллекция остаётся на твоём устройстве.") }
         item { SettingsGroup("ИСТОЧНИКИ") {
             SettingRow("Музыка на устройстве", if (library.permission) "${library.localCount} локальных треков · доступ разрешён" else "Нет доступа к аудиофайлам", NeIcon.Device, onClick = if (library.permission) actions.appSettings else actions.permission)
@@ -239,7 +239,7 @@ fun DataScreen(state: NeptuneState, onBack: () -> Unit, onRecent: () -> Unit = {
 
 @Composable
 fun AboutScreen(onBack: () -> Unit) {
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("О Neptune", onBack) }
         item { Column(Modifier.fillMaxWidth().padding(vertical = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             NeptuneMark(Modifier.size(72.dp), animated = true)

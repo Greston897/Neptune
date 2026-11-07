@@ -64,7 +64,7 @@ fun NowPlayingScreen(state: NeptuneState, onBack: () -> Unit, onQueue: () -> Uni
     var sleep by remember { mutableStateOf(false) }
     var volumeOpen by remember { mutableStateOf(false) }
     var drag by remember { mutableFloatStateOf(0f) }
-    Column(Modifier.fillMaxSize().background(MaterialBackground()).statusBarsPadding().navigationBarsPadding().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp)) {
+    Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp)) {
         Row(Modifier.fillMaxWidth().height(56.dp), verticalAlignment = Alignment.CenterVertically) {
             NeIconButton(NeIcon.ChevronDown, "Вернуться назад", onBack)
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -134,8 +134,6 @@ fun NowPlayingScreen(state: NeptuneState, onBack: () -> Unit, onQueue: () -> Uni
     }
     if (sleep) SleepDialog(playback, { sleep = false }) { state.setSleepTimer(it); sleep = false }
 }
-
-@Composable private fun MaterialBackground() = androidx.compose.material3.MaterialTheme.colorScheme.background
 
 @Composable
 fun PlayPauseButton(playback: PlaybackState, onClick: () -> Unit, modifier: Modifier = Modifier) {

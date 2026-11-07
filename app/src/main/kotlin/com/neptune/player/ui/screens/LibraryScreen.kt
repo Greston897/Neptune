@@ -47,7 +47,7 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
     var create by remember { mutableStateOf(false) }
     var sortMenu by remember { mutableStateOf(false) }
     val tracks = remember(library.tracks, state.librarySort) { state.sorted(library.tracks) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp, bottom = LocalBottomInset.current)) {
         item {
             Row(Modifier.fillMaxWidth().height(56.dp), verticalAlignment = Alignment.CenterVertically) {
                 NeText("Медиатека", Modifier.weight(1f), size = 30.sp, weight = FontWeight.ExtraBold, tracking = (-1).sp)

@@ -42,11 +42,11 @@ data class Settings(
     val speed: Float = 1f,
     val skipSilence: Boolean = false,
     val glassEnabled: Boolean = true,
-    val glassBlur: Float = 22f,
-    val glassTint: Float = 0.62f,
-    val glassRim: Float = 0.7f,
+    val glassBlur: Float = 30f,
+    val glassTint: Float = 0.42f,
+    val glassRim: Float = 0.85f,
     val ambientGlow: Boolean = true,
-    val accentGlow: Boolean = false,
+    val accentGlow: Boolean = true,
 ) {
     val accent get() = Accent.of(accentIndex)
     val surface get() = Surface.entries.getOrElse(surfaceIndex) { Surface.MIDNIGHT }
@@ -66,6 +66,6 @@ data class Settings(
     )
     fun resetAppearance() = copy(accentIndex = 0, surfaceIndex = 1, radius = 22f, fontScale = 1f,
         animations = true, haptics = true, compact = false, navLabels = true,
-        artworkMotion = true, showRemaining = true, glassEnabled = true, glassBlur = 22f,
-        glassTint = 0.62f, glassRim = 0.7f, ambientGlow = true, accentGlow = false)
+        artworkMotion = true, showRemaining = true, glassEnabled = true, glassBlur = 30f,
+        glassTint = 0.42f, glassRim = 0.85f, ambientGlow = true, accentGlow = true)
 }

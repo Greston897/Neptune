@@ -41,6 +41,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -59,9 +60,12 @@ val LocalLibraryActions = staticCompositionLocalOf { LibraryActions() }
 
 @Composable
 fun NeIconView(icon: NeIcon, size: Dp = 24.dp, color: Color = Ne.Text, modifier: Modifier = Modifier, weight: Float = 1.85f) {
-    Canvas(modifier.size(size)) {
+    // Keep the 24×24 glyph square and optically centered even when a parent squeezes the canvas.
+    Canvas(modifier.aspectRatio(1f, matchHeightConstraintsFirst = false).size(size)) {
         val k = this.size.minDimension / 24f
-        scale(k, k, Offset.Zero) { drawNeIcon(icon, color, weight) }
+        val dx = (this.size.width - 24f * k) / 2f
+        val dy = (this.size.height - 24f * k) / 2f
+        translate(dx, dy) { scale(k, k, Offset.Zero) { drawNeIcon(icon, color, weight) } }
     }
 }
 

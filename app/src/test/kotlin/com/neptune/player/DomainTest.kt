@@ -7,6 +7,8 @@ import com.neptune.player.model.Settings
 import com.neptune.player.model.Track
 import com.neptune.player.model.formatTime
 import com.neptune.player.model.trackCount
+import com.neptune.player.ui.DockMetrics
+import androidx.compose.ui.unit.dp
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -48,4 +50,24 @@ class DomainTest {
     }
     @Test fun progressNeverDividesByZero() { assertEquals(0f, PlaybackState().progress, 0.0001f); assertEquals(0.5f, PlaybackState(positionMs = 500, durationMs = 1000).progress, 0.0001f) }
     @Test fun timeAndPlurals() { assertEquals("0:00", formatTime(-10)); assertEquals("1:01:01", formatTime(3661000)); assertEquals("21 трек", trackCount(21)); assertEquals("11 треков", trackCount(11)) }
+    @Test fun visibleGlassRecipeIsTheDefault() {
+        val s = Settings()
+        assertTrue(s.glassEnabled); assertTrue(s.ambientGlow); assertTrue(s.accentGlow)
+        assertEquals(30f, s.glassBlur, 0.0001f)
+        assertEquals(0.42f, s.glassTint, 0.0001f)
+        assertEquals(0.85f, s.glassRim, 0.0001f)
+        val reset = Settings(glassBlur = 9f, glassTint = 0.8f, glassRim = 0.1f).resetAppearance()
+        assertEquals(s.glassBlur, reset.glassBlur, 0.0001f)
+        assertEquals(s.glassTint, reset.glassTint, 0.0001f)
+        assertEquals(s.glassRim, reset.glassRim, 0.0001f)
+    }
+    @Test fun dockClearanceMatchesFloatingChrome() {
+        assertEquals(0.dp, DockMetrics.height("player", hasTrack = true))
+        assertEquals(0.dp, DockMetrics.height("queue", hasTrack = true))
+        assertEquals(DockMetrics.Bottom + DockMetrics.NavHeight, DockMetrics.height("home", hasTrack = false))
+        assertEquals(DockMetrics.Bottom + DockMetrics.MiniHeight + DockMetrics.Gap + DockMetrics.NavHeight, DockMetrics.height("home", hasTrack = true))
+        assertEquals(DockMetrics.Bottom + DockMetrics.MiniHeight + DockMetrics.Gap, DockMetrics.height("appearance", hasTrack = true))
+        assertTrue(DockMetrics.showsNavbar("collection/liked/-"))
+        assertFalse(DockMetrics.showsMiniPlayer("player", hasTrack = true))
+    }
 }

@@ -5,7 +5,6 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -13,13 +12,12 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -30,9 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,9 +42,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.neptune.player.state.NeptuneState
 import com.neptune.player.ui.*
+import com.neptune.player.ui.screens.*
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
-import com.neptune.player.ui.screens.*
 
 @Composable
 fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavController()) {
@@ -73,36 +69,42 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
             val fullPlayer = route == "player"
             val backgroundHaze = remember { HazeState() }
             val contentHaze = remember { HazeState() }
+            val ambientPhase = rememberAmbientPhase()
+            val navigationBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+            val bottomInset = navigationBottom + DockMetrics.height(route, playback.track != null) + DockMetrics.Breath
             Box(Modifier.fillMaxSize()) {
-                AmbientBackground(Modifier.fillMaxSize().haze(backgroundHaze))
-                CompositionLocalProvider(LocalBackgroundHaze provides backgroundHaze, LocalContentHaze provides contentHaze) {
-                Column(Modifier.fillMaxSize()) {
-                    NavHost(nav, startDestination = "home", modifier = Modifier.weight(1f).fillMaxWidth().haze(contentHaze),
-                        enterTransition = { if (!settings.animations) fadeIn(tween(0)) else if (targetState.destination.route == "player") slideInVertically(tween(300)) { it / 3 } + fadeIn(tween(220)) else slideInHorizontally(tween(260)) { it / 7 } + fadeIn(tween(220)) },
-                        exitTransition = { if (!settings.animations) fadeOut(tween(0)) else fadeOut(tween(160)) },
-                        popEnterTransition = { if (!settings.animations) fadeIn(tween(0)) else fadeIn(tween(220)) },
-                        popExitTransition = { if (!settings.animations) fadeOut(tween(0)) else if (initialState.destination.route == "player") slideOutVertically(tween(260)) { it / 3 } + fadeOut(tween(200)) else slideOutHorizontally(tween(260)) { it / 7 } + fadeOut(tween(180)) }) {
-                        composable("home") { HomeScreen(state, { kind, key -> nav.navigateCollection(kind, key) }, { nav.navigateOnce("player") }, { nav.navigateOnce("profile") }, { nav.navigateTab(Tab.SETTINGS) }) }
-                        composable("search") { SearchScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
-                        composable("library") { LibraryScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
-                        composable("settings") { SettingsScreen(state, { nav.navigateOnce("profile") }, { nav.navigateOnce("appearance") }, { nav.navigateOnce("playback-settings") }, { nav.navigateOnce("data") }, { nav.navigateOnce("about") }) }
-                        composable("player") { NowPlayingScreen(state, { nav.popBackStack() }, { nav.navigateOnce("queue") }) { kind, key -> nav.navigateCollection(kind, key) } }
-                        composable("queue") { QueueScreen(state) { nav.popBackStack() } }
-                        composable("profile") { ProfileScreen(state) { nav.popBackStack() } }
-                        composable("appearance") { AppearanceScreen(state) { nav.popBackStack() } }
-                        composable("playback-settings") { PlaybackSettingsScreen(state) { nav.popBackStack() } }
-                        composable("data") { DataScreen(state, { nav.popBackStack() }) { nav.navigateCollection("recent", "") } }
-                        composable("about") { AboutScreen { nav.popBackStack() } }
-                        composable("collection/{kind}/{key}", arguments = listOf(navArgument("kind") { type = NavType.StringType }, navArgument("key") { type = NavType.StringType })) { backStack ->
-                            CollectionScreen(state, backStack.arguments?.getString("kind") ?: "", (backStack.arguments?.getString("key") ?: "").let { if (it == "-") "" else it }, { nav.popBackStack() }) { nav.popBackStack() }
+                // Sibling backdrop source: glass panels inside the NavHost sample this layer.
+                AmbientBackground(Modifier.fillMaxSize().haze(backgroundHaze), ambientPhase)
+                CompositionLocalProvider(LocalBackgroundHaze provides backgroundHaze, LocalContentHaze provides contentHaze, LocalBottomInset provides bottomInset) {
+                    // Full-size content source: the floating dock samples everything that scrolls under it.
+                    Box(Modifier.fillMaxSize().haze(contentHaze)) {
+                        AmbientBackground(Modifier.fillMaxSize(), ambientPhase)
+                        NavHost(nav, startDestination = "home", modifier = Modifier.fillMaxSize(),
+                            enterTransition = { if (!settings.animations) fadeIn(tween(0)) else if (targetState.destination.route == "player") slideInVertically(tween(300)) { it / 3 } + fadeIn(tween(220)) else slideInHorizontally(tween(260)) { it / 7 } + fadeIn(tween(220)) },
+                            exitTransition = { if (!settings.animations) fadeOut(tween(0)) else fadeOut(tween(160)) },
+                            popEnterTransition = { if (!settings.animations) fadeIn(tween(0)) else fadeIn(tween(220)) },
+                            popExitTransition = { if (!settings.animations) fadeOut(tween(0)) else if (initialState.destination.route == "player") slideOutVertically(tween(260)) { it / 3 } + fadeOut(tween(200)) else slideOutHorizontally(tween(260)) { it / 7 } + fadeOut(tween(180)) }) {
+                            composable("home") { HomeScreen(state, { kind, key -> nav.navigateCollection(kind, key) }, { nav.navigateOnce("player") }, { nav.navigateOnce("profile") }, { nav.navigateTab(Tab.SETTINGS) }) }
+                            composable("search") { SearchScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
+                            composable("library") { LibraryScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
+                            composable("settings") { SettingsScreen(state, { nav.navigateOnce("profile") }, { nav.navigateOnce("appearance") }, { nav.navigateOnce("playback-settings") }, { nav.navigateOnce("data") }, { nav.navigateOnce("about") }) }
+                            composable("player") { NowPlayingScreen(state, { nav.popBackStack() }, { nav.navigateOnce("queue") }) { kind, key -> nav.navigateCollection(kind, key) } }
+                            composable("queue") { QueueScreen(state) { nav.popBackStack() } }
+                            composable("profile") { ProfileScreen(state) { nav.popBackStack() } }
+                            composable("appearance") { AppearanceScreen(state) { nav.popBackStack() } }
+                            composable("playback-settings") { PlaybackSettingsScreen(state) { nav.popBackStack() } }
+                            composable("data") { DataScreen(state, { nav.popBackStack() }) { nav.navigateCollection("recent", "") } }
+                            composable("about") { AboutScreen { nav.popBackStack() } }
+                            composable("collection/{kind}/{key}", arguments = listOf(navArgument("kind") { type = NavType.StringType }, navArgument("key") { type = NavType.StringType })) { backStack ->
+                                CollectionScreen(state, backStack.arguments?.getString("kind") ?: "", (backStack.arguments?.getString("key") ?: "").let { if (it == "-") "" else it }, { nav.popBackStack() }) { nav.popBackStack() }
+                            }
                         }
                     }
-                    if (!fullPlayer) PlayerDock(true, state, playback, { nav.navigateOnce("player") }, route) { tab -> nav.navigateTab(tab) }
-                }
-                SnackbarHost(snackbar, Modifier.align(Alignment.BottomCenter).padding(bottom = if (fullPlayer) 24.dp else 150.dp, start = 16.dp, end = 16.dp)) {
-                    Snackbar(containerColor = Ne.Text, contentColor = Ne.Black) { NeText(it.visuals.message, size = 12.sp, color = Ne.Black, maxLines = 3) }
-                }
-                state.contextTrack?.let { track -> TrackActionsSheet(state, track, { state.contextTrack = null; state.contextPlaylist = null }) { kind, key -> nav.navigateCollection(kind, key) } }
+                    if (!fullPlayer) PlayerDock(Modifier.align(Alignment.BottomCenter), true, state, playback, { nav.navigateOnce("player") }, route) { tab -> nav.navigateTab(tab) }
+                    SnackbarHost(snackbar, Modifier.align(Alignment.BottomCenter).padding(bottom = bottomInset + 8.dp, start = 16.dp, end = 16.dp)) {
+                        Snackbar(containerColor = Ne.Text, contentColor = Ne.Black) { NeText(it.visuals.message, size = 12.sp, color = Ne.Black, maxLines = 3) }
+                    }
+                    state.contextTrack?.let { track -> TrackActionsSheet(state, track, { state.contextTrack = null; state.contextPlaylist = null }) { kind, key -> nav.navigateCollection(kind, key) } }
                 }
             }
         }
