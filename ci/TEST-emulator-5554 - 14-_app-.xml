@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<testsuite name="com.neptune.player.PlayerFlowTest" tests="4" failures="1" errors="0" skipped="0" time="50.083" timestamp="2026-11-07T12:45:59" hostname="localhost">
+<testsuite name="com.neptune.player.PlayerFlowTest" tests="4" failures="1" errors="0" skipped="0" time="54.661" timestamp="2026-11-07T12:55:33" hostname="localhost">
   <properties>
     <property name="device" value="emulator-5554 - 14" />
     <property name="flavor" value="" />
     <property name="project" value=":app" />
   </properties>
-  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="10.981" />
-  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="7.328" />
-  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="25.659">
+  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="12.248" />
+  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="8.514" />
+  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="27.792">
     <failure>java.lang.AssertionError: Timed out waiting for 'Таймер сна'. Roots: Printing with useUnmergedTree = 'true'
 Node #897 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
 |-Node #1208 at (l=0.0, t=128.0, r=1080.0, b=2337.0)px
@@ -48,7 +48,7 @@ Actions = [ScrollBy, ScrollByOffset]
 | MergeDescendants = 'true'
 |-Node #1229 at (l=37.0, t=1589.0, r=1043.0, b=1673.0)px
 | Focused = 'false'
-| ProgressBarRangeInfo = 'ProgressBarRangeInfo(current=0.046916667, range=0.0..1.0, steps=0)'
+| ProgressBarRangeInfo = 'ProgressBarRangeInfo(current=0.064333335, range=0.0..1.0, steps=0)'
 | ContentDescription = '[Позиция трека]'
 | Actions = [RequestFocus, SetProgress]
 | MergeDescendants = 'true'
@@ -56,11 +56,11 @@ Actions = [ScrollBy, ScrollByOffset]
 | Focused = 'false'
 | Actions = [OnClick, RequestFocus]
 | MergeDescendants = 'true'
-|  |-Node #1235 at (l=63.0, t=1684.0, r=945.0, b=1721.0)px
-|  | Text = '[0:01]'
+|  |-Node #1235 at (l=63.0, t=1684.0, r=946.0, b=1721.0)px
+|  | Text = '[0:02]'
 |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #1236 at (l=945.0, t=1684.0, r=1017.0, b=1721.0)px
-|    Text = '[−0:34]'
+|  |-Node #1236 at (l=946.0, t=1684.0, r=1017.0, b=1721.0)px
+|    Text = '[−0:33]'
 |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
 |-Node #1239 at (l=63.0, t=1814.0, r=189.0, b=1940.0)px
 | Role = 'Button'
@@ -126,5 +126,5 @@ at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:34)
 ... 58 more
 </failure>
   </testcase>
-  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="4.761" />
+  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="3.893" />
 </testsuite>
