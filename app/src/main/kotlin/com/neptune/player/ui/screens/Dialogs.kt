@@ -1,6 +1,8 @@
 package com.neptune.player.ui.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
@@ -12,7 +14,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -23,6 +28,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
@@ -52,8 +58,11 @@ fun ConfirmDialog(title: String, text: String, action: String, onDismiss: () -> 
 
 @Composable
 fun SleepDialog(playback: PlaybackState, onDismiss: () -> Unit, onConfirm: (Int) -> Unit) {
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true, usePlatformDefaultWidth = false)) {
-        GlassPanel(Modifier.fillMaxWidth().padding(horizontal = 24.dp), corner = 28.dp, haze = null) {
+    // Full-screen dialog window with an explicit scrim: outside taps are consumed here instead of
+    // being redispatched to the window underneath while the dialog is tearing down.
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = false, usePlatformDefaultWidth = false)) {
+        Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.58f)).clickable(onClick = onDismiss), contentAlignment = Alignment.Center) {
+        GlassPanel(Modifier.fillMaxWidth().padding(horizontal = 24.dp).pointerInput(Unit) { detectTapGestures { } }, corner = 28.dp, haze = null) {
             Column(Modifier.fillMaxWidth().padding(20.dp)) {
                 NeText("Таймер сна", size = 20.sp, weight = androidx.compose.ui.text.font.FontWeight.Bold)
                 Spacer(Modifier.height(6.dp))
@@ -73,6 +82,7 @@ fun SleepDialog(playback: PlaybackState, onDismiss: () -> Unit, onConfirm: (Int)
                 Spacer(Modifier.height(14.dp))
                 NeButton("Закрыть", onDismiss, Modifier.fillMaxWidth(), primary = false)
             }
+        }
         }
     }
 }

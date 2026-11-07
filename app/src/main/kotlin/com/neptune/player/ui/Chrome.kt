@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -128,7 +129,7 @@ fun NeptuneMiniPlayer(state: NeptuneState, playback: PlaybackState, onOpen: () -
                 NeIconButton(NeIcon.Next, "Следующий трек", { state.nextTrack() }, size = 40.dp, iconSize = 19.dp, color = Ne.Dim)
             }
             Box(Modifier.fillMaxWidth().padding(horizontal = 12.dp).padding(bottom = 8.dp).height(3.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.10f))) {
-                Box(Modifier.fillMaxWidth(playback.progress.coerceIn(0f, 1f)).fillMaxSize().clip(CircleShape).background(accent()))
+                Box(Modifier.fillMaxWidth(playback.progress.coerceIn(0f, 1f)).fillMaxHeight().clip(CircleShape).background(accent()))
             }
         }
     }
