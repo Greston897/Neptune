@@ -26,13 +26,13 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileDebugUnitTest
 > Task :app:javaPreCompileDebug
+> Task :app:javaPreCompileDebugUnitTest
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:processDebugManifestForPackage
 > Task :app:generateReleaseBuildConfig
 > Task :app:checkReleaseAarMetadata
-> Task :app:processDebugManifestForPackage
 > Task :app:generateReleaseResValues FROM-CACHE
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
@@ -48,17 +48,14 @@ Daemon will be stopped at the end of the build
 > Task :app:javaPreCompileRelease FROM-CACHE
 > Task :app:extractProguardFiles
 > Task :app:mergeReleaseJniLibFolders
-> Task :app:mergeReleaseNativeLibs
 > Task :app:processReleaseResources
+> Task :app:mergeReleaseNativeLibs
 > Task :app:checkReleaseDuplicateClasses
 > Task :app:desugarReleaseFileDependencies
 > Task :app:mergeReleaseStartupProfile
-
-> Task :app:stripReleaseDebugSymbols
-Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
-
 > Task :app:compileDebugKotlin
 > Task :app:compileReleaseKotlin
+> Task :app:stripReleaseDebugSymbols
 > Task :app:mergeExtDexRelease
 
 > Task :app:compileDebugKotlin
@@ -67,34 +64,47 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:compileReleaseKotlin
 w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/Media3PlaybackBackend.kt:189:51 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
 
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
+
 > Task :app:compileDebugJavaWithJavac
+> Task :app:bundleDebugClassesToCompileJar
 > Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:processDebugJavaRes
-> Task :app:bundleDebugClassesToCompileJar
 > Task :app:compileReleaseJavaWithJavac
 > Task :app:compileDebugUnitTestKotlin
 > Task :app:generateReleaseLintVitalReportModel
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes
-
 > Task :app:testDebugUnitTest
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:dexBuilderRelease
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:compressReleaseAssets
+> Task :app:processReleaseJavaRes
+> Task :app:mergeReleaseJavaResource
+> Task :app:optimizeReleaseResources
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:validateSigningRelease
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:mergeDexRelease
+> Task :app:compileReleaseArtProfile
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:assembleRelease
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794010611411.json
 
-DomainTest > settingsRecoverInvalidStoredValues FAILED
-    java.lang.AssertionError at DomainTest.kt:20
-
-9 tests completed, 1 failed
-
-> Task :app:testDebugUnitTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794010437371.json
-
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-Execution failed for task ':app:testDebugUnitTest'.
-> There were failing tests. See the report at: file:///home/runner/work/Neptune/Neptune/app/build/reports/tests/testDebugUnitTest/index.html
-
-* Try:
-> Run with --scan to get full insights.
-
-BUILD FAILED in 1m 59s
-51 actionable tasks: 47 executed, 4 from cache
+BUILD SUCCESSFUL in 3m 47s
+74 actionable tasks: 70 executed, 4 from cache
