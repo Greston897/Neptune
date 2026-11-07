@@ -45,7 +45,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.neptune.player.BuildConfig
 import com.neptune.player.model.Accent
-import com.neptune.player.model.AvatarStyle
+import com.neptune.player.model.AvatarShape
 import com.neptune.player.model.Surface
 import com.neptune.player.model.formatTime
 import com.neptune.player.state.NeptuneState
@@ -88,7 +88,7 @@ fun SettingsScreen(state: NeptuneState, onProfile: () -> Unit, onAppearance: () 
 fun SettingsGroup(title: String, content: @Composable () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(top = 24.dp)) {
         NeText(title, Modifier.padding(start = 4.dp, bottom = 10.dp), size = 9.sp, color = Ne.Faint, tracking = 1.6.sp, weight = FontWeight.Bold)
-        Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(neRadius())).background(Ne.Ink)) { content() }
+        GlassPanel(Modifier.fillMaxWidth()) { Column(Modifier.fillMaxWidth()) { content() } }
     }
 }
 
@@ -110,9 +110,17 @@ fun AppearanceScreen(state: NeptuneState, onBack: () -> Unit) {
             }
         } } }
         item { SettingsGroup("АКЦЕНТ") { AccentPicker(s.accentIndex) { i -> state.edit { it.copy(accentIndex = i) } } } }
+        item { SettingsGroup("LIQUID GLASS") {
+            ToggleRow("Чёрное стекло", "Настоящее размытие фона на Android 12+, мягкая панель на старых версиях", s.glassEnabled) { v -> state.edit { it.copy(glassEnabled = v) } }
+            SettingSlider("Размытие", s.glassBlur, 8f..36f, "${s.glassBlur.toInt()} dp", { v -> state.edit { it.copy(glassBlur = v) } })
+            SettingSlider("Плотность стекла", s.glassTint, 0.35f..0.88f, "${(s.glassTint * 100).toInt()}%", { v -> state.edit { it.copy(glassTint = v) } })
+            SettingSlider("Световой кант", s.glassRim, 0f..1f, "${(s.glassRim * 100).toInt()}%", { v -> state.edit { it.copy(glassRim = v) } })
+            ToggleRow("Фоновое свечение", "Едва заметные блики на чёрном фоне", s.ambientGlow) { v -> state.edit { it.copy(ambientGlow = v) } }
+            ToggleRow("Акцентное свечение", "Подкрашивать фон выбранным акцентом", s.accentGlow) { v -> state.edit { it.copy(accentGlow = v) } }
+        } }
         item { SettingsGroup("ФОРМА И ТИПОГРАФИКА") {
-            SettingSlider("Скругление карточек", s.radius, 8f..28f, "${s.radius.toInt()} dp", { v -> state.edit { it.copy(radius = v) } })
-            SettingSlider("Размер текста", s.fontScale, 0.9f..1.15f, "${(s.fontScale * 100).toInt()}%", { v -> state.edit { it.copy(fontScale = v) } }, steps = 4)
+            SettingSlider("Скругление панелей", s.radius, 12f..32f, "${s.radius.toInt()} dp", { v -> state.edit { it.copy(radius = v) } })
+            SettingSlider("Размер текста", s.fontScale, 0.9f..1.2f, "${(s.fontScale * 100).toInt()}%", { v -> state.edit { it.copy(fontScale = v) } }, steps = 4)
             ToggleRow("Компактный список", "Больше треков на одном экране", s.compact) { v -> state.edit { it.copy(compact = v) } }
             ToggleRow("Подписи навигации", "Названия разделов внизу экрана", s.navLabels) { v -> state.edit { it.copy(navLabels = v) } }
         } }
@@ -129,15 +137,19 @@ fun AppearanceScreen(state: NeptuneState, onBack: () -> Unit) {
 
 @Composable
 fun AccentPicker(selected: Int, onSelect: (Int) -> Unit) {
-    Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-        Accent.entries.forEach { a ->
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(Modifier.size(48.dp).clip(CircleShape).clickable { onSelect(a.ordinal) }.semantics { contentDescription = a.title }, contentAlignment = Alignment.Center) {
-                    Box(Modifier.size(34.dp).clip(CircleShape).background(Color(a.hex)).border(if (selected == a.ordinal) 2.dp else 0.dp, Ne.Text, CircleShape), contentAlignment = Alignment.Center) {
-                        if (selected == a.ordinal) NeIconView(NeIcon.Check, 17.dp, Ne.Black, weight = 2.3f)
+    Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Accent.entries.chunked(6).forEach { row ->
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                row.forEach { a ->
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(48.dp)) {
+                        Box(Modifier.size(44.dp).clip(CircleShape).clickable { onSelect(a.ordinal) }.semantics { contentDescription = a.title }, contentAlignment = Alignment.Center) {
+                            Box(Modifier.size(32.dp).clip(CircleShape).background(Color(a.hex)).border(if (selected == a.ordinal) 2.dp else 0.dp, Ne.Text, CircleShape), contentAlignment = Alignment.Center) {
+                                if (selected == a.ordinal) NeIconView(NeIcon.Check, 16.dp, Ne.Black, weight = 2.3f)
+                            }
+                        }
+                        Spacer(Modifier.height(4.dp)); NeText(a.title, size = 8.5.sp, color = if (selected == a.ordinal) Ne.Text else Ne.Faint, maxLines = 1)
                     }
                 }
-                NeText(a.title, size = 9.sp, color = if (selected == a.ordinal) Ne.Text else Ne.Faint)
             }
         }
     }
@@ -150,7 +162,7 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit) {
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)) {
         item { ScreenTitle("Твой профиль", onBack) }
         item { Column(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            ProfileAvatar(Modifier.size(72.dp), animated = true)
+            ProfileAvatar(Modifier.size(112.dp), animated = true)
             Spacer(Modifier.height(14.dp)); NeText(s.profileName, size = 20.sp, weight = FontWeight.Bold)
             Spacer(Modifier.height(5.dp)); NeText("Маленький символ. Большая любовь к музыке.", size = 11.sp, color = Ne.Dim)
         } }
@@ -159,16 +171,17 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit) {
                 colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(focusedBorderColor = accent(), cursorColor = accent(), focusedTextColor = Ne.Text, unfocusedTextColor = Ne.Text))
             NeButton("Сохранить имя", { state.edit { it.copy(profileName = name) }; state.message("Имя сохранено") }, Modifier.fillMaxWidth().padding(top = 12.dp), enabled = name.isNotBlank() && name.trim() != s.profileName)
         } } }
-        item { SettingsGroup("ВЕКТОРНЫЙ АВАТАР") { Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            AvatarStyle.entries.chunked(3).forEach { row -> Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                row.forEach { style ->
-                    Column(Modifier.weight(1f).height(106.dp).clip(RoundedCornerShape(12.dp)).background(if (s.avatar == style) Ne.Line else Ne.Elevated)
-                        .clickable { state.edit { it.copy(avatarIndex = style.ordinal) } }.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Avatar(style, Color(Accent.of(s.avatarTone).hex), Modifier.size(48.dp), animated = s.avatar == style)
-                        Spacer(Modifier.height(10.dp)); NeText(style.title, size = 11.sp, color = if (s.avatar == style) Ne.Text else Ne.Dim)
+        item { SettingsGroup("ФОРМА АВАТАРА") { Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                AvatarShape.entries.forEach { shape ->
+                    Column(Modifier.weight(1f).height(106.dp).clip(RoundedCornerShape(16.dp)).background(if (s.avatarShape == shape) Ne.Line else Ne.Elevated)
+                        .clickable { state.edit { it.copy(avatarIndex = shape.ordinal) } }.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        ProfileAvatar(Modifier.size(48.dp))
+                        Spacer(Modifier.height(10.dp)); NeText(shape.title, size = 11.sp, color = if (s.avatarShape == shape) Ne.Text else Ne.Dim)
                     }
                 }
-            } }
+            }
+            SettingSlider("Размер планеты", s.avatarSize, 0.8f..1.25f, "${(s.avatarSize * 100).toInt()}%", { v -> state.edit { it.copy(avatarSize = v) } })
         } } }
         item { SettingsGroup("ЦВЕТ АВАТАРА") { AccentPicker(s.avatarTone) { i -> state.edit { it.copy(avatarTone = i) } } } }
     }
@@ -203,7 +216,7 @@ fun PlaybackSettingsScreen(state: NeptuneState, onBack: () -> Unit) {
 }
 
 @Composable
-fun DataScreen(state: NeptuneState, onBack: () -> Unit) {
+fun DataScreen(state: NeptuneState, onBack: () -> Unit, onRecent: () -> Unit = {}) {
     val library by state.library.collectAsStateWithLifecycle()
     val users by state.users.collectAsStateWithLifecycle()
     val actions = LocalLibraryActions.current
@@ -216,7 +229,7 @@ fun DataScreen(state: NeptuneState, onBack: () -> Unit) {
             SettingRow("Обновить медиатеку", if (library.loading) "Сканирование…" else "Найти новые треки", NeIcon.Reset, state::refreshLibrary)
         } }
         item { SettingsGroup("ИСТОРИЯ") {
-            SettingRow("Недавно прослушанные", "${users.recent.size} треков в истории", NeIcon.Clock)
+            SettingRow("Недавно прослушанные", "${users.recent.size} треков в истории", NeIcon.Clock, onRecent)
             SettingRow("Очистить историю", "Не затрагивает любимое и плейлисты", NeIcon.Trash) { clear = true }
         } }
         item { NeText("Neptune Sessions — шесть оригинальных синтезированных аудиосессий. Они доступны без разрешений. Обложки локальных треков читаются из системной медиатеки.", Modifier.padding(top = 22.dp), size = 11.sp, color = Ne.Faint, maxLines = 5, lineHeight = 17.sp) }
@@ -229,7 +242,7 @@ fun AboutScreen(onBack: () -> Unit) {
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)) {
         item { ScreenTitle("О Neptune", onBack) }
         item { Column(Modifier.fillMaxWidth().padding(vertical = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Avatar(AvatarStyle.ORBIT, Ne.Text, Modifier.size(72.dp), animated = true)
+            NeptuneMark(Modifier.size(72.dp), animated = true)
             Spacer(Modifier.height(18.dp)); NeText("neptune", size = 32.sp, weight = FontWeight.ExtraBold, tracking = (-1).sp)
             Spacer(Modifier.height(6.dp)); NeText("Музыка. Ничего лишнего.", size = 13.sp, color = Ne.Dim)
         } }

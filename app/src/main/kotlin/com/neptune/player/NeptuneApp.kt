@@ -46,6 +46,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.neptune.player.state.NeptuneState
 import com.neptune.player.ui.*
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
 import com.neptune.player.ui.screens.*
 
 @Composable
@@ -69,9 +71,13 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
             val entry by nav.currentBackStackEntryAsState()
             val route = entry?.destination?.route
             val fullPlayer = route == "player"
-            Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+            val backgroundHaze = remember { HazeState() }
+            val contentHaze = remember { HazeState() }
+            Box(Modifier.fillMaxSize()) {
+                AmbientBackground(Modifier.fillMaxSize().haze(backgroundHaze))
+                CompositionLocalProvider(LocalBackgroundHaze provides backgroundHaze, LocalContentHaze provides contentHaze) {
                 Column(Modifier.fillMaxSize()) {
-                    NavHost(nav, startDestination = "home", modifier = Modifier.weight(1f).fillMaxWidth(),
+                    NavHost(nav, startDestination = "home", modifier = Modifier.weight(1f).fillMaxWidth().haze(contentHaze),
                         enterTransition = { if (!settings.animations) fadeIn(tween(0)) else if (targetState.destination.route == "player") slideInVertically(tween(300)) { it / 3 } + fadeIn(tween(220)) else slideInHorizontally(tween(260)) { it / 7 } + fadeIn(tween(220)) },
                         exitTransition = { if (!settings.animations) fadeOut(tween(0)) else fadeOut(tween(160)) },
                         popEnterTransition = { if (!settings.animations) fadeIn(tween(0)) else fadeIn(tween(220)) },
@@ -85,7 +91,7 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                         composable("profile") { ProfileScreen(state) { nav.popBackStack() } }
                         composable("appearance") { AppearanceScreen(state) { nav.popBackStack() } }
                         composable("playback-settings") { PlaybackSettingsScreen(state) { nav.popBackStack() } }
-                        composable("data") { DataScreen(state) { nav.popBackStack() } }
+                        composable("data") { DataScreen(state, { nav.popBackStack() }) { nav.navigateCollection("recent", "") } }
                         composable("about") { AboutScreen { nav.popBackStack() } }
                         composable("collection/{kind}/{key}", arguments = listOf(navArgument("kind") { type = NavType.StringType }, navArgument("key") { type = NavType.StringType })) { backStack ->
                             CollectionScreen(state, backStack.arguments?.getString("kind") ?: "", (backStack.arguments?.getString("key") ?: "").let { if (it == "-") "" else it }, { nav.popBackStack() }) { nav.popBackStack() }
@@ -97,6 +103,7 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                     Snackbar(containerColor = Ne.Text, contentColor = Ne.Black) { NeText(it.visuals.message, size = 12.sp, color = Ne.Black, maxLines = 3) }
                 }
                 state.contextTrack?.let { track -> TrackActionsSheet(state, track, { state.contextTrack = null; state.contextPlaylist = null }) { kind, key -> nav.navigateCollection(kind, key) } }
+                }
             }
         }
     }

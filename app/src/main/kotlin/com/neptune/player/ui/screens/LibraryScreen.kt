@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.neptune.player.data.LibraryLogic
-import com.neptune.player.model.AvatarStyle
 import com.neptune.player.model.Track
 import com.neptune.player.model.trackCount
 import com.neptune.player.state.NeptuneState
@@ -96,7 +95,7 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
             }
             2 -> items(LibraryLogic.artists(tracks), key = { it.first }) { (artist, list) ->
                 Row(Modifier.fillMaxWidth().clickable { onCollection("artist", artist) }.padding(vertical = 12.dp, horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Avatar(AvatarStyle.entries[artist.hashCode().mod(AvatarStyle.entries.size)], Ne.Text, Modifier.size(48.dp))
+                    NeptuneMark(Modifier.size(48.dp), animated = false)
                     Spacer(Modifier.width(14.dp)); Column(Modifier.weight(1f)) { NeText(artist, size = 15.sp, weight = FontWeight.Bold); Spacer(Modifier.height(4.dp)); NeText(trackCount(list.size), size = 11.sp, color = Ne.Dim) }
                     NeIconView(NeIcon.ChevronRight, 17.dp, Ne.Faint)
                 }
@@ -118,7 +117,7 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
 @Composable
 private fun CollectionLink(title: String, subtitle: String, icon: NeIcon, onClick: () -> Unit) {
     Row(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-        androidx.compose.foundation.layout.Box(Modifier.size(54.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(neRadius())).background(Ne.Ink), contentAlignment = Alignment.Center) { NeIconView(icon, 23.dp, accent()) }
+        GlassPanel(Modifier.size(54.dp), corner = neRadius()) { NeIconView(icon, 23.dp, accent(), modifier = Modifier.align(Alignment.Center)) }
         Spacer(Modifier.width(14.dp)); Column(Modifier.weight(1f)) { NeText(title, size = 14.sp, weight = FontWeight.Bold); Spacer(Modifier.height(4.dp)); NeText(subtitle, size = 11.sp, color = Ne.Dim) }
         NeIconView(NeIcon.ChevronRight, 17.dp, Ne.Faint)
     }

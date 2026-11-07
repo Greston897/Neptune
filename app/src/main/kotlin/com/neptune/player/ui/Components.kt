@@ -111,7 +111,7 @@ fun SectionHeader(title: String, modifier: Modifier = Modifier, action: String? 
 
 @Composable
 fun Panel(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Box(modifier.fillMaxWidth().clip(RoundedCornerShape(neRadius())).background(Ne.Ink)) { content() }
+    GlassPanel(modifier.fillMaxWidth()) { content() }
 }
 
 @Composable
@@ -161,8 +161,9 @@ fun EmptyState(icon: NeIcon, title: String, text: String, modifier: Modifier = M
 
 @Composable
 fun SettingRow(title: String, subtitle: String? = null, icon: NeIcon? = null, onClick: (() -> Unit)? = null, trailing: (@Composable () -> Unit)? = null) {
-    Row(Modifier.fillMaxWidth().heightIn(min = 66.dp).then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier).padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-        if (icon != null) { NeIconView(icon, 21.dp, Ne.Dim); Spacer(Modifier.width(14.dp)) }
+    val haptic = LocalHaptics.current
+    Row(Modifier.fillMaxWidth().heightIn(min = 64.dp).then(if (onClick != null) Modifier.clickable(role = Role.Button) { haptic(); onClick() } else Modifier).padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        if (icon != null) { Box(Modifier.size(34.dp).clip(RoundedCornerShape(10.dp)).background(Color.White.copy(alpha = 0.06f)), contentAlignment = Alignment.Center) { NeIconView(icon, 18.dp, Ne.Dim) }; Spacer(Modifier.width(12.dp)) }
         Column(Modifier.weight(1f)) {
             NeText(title, size = 14.sp, weight = FontWeight.SemiBold, maxLines = 2)
             if (subtitle != null) { Spacer(Modifier.height(4.dp)); NeText(subtitle, size = 11.5.sp, color = Ne.Dim, maxLines = 3, lineHeight = 16.sp) }

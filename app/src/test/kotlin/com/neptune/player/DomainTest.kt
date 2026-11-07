@@ -17,15 +17,22 @@ class DomainTest {
     @Test fun blankSearchDoesNotReturnFakeResults() { assertTrue(LibraryLogic.search(listOf(track), " ").isEmpty()) }
     @Test fun settingsRecoverInvalidStoredValues() {
         val s = Settings(accentIndex = 999, radius = -4f, fontScale = 8f, profileName = " ", speed = 9f).validated()
-        assertEquals("accent", 4, s.accentIndex)
-        assertEquals("radius", 8f, s.radius, 0.0001f)
-        assertEquals("fontScale", 1.15f, s.fontScale, 0.0001f)
+        assertEquals("accent", 11, s.accentIndex)
+        assertEquals("radius", 12f, s.radius, 0.0001f)
+        assertEquals("fontScale", 1.2f, s.fontScale, 0.0001f)
         assertEquals("profile", "Слушатель", s.profileName)
         assertEquals("speed", 1.5f, s.speed, 0.0001f)
     }
+    @Test fun glassSettingsClampToSafeRanges() {
+        val s = Settings(glassBlur = 999f, glassTint = -1f, glassRim = 5f, avatarSize = 9f).validated()
+        assertEquals(36f, s.glassBlur, 0.0001f)
+        assertEquals(0.35f, s.glassTint, 0.0001f)
+        assertEquals(1f, s.glassRim, 0.0001f)
+        assertEquals(1.25f, s.avatarSize, 0.0001f)
+    }
     @Test fun appearanceResetPreservesProfile() {
-        val s = Settings(profileName = "Саша", avatarIndex = 3, accentIndex = 2).resetAppearance()
-        assertEquals("Саша", s.profileName); assertEquals(3, s.avatarIndex); assertEquals(0, s.accentIndex)
+        val s = Settings(profileName = "Саша", avatarIndex = 2, accentIndex = 2).resetAppearance()
+        assertEquals("Саша", s.profileName); assertEquals(2, s.avatarIndex); assertEquals(0, s.accentIndex)
     }
     @Test fun playlistDoesNotDuplicateTrack() {
         val (data, p) = UserData().createPlaylist("Ночь")

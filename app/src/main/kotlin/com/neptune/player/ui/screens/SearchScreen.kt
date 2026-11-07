@@ -50,7 +50,8 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)) {
         item { NeText("Поиск", Modifier.padding(vertical = 14.dp), size = 30.sp, weight = FontWeight.ExtraBold, tracking = (-1).sp) }
         item {
-            Row(Modifier.fillMaxWidth().height(54.dp).clip(RoundedCornerShape(neRadius())).background(Ne.Ink).padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+            GlassPanel(Modifier.fillMaxWidth().height(54.dp)) {
+            Row(Modifier.fillMaxSize().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
                 NeIconView(NeIcon.Search, 20.dp, Ne.Dim); Spacer(Modifier.width(12.dp))
                 BasicTextField(state.search, { state.search = it.take(100) }, Modifier.weight(1f), singleLine = true,
                     textStyle = TextStyle(fontFamily = Manrope, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Ne.Text),
@@ -58,6 +59,7 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                     keyboardActions = KeyboardActions(onSearch = { state.submitSearch() }),
                     decorationBox = { field -> if (state.search.isEmpty()) NeText("Трек, исполнитель или альбом", size = 13.sp, color = Ne.Faint); field() })
                 if (state.search.isNotEmpty()) NeIconButton(NeIcon.Close, "Очистить поиск", { state.search = "" }, size = 40.dp, iconSize = 16.dp, color = Ne.Dim)
+            }
             }
         }
         if (state.search.isBlank()) {

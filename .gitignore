@@ -9,3 +9,4 @@ ci/watch.log
 ci/job.log
 ci/logs.zip
 ci/TEST-*.xml
+image-search/

@@ -14,6 +14,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.background
 import androidx.compose.ui.unit.sp
 import com.neptune.player.model.PlaybackState
 import com.neptune.player.ui.*
@@ -39,13 +52,27 @@ fun ConfirmDialog(title: String, text: String, action: String, onDismiss: () -> 
 
 @Composable
 fun SleepDialog(playback: PlaybackState, onDismiss: () -> Unit, onConfirm: (Int) -> Unit) {
-    AlertDialog(onDismissRequest = onDismiss, containerColor = Ne.Elevated,
-        title = { NeText("Таймер сна", size = 20.sp, weight = androidx.compose.ui.text.font.FontWeight.Bold) },
-        text = { Column { NeText("Музыка мягко остановится по таймеру.", size = 12.sp, color = Ne.Dim, maxLines = 2);
-            listOf(0, 15, 30, 45, 60, 90).forEach { minutes ->
-                SettingRow(if (minutes == 0) "Выключить таймер" else "$minutes минут",
-                    if (minutes > 0 && playback.sleepRemainingMs in ((minutes - 15) * 60_000L + 1)..(minutes * 60_000L)) "Активен" else null,
-                    onClick = { onConfirm(minutes) }, trailing = { if (minutes == 0 && playback.sleepRemainingMs == 0L) NeIconView(NeIcon.Check, 18.dp, accent()) })
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true, usePlatformDefaultWidth = false)) {
+        GlassPanel(Modifier.fillMaxWidth().padding(horizontal = 24.dp), corner = 28.dp, haze = null) {
+            Column(Modifier.fillMaxWidth().padding(20.dp)) {
+                NeText("Таймер сна", size = 20.sp, weight = androidx.compose.ui.text.font.FontWeight.Bold)
+                Spacer(Modifier.height(6.dp))
+                NeText("Музыка мягко остановится по таймеру.", size = 12.sp, color = Ne.Dim, maxLines = 2)
+                Spacer(Modifier.height(14.dp))
+                listOf(0, 15, 30, 45, 60, 90).forEach { minutes ->
+                    val active = if (minutes == 0) playback.sleepRemainingMs == 0L
+                        else playback.sleepRemainingMs in ((minutes - 15) * 60_000L + 1)..(minutes * 60_000L)
+                    Row(Modifier.fillMaxWidth().heightIn(min = 52.dp).clip(RoundedCornerShape(14.dp))
+                        .background(if (active) Color.White.copy(alpha = 0.07f) else Color.Transparent)
+                        .clickable { onConfirm(minutes); onDismiss() }.padding(horizontal = 14.dp, vertical = 10.dp),
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        NeText(if (minutes == 0) "Выключить таймер" else "$minutes минут", Modifier.weight(1f), size = 14.sp)
+                        if (active) NeIconView(NeIcon.Check, 18.dp, accent())
+                    }
+                }
+                Spacer(Modifier.height(14.dp))
+                NeButton("Закрыть", onDismiss, Modifier.fillMaxWidth(), primary = false)
             }
-        } }, confirmButton = {})
+        }
+    }
 }

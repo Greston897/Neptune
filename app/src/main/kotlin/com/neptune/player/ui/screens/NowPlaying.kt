@@ -114,10 +114,10 @@ fun NowPlayingScreen(state: NeptuneState, onBack: () -> Unit, onQueue: () -> Uni
         }
         Spacer(Modifier.height(22.dp))
         playback.error?.let { error ->
-            Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(neRadius())).background(Ne.Ink).padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            GlassPanel(Modifier.fillMaxWidth()) { Row(Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                 NeText(error, Modifier.weight(1f), size = 11.sp, color = Ne.Error, maxLines = 3, lineHeight = 16.sp)
                 NeText("Ещё раз", Modifier.clip(CircleShape).clickable { state.retryPlayback() }.padding(10.dp), size = 12.sp, weight = FontWeight.Bold)
-            }
+            } }
         }
         Row(Modifier.fillMaxWidth().height(58.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
             NeIconButton(if (playback.volume < 0.02f) NeIcon.Mute else NeIcon.Volume, "Громкость", { volumeOpen = !volumeOpen }, color = Ne.Dim, iconSize = 20.dp)

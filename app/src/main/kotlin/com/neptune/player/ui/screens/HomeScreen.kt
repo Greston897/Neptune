@@ -53,7 +53,7 @@ fun HomeScreen(state: NeptuneState, onCollection: (String, String) -> Unit, onPl
         item {
             Box(Modifier.fillMaxWidth().height(56.dp)) {
                 Row(Modifier.align(Alignment.CenterStart), verticalAlignment = Alignment.CenterVertically) {
-                    Avatar(com.neptune.player.model.AvatarStyle.ORBIT, Ne.Text, Modifier.size(22.dp))
+                    NeptuneMark(Modifier.size(22.dp))
                     Spacer(Modifier.width(9.dp)); NeText("neptune", size = 17.sp, weight = FontWeight.ExtraBold, tracking = (-0.7).sp)
                 }
                 Box(Modifier.align(Alignment.Center).size(48.dp).clip(CircleShape).clickable(onClick = onProfile), contentAlignment = Alignment.Center) {
@@ -78,7 +78,7 @@ fun HomeScreen(state: NeptuneState, onCollection: (String, String) -> Unit, onPl
         item {
             val featured = recent.firstOrNull() ?: library.tracks.firstOrNull()
             if (featured != null) {
-                Box(Modifier.fillMaxWidth().padding(top = 22.dp, bottom = 24.dp).height(204.dp).clip(RoundedCornerShape(neRadius())).background(Ne.Ink).clickable { state.playTrack(featured, if (recent.isNotEmpty()) recent else library.tracks); onPlayer() }) {
+                GlassPanel(Modifier.fillMaxWidth().padding(top = 22.dp, bottom = 24.dp).height(204.dp).clickable { state.playTrack(featured, if (recent.isNotEmpty()) recent else library.tracks); onPlayer() }) {
                     TrackArtwork(featured, Modifier.fillMaxSize(), 0.dp, animate = playback.isPlaying)
                     Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color.Black.copy(alpha = 0.86f), Color.Black.copy(alpha = 0.2f), Color.Transparent))))
                     Column(Modifier.align(Alignment.CenterStart).padding(22.dp).fillMaxWidth(0.65f)) {
@@ -110,10 +110,12 @@ fun HomeScreen(state: NeptuneState, onCollection: (String, String) -> Unit, onPl
             }
         }
         item {
-            Row(Modifier.fillMaxWidth().padding(top = 24.dp).clip(RoundedCornerShape(neRadius())).background(Ne.Ink).clickable { onCollection("demo", "") }.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
+            GlassPanel(Modifier.fillMaxWidth().padding(top = 24.dp).clickable { onCollection("demo", "") }) {
+            Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
                 NeIconView(NeIcon.Wave, 26.dp, accent()); Spacer(Modifier.width(14.dp))
                 Column(Modifier.weight(1f)) { NeText("Neptune Sessions", size = 14.sp, weight = FontWeight.Bold); Spacer(Modifier.height(4.dp)); NeText("Шесть оригинальных аудиосессий", size = 11.sp, color = Ne.Dim) }
                 NeIconView(NeIcon.ChevronRight, 17.dp, Ne.Faint)
+            }
             }
         }
     }
@@ -123,8 +125,10 @@ fun HomeScreen(state: NeptuneState, onCollection: (String, String) -> Unit, onPl
 
 @Composable
 private fun QuickCollection(title: String, count: String, icon: NeIcon, modifier: Modifier, onClick: () -> Unit) {
-    Row(modifier.height(66.dp).clip(RoundedCornerShape(neRadius())).background(Ne.Ink).clickable(onClick = onClick).padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
+    GlassPanel(modifier.height(66.dp).clickable(onClick = onClick)) {
+    Row(Modifier.fillMaxSize().padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
         NeIconView(icon, 21.dp, accent()); Spacer(Modifier.width(11.dp))
         Column { NeText(title, size = 12.5.sp, weight = FontWeight.Bold); Spacer(Modifier.height(3.dp)); NeText(com.neptune.player.model.trackCount(count.toInt()), size = 10.sp, color = Ne.Faint) }
+    }
     }
 }

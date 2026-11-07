@@ -53,7 +53,8 @@ enum class Tab(val route: String, val title: String, val icon: NeIcon) {
 @Composable
 fun NeptuneNavBar(route: String?, onSelect: (Tab) -> Unit) {
     val animations = LocalSettings.current.animations
-    Row(Modifier.fillMaxWidth().background(MaterialBackground()).padding(horizontal = 8.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+    GlassPanel(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp), corner = 26.dp, haze = LocalContentHaze.current) {
+    Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
         Tab.entries.forEach { tab ->
             val active = route == tab.route
             val color by animateColorAsState(if (active) Ne.Text else Ne.Faint, tween(if (animations) 180 else 0), label = "tab")
@@ -67,6 +68,7 @@ fun NeptuneNavBar(route: String?, onSelect: (Tab) -> Unit) {
             }
         }
     }
+    }
 }
 
 @Composable private fun MaterialBackground() = androidx.compose.material3.MaterialTheme.colorScheme.background
@@ -75,8 +77,8 @@ fun NeptuneNavBar(route: String?, onSelect: (Tab) -> Unit) {
 fun NeptuneMiniPlayer(state: NeptuneState, playback: PlaybackState, onOpen: () -> Unit) {
     val track = playback.track ?: return
     var drag by remember { mutableFloatStateOf(0f) }
-    Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp)
-        .clip(RoundedCornerShape(neRadius())).background(Ne.Elevated)
+    GlassPanel(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp), haze = LocalContentHaze.current) {
+    Column(Modifier.fillMaxWidth()
         .pointerInput(Unit) { detectVerticalDragGestures(onDragEnd = { if (drag < -45) onOpen(); drag = 0f }, onDragCancel = { drag = 0f }) { _, amount -> drag += amount } }
         .clickable(onClickLabel = "Открыть плеер", onClick = onOpen)) {
         Row(Modifier.fillMaxWidth().height(64.dp).padding(start = 8.dp, end = 6.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -95,11 +97,12 @@ fun NeptuneMiniPlayer(state: NeptuneState, playback: PlaybackState, onOpen: () -
             Box(Modifier.fillMaxWidth(playback.progress).fillMaxSize().clip(CircleShape).background(accent()))
         }
     }
+    }
 }
 
 @Composable
 fun PlayerDock(visible: Boolean, state: NeptuneState, playback: PlaybackState, onOpen: () -> Unit, route: String?, onTab: (Tab) -> Unit) {
-    Column(Modifier.fillMaxWidth().background(MaterialBackground()).navigationBarsPadding()) {
+    Column(Modifier.fillMaxWidth().navigationBarsPadding()) {
         AnimatedVisibility(visible && playback.track != null && route != "queue", enter = fadeIn() + expandVertically(), exit = fadeOut() + shrinkVertically()) {
             NeptuneMiniPlayer(state, playback, onOpen)
         }

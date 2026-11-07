@@ -35,17 +35,47 @@ class PlayerFlowTest {
         compose.onNodeWithContentDescription("Профиль и аватар").assertIsDisplayed()
     }
 
-    @Test fun vectorAvatarChoicePersistsAndBackWorks() {
+    @Test fun avatarShapeChoicePersistsAndBackWorks() {
         compose.onNodeWithContentDescription("Профиль и аватар").performClick()
         compose.onNodeWithText("Твой профиль").assertIsDisplayed()
-        compose.onNodeWithText("Цветок").performClick()
+        compose.onNodeWithText("Круг").performClick()
         compose.waitUntil(5000) {
             var value = false
-            compose.activityRule.scenario.onActivity { value = container(it).settings.state.value.avatarIndex == 1 }
+            compose.activityRule.scenario.onActivity { value = container(it).settings.state.value.avatarIndex == 0 }
             value
         }
         back()
         compose.onNodeWithContentDescription("Профиль и аватар").assertIsDisplayed()
+    }
+
+    @Test fun sleepTimerOpensOnlyFromItsRowAndAlwaysCloses() {
+        compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
+        compose.onNodeWithText("Воспроизведение").performClick()
+        compose.onNodeWithText("Настоящий звук. Полный контроль.").assertIsDisplayed()
+        // Other rows must not open the sleep dialog.
+        compose.onNodeWithText("Повтор очереди").performClick()
+        compose.onAllNodes(hasText("Музыка мягко остановится по таймеру.")).fetchSemanticsNodes().let { assertEquals(0, it.size) }
+        compose.onNodeWithText("Таймер сна").performClick()
+        compose.onNodeWithText("Музыка мягко остановится по таймеру.").assertIsDisplayed()
+        compose.onNodeWithText("15 минут").performClick()
+        compose.waitUntil(5000) { compose.onAllNodes(hasText("Музыка мягко остановится по таймеру.")).fetchSemanticsNodes().isEmpty() }
+        compose.waitUntil(5000) {
+            var active = false
+            compose.activityRule.scenario.onActivity { active = container(it).playback.state.value.sleepRemainingMs > 0 }
+            active
+        }
+        compose.onNodeWithText("Таймер сна").performClick()
+        compose.onNodeWithText("Закрыть").performClick()
+        compose.waitUntil(5000) { compose.onAllNodes(hasText("Музыка мягко остановится по таймеру.")).fetchSemanticsNodes().isEmpty() }
+        compose.onNodeWithText("Таймер сна").performClick()
+        compose.onNodeWithText("Выключить таймер").performClick()
+        compose.waitUntil(5000) {
+            var off = false
+            compose.activityRule.scenario.onActivity { off = container(it).playback.state.value.sleepRemainingMs == 0L }
+            off
+        }
+        back()
+        compose.onNodeWithText("Всё под тебя. Без лишнего.").assertIsDisplayed()
     }
 
     @Test fun bundledAudioActuallyPlaysAndBackReturnsHome() {

@@ -7,15 +7,20 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -30,7 +35,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.neptune.player.model.AvatarStyle
+import com.neptune.player.R
+import com.neptune.player.model.AvatarShape
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.foundation.border
 import com.neptune.player.model.Track
 import kotlin.math.cos
 import kotlin.math.sin
@@ -124,62 +134,28 @@ private fun DrawScope.drawCover(seed: Int, tint: Color, phase: Float) {
 fun TrackThumb(track: Track, size: Dp = 48.dp, corner: Dp = 8.dp) = TrackArtwork(track, Modifier.size(size), corner)
 
 @Composable
-fun Avatar(style: AvatarStyle, tone: Color, modifier: Modifier = Modifier, animated: Boolean = false) {
+fun NeptuneMark(modifier: Modifier = Modifier, tone: Color = Ne.Text, animated: Boolean = false) {
     val settings = LocalSettings.current
-    val phase = if (animated && settings.animations) {
-        rememberInfiniteTransition(label = "avatar").animateFloat(0f, 360f,
-            infiniteRepeatable(tween(24000, easing = LinearEasing), RepeatMode.Restart), label = "avatar-orbit").value
-    } else 0f
-    Canvas(modifier.clip(CircleShape)) {
-        drawRect(Color(0xFF202020))
-        scale(size.width / 100f, size.height / 100f, Offset.Zero) {
-            when (style) {
-                AvatarStyle.ORBIT -> {
-                    drawCircle(tone, 22f, Offset(50f, 50f))
-                    drawCircle(Color(0xFF202020), 16f, Offset(57f, 44f))
-                    rotate(-32f + phase, Offset(50f, 50f)) {
-                        drawOval(tone, Offset(12f, 34f), Size(76f, 32f), style = Stroke(3f))
-                        drawCircle(tone, 5f, Offset(86f, 48f))
-                    }
-                }
-                AvatarStyle.BLOOM -> rotate(phase * 0.3f, Offset(50f, 50f)) {
-                    for (i in 0..5) rotate(i * 60f, Offset(50f, 50f)) {
-                        drawOval(tone.copy(alpha = 0.85f), Offset(39f, 14f), Size(22f, 42f))
-                    }
-                    drawCircle(Color(0xFF202020), 9f, Offset(50f, 50f))
-                }
-                AvatarStyle.WAVE -> {
-                    for (i in 0..3) {
-                        val p = Path().apply { moveTo(16f, 32f + i * 12f); cubicTo(38f, 8f + i * 12f, 59f, 58f + i * 12f, 84f, 30f + i * 12f) }
-                        drawPath(p, tone, style = Stroke(6f, cap = StrokeCap.Round))
-                    }
-                }
-                AvatarStyle.SPARK -> rotate(phase * 0.2f, Offset(50f, 50f)) {
-                    val p = Path().apply { moveTo(50f, 12f); quadraticTo(56f, 43f, 86f, 50f)
-                        quadraticTo(56f, 57f, 50f, 88f); quadraticTo(44f, 57f, 14f, 50f); quadraticTo(44f, 43f, 50f, 12f) }
-                    drawPath(p, tone); drawCircle(tone, 5f, Offset(77f, 24f))
-                }
-                AvatarStyle.ECHO -> {
-                    for (i in 0..3) drawArc(tone, -45f, 270f, false, Offset(15f + i * 8f, 15f + i * 8f),
-                        Size(70f - i * 16f, 70f - i * 16f), style = Stroke(4f, cap = StrokeCap.Round))
-                    drawCircle(tone, 4f, Offset(50f, 50f))
-                }
-                AvatarStyle.PRISM -> {
-                    val p = Path().apply { moveTo(50f, 14f); lineTo(84f, 68f); lineTo(50f, 86f); lineTo(16f, 68f); close() }
-                    drawPath(p, tone.copy(alpha = 0.2f)); drawPath(p, tone, style = Stroke(3f))
-                    drawLine(tone, Offset(50f, 14f), Offset(50f, 86f), 3f)
-                    drawLine(tone, Offset(16f, 68f), Offset(67f, 43f), 3f)
-                    drawLine(tone, Offset(84f, 68f), Offset(33f, 43f), 3f)
-                }
-            }
-        }
-    }
+    val moving = animated && settings.animations && settings.artworkMotion
+    val scale by if (moving) rememberInfiniteTransition(label = "neptune").animateFloat(0.97f, 1.03f,
+        infiniteRepeatable(tween(3600, easing = LinearEasing), RepeatMode.Reverse), label = "breath")
+        else androidx.compose.runtime.mutableFloatStateOf(1f)
+    Image(painterResource(R.drawable.neptune_white), contentDescription = null,
+        modifier = modifier.scale(scale), colorFilter = if (tone == Ne.Text) null else ColorFilter.tint(tone))
 }
 
 @Composable
 fun ProfileAvatar(modifier: Modifier = Modifier, animated: Boolean = false) {
     val s = LocalSettings.current
-    Avatar(s.avatar, Color(com.neptune.player.model.Accent.of(s.avatarTone).hex), modifier, animated)
+    val tone = Color(com.neptune.player.model.Accent.of(s.avatarTone).hex)
+    val shape = when (s.avatarShape) {
+        AvatarShape.CIRCLE -> CircleShape
+        AvatarShape.SQUIRCLE -> androidx.compose.foundation.shape.RoundedCornerShape(32.dp)
+        AvatarShape.SQUARE -> androidx.compose.foundation.shape.RoundedCornerShape(14.dp)
+    }
+    Box(modifier.clip(shape).background(Color(0xFF050507)).border(1.dp, Color.White.copy(alpha = 0.08f * s.glassRim), shape), contentAlignment = Alignment.Center) {
+        NeptuneMark(Modifier.fillMaxSize(0.62f * s.avatarSize), tone, animated)
+    }
 }
 
 @Composable
