@@ -42,14 +42,16 @@ Daemon will be stopped at the end of the build
 > Task :app:dexBuilderDebug
 > Task :app:mergeDebugGlobalSynthetics FROM-CACHE
 > Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeLibDexDebug FROM-CACHE
+> Task :app:mergeProjectDexDebug
 > Task :app:mergeDebugJniLibFolders UP-TO-DATE
 > Task :app:mergeDebugNativeLibs UP-TO-DATE
-> Task :app:checkDebugDuplicateClasses
 
 > Task :app:stripDebugDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
 
-> Task :app:mergeLibDexDebug FROM-CACHE
 > Task :app:validateSigningDebug
 > Task :app:writeDebugAppMetadata
 > Task :app:writeDebugSigningConfigVersions
@@ -74,8 +76,6 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:writeDebugAndroidTestSigningConfigVersions UP-TO-DATE
 > Task :app:packageDebugAndroidTest UP-TO-DATE
 > Task :app:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
-> Task :app:mergeProjectDexDebug
-> Task :app:mergeDebugJavaResource
 > Task :app:mergeExtDexDebug
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect
@@ -84,11 +84,11 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 29 tests on emulator-5554 - 14
 
-emulator-5554 - 14 Tests 4/29 completed. (0 skipped) (0 failed)
-emulator-5554 - 14 Tests 8/29 completed. (0 skipped) (0 failed)
-emulator-5554 - 14 Tests 13/29 completed. (0 skipped) (0 failed)
-emulator-5554 - 14 Tests 17/29 completed. (0 skipped) (0 failed)
-emulator-5554 - 14 Tests 21/29 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 3/29 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 7/29 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 11/29 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 16/29 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 20/29 completed. (0 skipped) (0 failed)
 emulator-5554 - 14 Tests 24/29 completed. (0 skipped) (0 failed)
 emulator-5554 - 14 Tests 25/29 completed. (0 skipped) (0 failed)
 
@@ -128,7 +128,7 @@ com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
 Test run failed to complete. Expected 29 tests, received 25
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794093381525.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794095243855.json
 
 FAILURE: Build failed with an exception.
 
@@ -142,5 +142,11 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 3m 29s
+BUILD FAILED in 3m 19s
 67 actionable tasks: 15 executed, 3 from cache, 49 up-to-date
+
+================ instrumented gate ================
+FAIL: 1 instrumented test(s) failed
+  bundledAudioActuallyPlaysAndBackReturnsHome
+    (no message — suspect device/emulator loss)
+instrumented suite exit status: 1
