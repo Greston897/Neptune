@@ -32,8 +32,8 @@ Daemon will be stopped at the end of the build
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
 > Task :app:generateReleaseBuildConfig
-> Task :app:checkReleaseAarMetadata
 > Task :app:generateReleaseResValues FROM-CACHE
+> Task :app:checkReleaseAarMetadata
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
 > Task :app:processDebugResources
@@ -44,29 +44,32 @@ Daemon will be stopped at the end of the build
 > Task :app:extractDeepLinksRelease FROM-CACHE
 > Task :app:processReleaseMainManifest
 > Task :app:processReleaseManifest
-> Task :app:javaPreCompileRelease FROM-CACHE
 > Task :app:processReleaseManifestForPackage
+> Task :app:javaPreCompileRelease FROM-CACHE
 > Task :app:extractProguardFiles
 > Task :app:mergeReleaseJniLibFolders
 > Task :app:processReleaseResources
 > Task :app:mergeReleaseNativeLibs
 
+> Task :app:compileDebugKotlin
+e: The daemon has terminated unexpectedly on startup attempt #1 with error code: 0. The daemon process output:
+    1. Kotlin compile daemon is ready
+
 > Task :app:stripReleaseDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
 
 > Task :app:extractReleaseNativeSymbolTables
-> Task :app:checkReleaseDuplicateClasses
 > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:checkReleaseDuplicateClasses
 > Task :app:desugarReleaseFileDependencies
 > Task :app:mergeReleaseStartupProfile
-> Task :app:compileDebugKotlin
 > Task :app:compileReleaseKotlin
 > Task :app:mergeExtDexRelease
 
-> Task :app:compileReleaseKotlin
+> Task :app:compileDebugKotlin
 w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/Media3PlaybackBackend.kt:189:51 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
 
-> Task :app:compileDebugKotlin
+> Task :app:compileReleaseKotlin
 w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/Media3PlaybackBackend.kt:189:51 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
 
 > Task :app:compileDebugJavaWithJavac
@@ -81,19 +84,19 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:testDebugUnitTest
 > Task :app:dexBuilderRelease
 > Task :app:mergeReleaseArtProfile
-> Task :app:mergeReleaseGlobalSynthetics
 > Task :app:mergeReleaseShaders
+> Task :app:mergeReleaseGlobalSynthetics
 > Task :app:compileReleaseShaders NO-SOURCE
 > Task :app:generateReleaseAssets UP-TO-DATE
 > Task :app:mergeReleaseAssets
-> Task :app:compressReleaseAssets
 > Task :app:extractReleaseVersionControlInfo
 > Task :app:processReleaseJavaRes
+> Task :app:compressReleaseAssets
+> Task :app:optimizeReleaseResources
 > Task :app:mergeReleaseJavaResource
 > Task :app:collectReleaseDependencies
 > Task :app:sdkReleaseDependencyData
 > Task :app:validateSigningRelease
-> Task :app:optimizeReleaseResources
 > Task :app:writeReleaseAppMetadata
 > Task :app:writeReleaseSigningConfigVersions
 > Task :app:preDebugAndroidTestBuild SKIPPED
@@ -111,25 +114,25 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:compressDebugAndroidTestAssets
 > Task :app:desugarDebugAndroidTestFileDependencies
 > Task :app:mergeDebugAndroidTestResources
-> Task :app:checkDebugAndroidTestDuplicateClasses
 > Task :app:mergeDexRelease
+> Task :app:checkDebugAndroidTestDuplicateClasses
 > Task :app:processDebugAndroidTestResources
+> Task :app:compileReleaseArtProfile
 > Task :app:lintVitalAnalyzeRelease
 > Task :app:mergeExtDexDebugAndroidTest
 > Task :app:lintVitalReportRelease
 > Task :app:lintVitalRelease
-> Task :app:mergeLibDexDebugAndroidTest
 > Task :app:mergeDebugAndroidTestJniLibFolders
+> Task :app:mergeLibDexDebugAndroidTest
 > Task :app:mergeDebugJniLibFolders
 > Task :app:mergeDebugNativeLibs
-> Task :app:compileReleaseArtProfile
 > Task :app:validateSigningDebugAndroidTest
-> Task :app:mergeDebugAndroidTestNativeLibs NO-SOURCE
-> Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
-> Task :app:writeDebugAndroidTestSigningConfigVersions
 > Task :app:packageRelease
 > Task :app:createReleaseApkListingFileRedirect
 > Task :app:assembleRelease
+> Task :app:mergeDebugAndroidTestNativeLibs NO-SOURCE
+> Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
+> Task :app:writeDebugAndroidTestSigningConfigVersions
 > Task :app:compileDebugAndroidTestKotlin
 > Task :app:compileDebugAndroidTestJavaWithJavac
 > Task :app:dexBuilderDebugAndroidTest
@@ -140,7 +143,7 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:packageDebugAndroidTest
 > Task :app:createDebugAndroidTestApkListingFileRedirect
 > Task :app:assembleDebugAndroidTest
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_5-1794089009271.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_5-1794090168663.json
 
-BUILD SUCCESSFUL in 3m 21s
+BUILD SUCCESSFUL in 4m 18s
 104 actionable tasks: 97 executed, 7 from cache
