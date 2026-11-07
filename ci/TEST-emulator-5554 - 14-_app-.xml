@@ -1,61 +1,37 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<testsuite name="com.neptune.player.LayoutTest" tests="26" failures="1" errors="0" skipped="0" time="152.273" timestamp="2026-11-07T23:19:44" hostname="localhost">
+<testsuite name="com.neptune.player.LayoutTest" tests="29" failures="0" errors="0" skipped="0" time="136.067" timestamp="2026-11-07T23:36:21" hostname="localhost">
   <properties>
     <property name="device" value="emulator-5554 - 14" />
     <property name="flavor" value="" />
     <property name="project" value=":app" />
   </properties>
-  <testcase name="longTrackTitleNeverPushesControlsOffScreen" classname="com.neptune.player.LayoutTest" time="3.799" />
-  <testcase name="glyphSitsOnTheCentreOfItsBox" classname="com.neptune.player.LayoutTest" time="1.681" />
-  <testcase name="panelCentresContentShorterThanItself" classname="com.neptune.player.LayoutTest" time="2.649" />
-  <testcase name="sameTokenLabelsHaveIdenticalHeights" classname="com.neptune.player.LayoutTest" time="1.376" />
-  <testcase name="selectedTabIsExposedToAccessibility" classname="com.neptune.player.LayoutTest" time="1.529" />
-  <testcase name="iconButtonUsesExactlyTheRequestedSquare" classname="com.neptune.player.LayoutTest" time="1.596" />
-  <testcase name="settingsRowsGrowInsteadOfClippingAtLargeFontScale" classname="com.neptune.player.LayoutTest" time="2.625" />
-  <testcase name="iconAndLabelShareACentreLine" classname="com.neptune.player.LayoutTest" time="2.331" />
-  <testcase name="navGlyphsAreIdenticalSquaresWhetherSelectedOrNot" classname="com.neptune.player.LayoutTest" time="2.483" />
-  <testcase name="noPromotionalCopyIsRendered" classname="com.neptune.player.LayoutTest" time="2.348" />
-  <testcase name="leadingIconSharesTheCentreLineOfItsLabelBlock" classname="com.neptune.player.LayoutTest" time="2.044" />
-  <testcase name="trackWithBrokenArtworkUriStillRenders" classname="com.neptune.player.LayoutTest" time="2.546" />
-  <testcase name="touchTargetsAreNeverSmallerThanFortyFourDp" classname="com.neptune.player.LayoutTest" time="2.117" />
-  <testcase name="iconsStaySquareNextToALongLabel" classname="com.neptune.player.LayoutTest" time="2.603" />
-  <testcase name="trackRowContentStartsAtTheRowEdge" classname="com.neptune.player.LayoutTest" time="2.038" />
-  <testcase name="panelCentresContentOnBothAxes" classname="com.neptune.player.LayoutTest" time="2.565" />
-  <testcase name="miniPlayerIsTransportOnlyAndKeepsEveryControlVisible" classname="com.neptune.player.LayoutTest" time="2.504" />
-  <testcase name="miniPlayerTransportFitsANarrowScreen" classname="com.neptune.player.LayoutTest" time="2.591" />
-  <testcase name="trackPillIsACentredCapsuleOfTheTokenHeight" classname="com.neptune.player.LayoutTest" time="2.698" />
-  <testcase name="tabLabelsFitInsideTheirCells" classname="com.neptune.player.LayoutTest" time="2.578" />
-  <testcase name="glassSheenOverlayDoesNotInflateThePanel" classname="com.neptune.player.LayoutTest" time="2.23" />
-  <testcase name="leadingIconCellIsTheBareTokenSize" classname="com.neptune.player.LayoutTest" time="2.598" />
-  <testcase name="trackWithoutArtworkRendersTheBrandFallback" classname="com.neptune.player.LayoutTest" time="2.082" />
-  <testcase name="trackPillAnnouncesTrackAndArtist" classname="com.neptune.player.LayoutTest" time="2.498" />
-  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="8.615" />
-  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="76.148">
-    <failure></failure>
-  </testcase>
-  <system-err>Exception thrown during onAfterAll invocation of plugin AndroidTestApkInstallerPlugin: device 'emulator-5554' not found
-device 'emulator-5554' not found
-com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
-	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:981)
-	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:1000)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$18(DeviceImpl.java:785)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:755)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$15(DeviceImpl.java:618)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:615)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeShellCommand$14(DeviceImpl.java:573)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeShellCommand(DeviceImpl.java:570)
-	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDevice.executeShellCommand(DdmlibAndroidDevice.kt)
-	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDeviceController$executeAsync$deferred$1.invokeSuspend(DdmlibAndroidDeviceController.kt:171)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
-	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:570)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:749)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
-
-Test run failed to complete. Expected 29 tests, received 25
-</system-err>
+  <testcase name="longTrackTitleNeverPushesControlsOffScreen" classname="com.neptune.player.LayoutTest" time="4.217" />
+  <testcase name="glyphSitsOnTheCentreOfItsBox" classname="com.neptune.player.LayoutTest" time="9.564" />
+  <testcase name="panelCentresContentShorterThanItself" classname="com.neptune.player.LayoutTest" time="2.868" />
+  <testcase name="sameTokenLabelsHaveIdenticalHeights" classname="com.neptune.player.LayoutTest" time="3.99" />
+  <testcase name="selectedTabIsExposedToAccessibility" classname="com.neptune.player.LayoutTest" time="4.098" />
+  <testcase name="iconButtonUsesExactlyTheRequestedSquare" classname="com.neptune.player.LayoutTest" time="2.405" />
+  <testcase name="settingsRowsGrowInsteadOfClippingAtLargeFontScale" classname="com.neptune.player.LayoutTest" time="2.424" />
+  <testcase name="iconAndLabelShareACentreLine" classname="com.neptune.player.LayoutTest" time="1.87" />
+  <testcase name="navGlyphsAreIdenticalSquaresWhetherSelectedOrNot" classname="com.neptune.player.LayoutTest" time="3.766" />
+  <testcase name="noPromotionalCopyIsRendered" classname="com.neptune.player.LayoutTest" time="2.738" />
+  <testcase name="leadingIconSharesTheCentreLineOfItsLabelBlock" classname="com.neptune.player.LayoutTest" time="2.753" />
+  <testcase name="trackWithBrokenArtworkUriStillRenders" classname="com.neptune.player.LayoutTest" time="2.747" />
+  <testcase name="touchTargetsAreNeverSmallerThanFortyFourDp" classname="com.neptune.player.LayoutTest" time="2.259" />
+  <testcase name="iconsStaySquareNextToALongLabel" classname="com.neptune.player.LayoutTest" time="2.804" />
+  <testcase name="trackRowContentStartsAtTheRowEdge" classname="com.neptune.player.LayoutTest" time="2.871" />
+  <testcase name="panelCentresContentOnBothAxes" classname="com.neptune.player.LayoutTest" time="3.328" />
+  <testcase name="miniPlayerIsTransportOnlyAndKeepsEveryControlVisible" classname="com.neptune.player.LayoutTest" time="3.128" />
+  <testcase name="miniPlayerTransportFitsANarrowScreen" classname="com.neptune.player.LayoutTest" time="3.907" />
+  <testcase name="trackPillIsACentredCapsuleOfTheTokenHeight" classname="com.neptune.player.LayoutTest" time="2.736" />
+  <testcase name="tabLabelsFitInsideTheirCells" classname="com.neptune.player.LayoutTest" time="2.911" />
+  <testcase name="glassSheenOverlayDoesNotInflateThePanel" classname="com.neptune.player.LayoutTest" time="2.227" />
+  <testcase name="leadingIconCellIsTheBareTokenSize" classname="com.neptune.player.LayoutTest" time="2.98" />
+  <testcase name="trackWithoutArtworkRendersTheBrandFallback" classname="com.neptune.player.LayoutTest" time="2.975" />
+  <testcase name="trackPillAnnouncesTrackAndArtist" classname="com.neptune.player.LayoutTest" time="2.22" />
+  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="13.461" />
+  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="11.782" />
+  <testcase name="likedAndRecentCollectionsOpenAndReturn" classname="com.neptune.player.PlayerFlowTest" time="7.501" />
+  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="16.649" />
+  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="5.892" />
 </testsuite>
