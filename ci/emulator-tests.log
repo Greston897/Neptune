@@ -46,18 +46,18 @@ Daemon will be stopped at the end of the build
 > Task :app:checkDebugDuplicateClasses
 > Task :app:mergeDebugNativeLibs UP-TO-DATE
 > Task :app:mergeLibDexDebug FROM-CACHE
-> Task :app:mergeDebugJavaResource
 
 > Task :app:stripDebugDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
 
 > Task :app:validateSigningDebug
 > Task :app:writeDebugAppMetadata
+> Task :app:mergeProjectDexDebug
 > Task :app:writeDebugSigningConfigVersions
 > Task :app:mergeDebugAndroidTestShaders UP-TO-DATE
 > Task :app:compileDebugAndroidTestShaders NO-SOURCE
 > Task :app:generateDebugAndroidTestAssets UP-TO-DATE
-> Task :app:mergeProjectDexDebug
+> Task :app:mergeDebugJavaResource
 > Task :app:mergeDebugAndroidTestAssets UP-TO-DATE
 > Task :app:compressDebugAndroidTestAssets UP-TO-DATE
 > Task :app:desugarDebugAndroidTestFileDependencies UP-TO-DATE
@@ -82,33 +82,26 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 [EmulatorConsole]: Failed to start Emulator console for 5554
 
 > Task :app:connectedDebugAndroidTest
-Starting 26 tests on emulator-5554 - 14
+Starting 29 tests on emulator-5554 - 14
 
-emulator-5554 - 14 Tests 4/26 completed. (0 skipped) (0 failed)
-emulator-5554 - 14 Tests 7/26 completed. (0 skipped) (0 failed)
-emulator-5554 - 14 Tests 12/26 completed. (0 skipped) (0 failed)
-
-> Task :app:connectedDebugAndroidTest
-
-com.neptune.player.LayoutTest > miniPlayerTransportFitsANarrowScreen[emulator-5554 - 14] [31mFAILED [0m
-	java.lang.AssertionError: transport must stay on one line
-	at org.junit.Assert.fail(Assert.java:89)
-
-emulator-5554 - 14 Tests 18/26 completed. (0 skipped) (1 failed)
-emulator-5554 - 14 Tests 22/26 completed. (0 skipped) (1 failed)
-emulator-5554 - 14 Tests 23/26 completed. (0 skipped) (1 failed)
-emulator-5554 - 14 Tests 24/26 completed. (0 skipped) (1 failed)
+emulator-5554 - 14 Tests 2/29 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 6/29 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 11/29 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 17/29 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 22/29 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 24/29 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 25/29 completed. (0 skipped) (0 failed)
 
 > Task :app:connectedDebugAndroidTest
 
-com.neptune.player.PlayerFlowTest > sleepTimerOpensOnlyFromItsRowAndAlwaysCloses[emulator-5554 - 14] [31mFAILED [0m
+com.neptune.player.PlayerFlowTest > bundledAudioActuallyPlaysAndBackReturnsHome[emulator-5554 - 14] [31mFAILED [0m
 
 
-emulator-5554 - 14 Tests 25/26 completed. (0 skipped) (2 failed)
-Finished 25 tests on emulator-5554 - 14
+emulator-5554 - 14 Tests 26/29 completed. (0 skipped) (1 failed)
+Finished 26 tests on emulator-5554 - 14
 
 > Task :app:connectedDebugAndroidTest
-Tests on emulator-5554 - 14 failed: There was 2 failure(s).
+Tests on emulator-5554 - 14 failed: There was 1 failure(s).
 Exception thrown during onAfterAll invocation of plugin AndroidTestApkInstallerPlugin: device 'emulator-5554' not found
 device 'emulator-5554' not found
 com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
@@ -132,10 +125,10 @@ com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
 
-Test run failed to complete. Expected 26 tests, received 24
+Test run failed to complete. Expected 29 tests, received 25
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794089292607.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794091877027.json
 
 FAILURE: Build failed with an exception.
 
@@ -149,5 +142,5 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 3m 8s
+BUILD FAILED in 3m 7s
 67 actionable tasks: 15 executed, 3 from cache, 49 up-to-date
