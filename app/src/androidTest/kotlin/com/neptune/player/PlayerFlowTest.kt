@@ -34,7 +34,7 @@ class PlayerFlowTest {
             }
         } catch (e: androidx.compose.ui.test.ComposeTimeoutException) {
             val visible = runCatching {
-                compose.onRoot(useUnmergedTree = true).printToString(maxDepth = Int.MAX_VALUE)
+                compose.onRoot(useUnmergedTree = true).printToString(maxDepth = 30)
             }.getOrDefault("unavailable")
             throw AssertionError("Timed out waiting for '$text'. Roots: $visible", e)
         }
