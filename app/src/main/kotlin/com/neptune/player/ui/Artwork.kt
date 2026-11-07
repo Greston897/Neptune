@@ -185,8 +185,8 @@ fun ProfileAvatar(modifier: Modifier = Modifier, animated: Boolean = false) {
 @Composable
 fun EqualizerBars(playing: Boolean, modifier: Modifier = Modifier, color: Color = Ne.Text, maxHeight: Dp = 16.dp) {
     val animated = playing && LocalSettings.current.animations
-    val transition = rememberInfiniteTransition(label = "equalizer")
-    val phase by transition.animateFloat(0f, 6.28f, infiniteRepeatable(tween(900, easing = LinearEasing), RepeatMode.Restart), label = "bars")
+    val phase = if (animated) rememberInfiniteTransition(label = "equalizer").animateFloat(0f, 6.28f,
+        infiniteRepeatable(tween(900, easing = LinearEasing), RepeatMode.Restart), label = "bars").value else 0f
     Canvas(modifier.size(width = 18.dp, height = maxHeight)) {
         for (i in 0..2) {
             val h = if (animated) size.height * (0.35f + 0.6f * ((sin((phase + i * 1.7).toDouble()).toFloat() + 1f) / 2f)) else size.height * (0.3f + i * 0.15f)

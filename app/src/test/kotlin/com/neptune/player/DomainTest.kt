@@ -17,7 +17,7 @@ class DomainTest {
     @Test fun blankSearchDoesNotReturnFakeResults() { assertTrue(LibraryLogic.search(listOf(track), " ").isEmpty()) }
     @Test fun settingsRecoverInvalidStoredValues() {
         val s = Settings(accentIndex = 999, radius = -4f, fontScale = 8f, profileName = " ", speed = 9f).validated()
-        assertEquals(0, s.accentIndex); assertEquals(8f, s.radius); assertEquals(1.15f, s.fontScale); assertEquals("Слушатель", s.profileName); assertEquals(1.5f, s.speed)
+        assertEquals(0, s.accentIndex); assertEquals(8f, s.radius, 0.0001f); assertEquals(1.15f, s.fontScale, 0.0001f); assertEquals("Слушатель", s.profileName); assertEquals(1.5f, s.speed, 0.0001f)
     }
     @Test fun appearanceResetPreservesProfile() {
         val s = Settings(profileName = "Саша", avatarIndex = 3, accentIndex = 2).resetAppearance()
@@ -35,6 +35,6 @@ class DomainTest {
         data = data.rememberTrack("79")
         assertEquals(60, data.recent.size); assertEquals("79", data.recent.first()); assertEquals(1, data.recent.count { it == "79" })
     }
-    @Test fun progressNeverDividesByZero() { assertEquals(0f, PlaybackState().progress); assertEquals(0.5f, PlaybackState(positionMs = 500, durationMs = 1000).progress) }
+    @Test fun progressNeverDividesByZero() { assertEquals(0f, PlaybackState().progress, 0.0001f); assertEquals(0.5f, PlaybackState(positionMs = 500, durationMs = 1000).progress, 0.0001f) }
     @Test fun timeAndPlurals() { assertEquals("0:00", formatTime(-10)); assertEquals("1:01:01", formatTime(3661000)); assertEquals("21 трек", trackCount(21)); assertEquals("11 треков", trackCount(11)) }
 }

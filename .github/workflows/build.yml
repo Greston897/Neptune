@@ -48,13 +48,13 @@ jobs:
               -dname "CN=Neptune, OU=Player, O=Neptune, L=Leipzig, C=DE"
           fi
 
-      - name: Assemble release APK
+      - name: Unit tests and release APK
         run: |
           set -o pipefail
           gradle --no-daemon --console=plain testDebugUnitTest assembleRelease 2>&1 | tee build.log | tail -n 100
 
       - name: Publish APK
-        if: always()
+        if: success()
         run: |
           set -x
           mkdir -p ci apk
