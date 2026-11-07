@@ -17,7 +17,11 @@ class DomainTest {
     @Test fun blankSearchDoesNotReturnFakeResults() { assertTrue(LibraryLogic.search(listOf(track), " ").isEmpty()) }
     @Test fun settingsRecoverInvalidStoredValues() {
         val s = Settings(accentIndex = 999, radius = -4f, fontScale = 8f, profileName = " ", speed = 9f).validated()
-        assertEquals(0, s.accentIndex); assertEquals(8f, s.radius, 0.0001f); assertEquals(1.15f, s.fontScale, 0.0001f); assertEquals("Слушатель", s.profileName); assertEquals(1.5f, s.speed, 0.0001f)
+        assertEquals("accent", 0, s.accentIndex)
+        assertEquals("radius", 8f, s.radius, 0.0001f)
+        assertEquals("fontScale", 1.15f, s.fontScale, 0.0001f)
+        assertEquals("profile", "Слушатель", s.profileName)
+        assertEquals("speed", 1.5f, s.speed, 0.0001f)
     }
     @Test fun appearanceResetPreservesProfile() {
         val s = Settings(profileName = "Саша", avatarIndex = 3, accentIndex = 2).resetAppearance()
