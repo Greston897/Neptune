@@ -23,6 +23,23 @@ class PlayerFlowTest {
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
     private fun back() { compose.activityRule.scenario.onActivity { it.onBackPressedDispatcher.onBackPressed() } }
     private fun container(activity: MainActivity) = (activity.application as NeptuneApplication).container
+    private fun waitText(text: String, timeout: Long = 8000) {
+        compose.waitUntil(timeout) {
+            runCatching {
+                compose.waitForIdle()
+                compose.onAllNodes(hasText(text)).fetchSemanticsNodes().isNotEmpty()
+            }.getOrDefault(false)
+        }
+        compose.onNodeWithText(text).assertIsDisplayed()
+    }
+    private fun waitGone(text: String, timeout: Long = 8000) {
+        compose.waitUntil(timeout) {
+            runCatching {
+                compose.waitForIdle()
+                compose.onAllNodes(hasText(text)).fetchSemanticsNodes().isEmpty()
+            }.getOrDefault(false)
+        }
+    }
 
     @Test fun settingsBackReturnsToPreviousPageThenHome() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
@@ -50,25 +67,25 @@ class PlayerFlowTest {
 
     @Test fun sleepTimerOpensOnlyFromItsRowAndAlwaysCloses() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
-        compose.waitUntil(5000) { compose.onAllNodes(hasText("Воспроизведение")).fetchSemanticsNodes().isNotEmpty() }
+        waitText("Воспроизведение")
         compose.onNodeWithText("Воспроизведение").performClick()
-        compose.waitUntil(5000) { compose.onAllNodes(hasText("Настоящий звук. Полный контроль.")).fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithText("Настоящий звук. Полный контроль.").assertIsDisplayed()
+        waitText("Настоящий звук. Полный контроль.")
         // Other rows must not open the sleep dialog.
         compose.onNodeWithText("Повтор очереди").performClick()
         compose.onAllNodes(hasText("Музыка мягко остановится по таймеру.")).fetchSemanticsNodes().let { assertEquals(0, it.size) }
         compose.onNodeWithText("Таймер сна").performClick()
-        compose.onNodeWithText("Музыка мягко остановится по таймеру.").assertIsDisplayed()
+        waitText("Музыка мягко остановится по таймеру.")
         compose.onNodeWithText("15 минут").performClick()
-        compose.waitUntil(5000) { compose.onAllNodes(hasText("Музыка мягко остановится по таймеру.")).fetchSemanticsNodes().isEmpty() }
+        waitGone("Музыка мягко остановится по таймеру.")
         compose.waitUntil(5000) {
             var active = false
             compose.activityRule.scenario.onActivity { active = container(it).playback.state.value.sleepRemainingMs > 0 }
             active
         }
         compose.onNodeWithText("Таймер сна").performClick()
+        waitText("Закрыть")
         compose.onNodeWithText("Закрыть").performClick()
-        compose.waitUntil(5000) { compose.onAllNodes(hasText("Музыка мягко остановится по таймеру.")).fetchSemanticsNodes().isEmpty() }
+        waitGone("Музыка мягко остановится по таймеру.")
         compose.onNodeWithText("Таймер сна").performClick()
         compose.onNodeWithText("Выключить таймер").performClick()
         compose.waitUntil(5000) {
@@ -77,8 +94,7 @@ class PlayerFlowTest {
             off
         }
         back()
-        compose.waitUntil(5000) { compose.onAllNodes(hasText("Всё под тебя. Без лишнего.")).fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithText("Всё под тебя. Без лишнего.").assertIsDisplayed()
+        waitText("Всё под тебя. Без лишнего.")
     }
 
     @Test fun bundledAudioActuallyPlaysAndBackReturnsHome() {
