@@ -50,7 +50,9 @@ class PlayerFlowTest {
 
     @Test fun sleepTimerOpensOnlyFromItsRowAndAlwaysCloses() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
+        compose.waitUntil(5000) { compose.onAllNodes(hasText("Воспроизведение")).fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("Воспроизведение").performClick()
+        compose.waitUntil(5000) { compose.onAllNodes(hasText("Настоящий звук. Полный контроль.")).fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("Настоящий звук. Полный контроль.").assertIsDisplayed()
         // Other rows must not open the sleep dialog.
         compose.onNodeWithText("Повтор очереди").performClick()
@@ -75,6 +77,7 @@ class PlayerFlowTest {
             off
         }
         back()
+        compose.waitUntil(5000) { compose.onAllNodes(hasText("Всё под тебя. Без лишнего.")).fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("Всё под тебя. Без лишнего.").assertIsDisplayed()
     }
 

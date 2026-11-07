@@ -55,7 +55,7 @@ jobs:
             set -o pipefail
             gradle --no-daemon --console=plain connectedDebugAndroidTest 2>&1 | tee emulator-tests.log
             mkdir -p ci
-            adb logcat -d -s AndroidRuntime:E TestRunner:I > ci/emulator-tests.log
+            adb logcat -d -s AndroidRuntime:E TestRunner:I > ci/logcat.txt
             python3 -c "import glob,xml.etree.ElementTree as E; files=glob.glob('app/build/outputs/androidTest-results/**/*.xml',recursive=True); assert files, 'No instrumented test results'; suites=[E.parse(f).getroot() for f in files]; assert sum(int(s.get('tests',0)) for s in suites)>=3, 'Missing flow tests'; assert all(int(s.get('failures',0))==0 and int(s.get('errors',0))==0 for s in suites), 'Instrumented test failure'"
       - name: Preserve build diagnostics
         if: failure()
@@ -63,10 +63,11 @@ jobs:
           mkdir -p ci
           cp build.log ci/last-build.log 2>/dev/null || true
           cp emulator-tests.log ci/emulator-tests.log 2>/dev/null || true
+          cp ci/logcat.txt ci/logcat.txt 2>/dev/null || true
           find app/build/outputs/androidTest-results -name '*.xml' -exec cp {} ci/ \; || true
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
-          git add -f ci/last-build.log ci/emulator-tests.log ci/TEST-*.xml
+          git add -f ci/last-build.log ci/emulator-tests.log ci/logcat.txt ci/TEST-*.xml
           git commit -m "ci: build diagnostics [skip ci]" || exit 0
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
