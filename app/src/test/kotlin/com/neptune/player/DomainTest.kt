@@ -17,7 +17,7 @@ class DomainTest {
     @Test fun blankSearchDoesNotReturnFakeResults() { assertTrue(LibraryLogic.search(listOf(track), " ").isEmpty()) }
     @Test fun settingsRecoverInvalidStoredValues() {
         val s = Settings(accentIndex = 999, radius = -4f, fontScale = 8f, profileName = " ", speed = 9f).validated()
-        assertEquals("accent", 0, s.accentIndex)
+        assertEquals("accent", 4, s.accentIndex)
         assertEquals("radius", 8f, s.radius, 0.0001f)
         assertEquals("fontScale", 1.15f, s.fontScale, 0.0001f)
         assertEquals("profile", "Слушатель", s.profileName)

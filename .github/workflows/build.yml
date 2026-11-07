@@ -58,10 +58,9 @@ jobs:
         run: |
           mkdir -p ci
           cp build.log ci/last-build.log
-          find app/build/test-results -name '*.xml' -exec cp {} ci/ \; || true
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
-          git add -f ci/last-build.log ci/TEST-*.xml
+          git add -f ci/last-build.log
           git commit -m "ci: build diagnostics [skip ci]" || exit 0
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
