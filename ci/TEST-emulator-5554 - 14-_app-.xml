@@ -1,12 +1,24 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<testsuite name="com.neptune.player.PlayerFlowTest" tests="4" failures="0" errors="0" skipped="0" time="48.597" timestamp="2026-11-07T02:37:01" hostname="localhost">
+<testsuite name="com.neptune.player.PlayerFlowTest" tests="4" failures="1" errors="0" skipped="0" time="37.327" timestamp="2026-11-07T11:57:15" hostname="localhost">
   <properties>
     <property name="device" value="emulator-5554 - 14" />
     <property name="flavor" value="" />
     <property name="project" value=":app" />
   </properties>
-  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="13.754" />
-  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="7.125" />
-  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="14.056" />
-  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="9.913" />
+  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="13.109" />
+  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="8.412" />
+  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="7.425">
+    <failure>java.lang.AssertionError: Failed to inject touch input.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (Text + EditableText contains 'Таймер сна' (ignoreCase: false))
+
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
+at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
+at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
+at com.neptune.player.PlayerFlowTest.sleepTimerOpensOnlyFromItsRowAndAlwaysCloses(PlayerFlowTest.kt:83)
+</failure>
+  </testcase>
+  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="6.729" />
 </testsuite>
