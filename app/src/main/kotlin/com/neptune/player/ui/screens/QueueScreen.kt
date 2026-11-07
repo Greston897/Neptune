@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,23 +33,23 @@ fun QueueScreen(state: NeptuneState, onBack: () -> Unit) {
     val playback by state.playback.collectAsStateWithLifecycle()
     var editing by remember { mutableStateOf(false) }
     var confirm by remember { mutableStateOf(false) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 8.dp, bottom = LocalBottomInset.current)) {
-        item { Row(Modifier.fillMaxWidth().height(56.dp), verticalAlignment = Alignment.CenterVertically) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm, bottom = LocalBottomInset.current)) {
+        item { Row(Modifier.fillMaxWidth().heightIn(min = NeRow.header), verticalAlignment = Alignment.CenterVertically) {
             NeIconButton(NeIcon.Back, "Назад", onBack)
-            NeText("Очередь", Modifier.weight(1f).padding(start = 8.dp), size = 26.sp, weight = FontWeight.ExtraBold)
+            NeText("Очередь", Modifier.weight(1f).padding(start = NeSpace.sm), size = NeType.headline, lineHeight = NeType.headlineLine, weight = FontWeight.ExtraBold, maxLines = 1)
             NeIconButton(NeIcon.Edit, if (editing) "Завершить изменение порядка" else "Изменить порядок", { editing = !editing }, selected = editing, enabled = playback.queue.isNotEmpty())
             NeIconButton(NeIcon.Trash, "Очистить очередь", { confirm = true }, color = Ne.Dim, enabled = playback.queue.isNotEmpty())
         } }
-        item { NeText(if (editing) "Стрелки меняют порядок. Нажмите на трек, чтобы включить его." else "${trackCount(playback.queue.size)} · следующий трек всегда под рукой", Modifier.padding(vertical = 14.dp), size = 12.sp, color = Ne.Dim, maxLines = 2) }
+        item { NeText(if (editing) "Стрелки меняют порядок. Нажмите на трек, чтобы включить его." else "${trackCount(playback.queue.size)} · следующий трек всегда под рукой", Modifier.padding(vertical = NeSpace.md), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 2) }
         itemsIndexed(playback.queue, key = { index, track -> "${track.id}-$index" }) { index, track ->
             TrackRow(track, index == playback.queueIndex, playback.isPlaying, { state.playbackJump(index) },
                 subtitle = if (index == playback.queueIndex) "Сейчас играет · ${track.artist}" else track.artist,
                 trailing = {
                     if (editing) Row {
-                        NeIconButton(NeIcon.ArrowUp, "Выше", { state.moveQueue(index, index - 1) }, size = 36.dp, iconSize = 16.dp, enabled = index > 0)
-                        NeIconButton(NeIcon.ArrowDown, "Ниже", { state.moveQueue(index, index + 1) }, size = 36.dp, iconSize = 16.dp, enabled = index < playback.queue.lastIndex)
-                        NeIconButton(NeIcon.Close, "Убрать из очереди", { state.removeQueue(index) }, size = 36.dp, iconSize = 16.dp, color = Ne.Dim)
-                    } else NeIconButton(NeIcon.More, "Действия с треком", { state.contextTrack = track }, size = 40.dp, iconSize = 18.dp, color = Ne.Dim)
+                        NeIconButton(NeIcon.ArrowUp, "Выше", { state.moveQueue(index, index - 1) }, size = NeTouch.min, iconSize = NeIconSize.sm, enabled = index > 0)
+                        NeIconButton(NeIcon.ArrowDown, "Ниже", { state.moveQueue(index, index + 1) }, size = NeTouch.min, iconSize = NeIconSize.sm, enabled = index < playback.queue.lastIndex)
+                        NeIconButton(NeIcon.Close, "Убрать из очереди", { state.removeQueue(index) }, size = NeTouch.min, iconSize = NeIconSize.sm, color = Ne.Dim)
+                    } else NeIconButton(NeIcon.More, "Действия с треком", { state.contextTrack = track }, size = NeTouch.min, iconSize = NeIconSize.sm, color = Ne.Dim)
                 })
         }
         if (playback.queue.isEmpty()) item { EmptyState(NeIcon.Queue, "Очередь свободна", "Включите альбом или добавьте треки через меню «В очередь».") }

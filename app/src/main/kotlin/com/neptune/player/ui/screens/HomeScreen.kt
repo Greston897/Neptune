@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -42,7 +43,10 @@ import com.neptune.player.ui.*
 import java.util.Calendar
 
 @Composable
-fun HomeScreen(state: NeptuneState, onCollection: (String, String) -> Unit, onPlayer: () -> Unit, onProfile: () -> Unit, onSettings: () -> Unit) {
+fun HomeScreen(
+    state: NeptuneState, onCollection: (String, String) -> Unit, onPlayer: () -> Unit,
+    onProfile: () -> Unit, onSettings: () -> Unit,
+) {
     val library by state.library.collectAsStateWithLifecycle()
     val users by state.users.collectAsStateWithLifecycle()
     val playback by state.playback.collectAsStateWithLifecycle()
@@ -50,105 +54,173 @@ fun HomeScreen(state: NeptuneState, onCollection: (String, String) -> Unit, onPl
     val actions = LocalLibraryActions.current
     val recent = remember(users.recent, library.tracks) { val map = library.byId; users.recent.mapNotNull(map::get) }
     val albums = remember(library.tracks) { LibraryLogic.albums(library.tracks) }
-    val greeting = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) { in 5..11 -> "Доброе утро"; in 12..17 -> "Добрый день"; in 18..22 -> "Добрый вечер"; else -> "Доброй ночи" }
+    val greeting = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+        in 5..11 -> "Доброе утро"; in 12..17 -> "Добрый день"; in 18..22 -> "Добрый вечер"; else -> "Доброй ночи"
+    }
     val featured = recent.firstOrNull() ?: library.tracks.firstOrNull()
     val featuredQueue = if (recent.isNotEmpty()) recent else library.tracks
 
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 8.dp, bottom = LocalBottomInset.current)) {
+    LazyColumn(
+        Modifier.fillMaxSize().statusBarsPadding(),
+        contentPadding = PaddingValues(
+            start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.xs, bottom = LocalBottomInset.current,
+        ),
+    ) {
+        // Header: brand left, centred avatar, settings right — all on one 56dp baseline.
         item {
-            Box(Modifier.fillMaxWidth().height(64.dp)) {
-                Row(Modifier.align(Alignment.CenterStart), verticalAlignment = Alignment.CenterVertically) {
-                    NeptuneMark(Modifier.size(24.dp))
-                    Spacer(Modifier.width(10.dp))
-                    NeText("neptune", size = 18.sp, weight = FontWeight.ExtraBold, tracking = (-0.7).sp)
+            Row(Modifier.fillMaxWidth().height(NeRow.header), verticalAlignment = Alignment.CenterVertically) {
+                Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                    NeptuneMark(Modifier.size(NeIconSize.lg))
+                    Spacer(Modifier.width(NeSpace.sm))
+                    NeText(
+                        "neptune", size = NeType.section, lineHeight = NeType.sectionLine,
+                        weight = FontWeight.ExtraBold, tracking = (-0.5).sp,
+                    )
                 }
-                Box(Modifier.align(Alignment.Center).size(52.dp).clip(CircleShape).clickable(onClick = onProfile), contentAlignment = Alignment.Center) {
-                    ProfileAvatar(Modifier.size(40.dp).semanticsAvatar(), animated = true)
+                Box(
+                    Modifier.size(NeTouch.standard).clip(CircleShape).clickable(onClick = onProfile),
+                    contentAlignment = Alignment.Center,
+                ) { ProfileAvatar(Modifier.size(36.dp).semanticsAvatar(), animated = true) }
+                Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+                    NeIconButton(
+                        NeIcon.Settings, "Настройки", onSettings, size = NeTouch.min,
+                        iconSize = NeIconSize.md, color = Ne.Dim, background = Color.White.copy(alpha = 0.06f),
+                    )
                 }
-                NeIconButton(NeIcon.Settings, "Настройки", onSettings, modifier = Modifier.align(Alignment.CenterEnd), iconSize = 21.dp, color = Ne.Dim, background = Color.White.copy(alpha = 0.06f))
             }
         }
         item {
-            Column(Modifier.padding(top = 18.dp, bottom = 22.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.size(6.dp).clip(CircleShape).background(accent()))
-                    Spacer(Modifier.width(8.dp))
-                    NeText("$greeting, ${settings.profileName}", size = 12.sp, color = Ne.Dim)
-                }
-                Spacer(Modifier.height(10.dp))
-                NeText("Твоя музыка.\nТвой ритм.", size = 36.sp, weight = FontWeight.ExtraBold, tracking = (-1.4).sp, maxLines = 2, lineHeight = 41.sp)
+            Column(Modifier.padding(top = NeSpace.lg, bottom = NeSpace.xl)) {
+                NeText(
+                    "$greeting, ${settings.profileName}", size = NeType.caption, lineHeight = NeType.captionLine,
+                    color = Ne.Dim, maxLines = 1,
+                )
+                Spacer(Modifier.height(6.dp))
+                NeText(
+                    "Твоя музыка", size = NeType.display, lineHeight = NeType.displayLine,
+                    weight = FontWeight.ExtraBold, tracking = (-0.8).sp, maxLines = 1,
+                )
             }
         }
         item {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(NeSpace.md)) {
                 QuickCollection("Любимое", trackCount(users.liked.size), NeIcon.HeartFill, Modifier.weight(1f)) { onCollection("liked", "") }
                 QuickCollection("Недавнее", trackCount(recent.size), NeIcon.Clock, Modifier.weight(1f)) { onCollection("recent", "") }
             }
         }
         if (featured != null) {
             item {
-                GlassPanel(Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 24.dp).height(224.dp)) {
-                    TrackArtwork(featured, Modifier.fillMaxSize(), 0.dp, animate = playback.isPlaying)
-                    Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color.Black.copy(alpha = 0.88f), Color.Black.copy(alpha = 0.45f), Color.Black.copy(alpha = 0.08f)))))
-                    Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = 0.35f)))))
-                    Column(Modifier.align(Alignment.CenterStart).padding(22.dp).fillMaxWidth(0.70f)) {
-                        NeText("В ТВОЕЙ ОРБИТЕ", size = 9.sp, color = Color.White.copy(alpha = 0.72f), tracking = 1.6.sp, weight = FontWeight.Bold)
-                        Spacer(Modifier.height(12.dp))
-                        NeText(featured.title, size = 28.sp, weight = FontWeight.ExtraBold, tracking = (-0.8).sp, maxLines = 2, lineHeight = 32.sp)
-                        Spacer(Modifier.height(6.dp))
-                        NeText(featured.artist, size = 12.sp, color = Color.White.copy(alpha = 0.72f))
-                        Spacer(Modifier.height(18.dp))
-                        Row(Modifier.clip(CircleShape).background(Color.White)
-                            .clickable { state.playTrack(featured, featuredQueue); onPlayer() }
-                            .padding(horizontal = 18.dp, vertical = 11.dp), verticalAlignment = Alignment.CenterVertically) {
-                            NeIconView(NeIcon.Play, 15.dp, Ne.Black)
-                            Spacer(Modifier.width(8.dp))
-                            NeText("Слушать", size = 12.sp, weight = FontWeight.Bold, color = Ne.Black)
+                // Minimum height, not a fixed one: at a large font scale the text column grows and
+                // the card grows with it instead of clipping the "Слушать" button.
+                GlassPanel(Modifier.fillMaxWidth().padding(top = NeSpace.md, bottom = NeSpace.xxl).heightIn(min = 200.dp)) {
+                    TrackArtwork(featured, Modifier.matchParentSize(), 0.dp, animate = playback.isPlaying)
+                    Box(
+                        Modifier.matchParentSize().background(
+                            Brush.horizontalGradient(
+                                listOf(
+                                    Color.Black.copy(alpha = 0.90f),
+                                    Color.Black.copy(alpha = 0.55f),
+                                    Color.Black.copy(alpha = 0.10f),
+                                ),
+                            ),
+                        ),
+                    )
+                    Column(Modifier.align(Alignment.CenterStart).padding(NeSpace.xl).fillMaxWidth(0.78f)) {
+                        NeText(
+                            if (recent.isNotEmpty()) "ПРОДОЛЖИТЬ СЛУШАТЬ" else "ИЗ МЕДИАТЕКИ",
+                            size = NeType.micro, lineHeight = NeType.microLine,
+                            color = Color.White.copy(alpha = 0.66f), tracking = 1.2.sp, weight = FontWeight.Bold,
+                        )
+                        Spacer(Modifier.height(NeSpace.sm))
+                        NeText(
+                            featured.title, size = NeType.headline, lineHeight = NeType.headlineLine,
+                            weight = FontWeight.ExtraBold, tracking = (-0.5).sp, maxLines = 2,
+                        )
+                        Spacer(Modifier.height(NeSpace.xs))
+                        NeText(
+                            featured.artist, size = NeType.caption, lineHeight = NeType.captionLine,
+                            color = Color.White.copy(alpha = 0.70f), maxLines = 1,
+                        )
+                        Spacer(Modifier.height(NeSpace.lg))
+                        Row(
+                            Modifier.clip(CircleShape).background(Color.White)
+                                .clickable { state.playTrack(featured, featuredQueue); onPlayer() }
+                                .padding(horizontal = NeSpace.lg, vertical = NeSpace.sm),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            NeIconView(NeIcon.Play, NeIconSize.xs, Ne.Black)
+                            Spacer(Modifier.width(6.dp))
+                            NeText(
+                                "Слушать", size = NeType.caption, lineHeight = NeType.captionLine,
+                                weight = FontWeight.Bold, color = Ne.Black,
+                            )
                         }
                     }
                 }
             }
         } else {
-            item { EmptyState(NeIcon.Music, "Добавь свою музыку", "Разреши доступ к аудиофайлам или импортируй треки — и главная оживёт.", action = "Добавить музыку", onAction = actions.import) }
+            item {
+                EmptyState(
+                    NeIcon.Music, "Добавь свою музыку",
+                    "Разреши доступ к аудиофайлам или импортируй треки — и главная оживёт.",
+                    action = "Добавить музыку", onAction = actions.import,
+                )
+            }
         }
         if (recent.isNotEmpty()) {
             item { SectionHeader("Вернуться к музыке", action = "Все", onAction = { onCollection("recent", "") }) }
             item {
                 GlassPanel(Modifier.fillMaxWidth()) {
-                    Column(Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
-                        recent.take(4).forEachIndexed { index, track ->
-                            TrackRow(track, playback.track?.id == track.id, playback.isPlaying, { state.playTrack(track, recent) },
-                                modifier = Modifier.padding(horizontal = 6.dp), onMore = { state.contextTrack = track })
-                            if (index < recent.take(4).lastIndex) HorizontalDivider(Modifier.padding(horizontal = 16.dp), color = Color.White.copy(alpha = 0.05f))
+                    Column(Modifier.fillMaxWidth().padding(vertical = NeSpace.xs)) {
+                        val shown = recent.take(4)
+                        shown.forEachIndexed { index, track ->
+                            TrackRow(
+                                track, playback.track?.id == track.id, playback.isPlaying,
+                                { state.playTrack(track, recent) },
+                                modifier = Modifier.padding(horizontal = 6.dp), onMore = { state.contextTrack = track },
+                            )
+                            if (index < shown.lastIndex) {
+                                HorizontalDivider(Modifier.padding(horizontal = NeSpace.lg), color = Color.White.copy(alpha = 0.05f))
+                            }
                         }
                     }
                 }
             }
-            item { Spacer(Modifier.height(20.dp)) }
+            item { Spacer(Modifier.height(NeSpace.xl)) }
         }
         if (albums.isNotEmpty()) {
-            item { SectionHeader("Альбомы для тебя", action = "Медиатека", onAction = { onCollection("albums", "") }) }
+            item { SectionHeader("Альбомы", action = "Медиатека", onAction = { onCollection("albums", "") }) }
             item {
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(vertical = 8.dp)) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(NeSpace.md),
+                    contentPadding = PaddingValues(vertical = NeSpace.sm),
+                ) {
                     items(albums, key = { it.first.first + it.first.second }) { (meta, tracks) ->
-                        AlbumCard(meta.second, meta.first, tracks.first(), { onCollection("album", "${meta.first}\u0000${meta.second}") }, Modifier.width(156.dp))
+                        AlbumCard(
+                            meta.second, meta.first, tracks.first(),
+                            { onCollection("album", meta.first + "\u0000" + meta.second) },
+                            Modifier.width(148.dp),
+                        )
                     }
                 }
             }
         }
         item {
-            GlassPanel(Modifier.fillMaxWidth().padding(top = 20.dp).clickable { onCollection("demo", "") }) {
-                Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.size(42.dp).clip(RoundedCornerShape(14.dp)).background(accent().copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
-                        NeIconView(NeIcon.Wave, 22.dp, accent())
-                    }
-                    Spacer(Modifier.width(14.dp))
+            GlassPanel(Modifier.fillMaxWidth().padding(top = NeSpace.xl).clickable { onCollection("demo", "") }) {
+                Row(Modifier.fillMaxWidth().padding(NeSpace.lg), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier.size(NeRow.leadingBadge).clip(RoundedCornerShape(12.dp))
+                            .background(accent().copy(alpha = 0.12f)),
+                        contentAlignment = Alignment.Center,
+                    ) { NeIconView(NeIcon.Wave, NeIconSize.md, accent()) }
+                    Spacer(Modifier.width(NeSpace.md))
                     Column(Modifier.weight(1f)) {
-                        NeText("Neptune Sessions", size = 14.sp, weight = FontWeight.Bold)
-                        Spacer(Modifier.height(4.dp))
-                        NeText("Шесть оригинальных аудиосессий", size = 11.sp, color = Ne.Dim)
+                        NeText("Демо-треки", size = NeType.label, lineHeight = NeType.labelLine, weight = FontWeight.SemiBold, maxLines = 1)
+                        Spacer(Modifier.height(NeSpace.xxs))
+                        NeText("Работают без разрешений", size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 1)
                     }
-                    NeIconView(NeIcon.ChevronRight, 17.dp, Ne.Faint)
+                    Spacer(Modifier.width(NeSpace.sm))
+                    NeIconView(NeIcon.ChevronRight, NeIconSize.xs, Ne.Whisper)
                 }
             }
         }
@@ -159,18 +231,21 @@ fun HomeScreen(state: NeptuneState, onCollection: (String, String) -> Unit, onPl
 
 @Composable
 private fun QuickCollection(title: String, count: String, icon: NeIcon, modifier: Modifier, onClick: () -> Unit) {
-    GlassPanel(modifier.height(86.dp).clickable(onClick = onClick)) {
-        Row(Modifier.fillMaxSize().padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(38.dp).clip(RoundedCornerShape(13.dp)).background(accent().copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
-                NeIconView(icon, 19.dp, accent())
-            }
-            Spacer(Modifier.width(12.dp))
+    GlassPanel(modifier.heightIn(min = 80.dp).clickable(onClick = onClick)) {
+        Row(
+            Modifier.fillMaxWidth().padding(NeSpace.md),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                Modifier.size(NeRow.leadingBadge).clip(RoundedCornerShape(12.dp)).background(accent().copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center,
+            ) { NeIconView(icon, NeIconSize.md, accent()) }
+            Spacer(Modifier.width(NeSpace.md))
             Column(Modifier.weight(1f)) {
-                NeText(title, size = 13.sp, weight = FontWeight.Bold)
-                Spacer(Modifier.height(4.dp))
-                NeText(count, size = 10.5.sp, color = Ne.Faint)
+                NeText(title, size = NeType.label, lineHeight = NeType.labelLine, weight = FontWeight.SemiBold, maxLines = 1)
+                Spacer(Modifier.height(NeSpace.xxs))
+                NeText(count, size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Faint, maxLines = 1)
             }
-            NeIconView(NeIcon.ChevronRight, 15.dp, Ne.Whisper)
         }
     }
 }

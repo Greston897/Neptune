@@ -38,8 +38,8 @@ import com.neptune.player.ui.*
 @Composable
 fun NameDialog(title: String, label: String, initial: String, onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
     var name by rememberSaveable { mutableStateOf(initial) }
-    AlertDialog(onDismissRequest = onDismiss, containerColor = Ne.Elevated, title = { NeText(title, size = 20.sp, weight = androidx.compose.ui.text.font.FontWeight.Bold) },
-        text = { OutlinedTextField(name, { name = it.take(40) }, label = { NeText(label, size = 12.sp) }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+    AlertDialog(onDismissRequest = onDismiss, containerColor = Ne.Elevated, title = { NeText(title, size = NeType.title, lineHeight = NeType.titleLine, weight = androidx.compose.ui.text.font.FontWeight.Bold, maxLines = 2) },
+        text = { OutlinedTextField(name, { name = it.take(40) }, label = { NeText(label, size = NeType.caption, lineHeight = NeType.captionLine) }, singleLine = true, modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = accent(), cursorColor = accent(), focusedTextColor = Ne.Text, unfocusedTextColor = Ne.Text)) },
         confirmButton = { TextButton(onClick = { onConfirm(name.trim()) }, enabled = name.isNotBlank()) { NeText("Сохранить", color = accent()) } },
         dismissButton = { TextButton(onClick = onDismiss) { NeText("Отмена", color = Ne.Dim) } })
@@ -48,8 +48,8 @@ fun NameDialog(title: String, label: String, initial: String, onDismiss: () -> U
 @Composable
 fun ConfirmDialog(title: String, text: String, action: String, onDismiss: () -> Unit, onConfirm: () -> Unit) {
     AlertDialog(onDismissRequest = onDismiss, containerColor = Ne.Elevated,
-        title = { NeText(title, size = 20.sp, weight = androidx.compose.ui.text.font.FontWeight.Bold) },
-        text = { NeText(text, size = 13.sp, color = Ne.Dim, maxLines = 5, lineHeight = 20.sp) },
+        title = { NeText(title, size = NeType.title, lineHeight = NeType.titleLine, weight = androidx.compose.ui.text.font.FontWeight.Bold, maxLines = 2) },
+        text = { NeText(text, size = NeType.label, lineHeight = NeType.bodyLine, color = Ne.Dim, maxLines = 5) },
         confirmButton = { TextButton(onClick = onConfirm) { NeText(action, color = Ne.Error) } },
         dismissButton = { TextButton(onClick = onDismiss) { NeText("Отмена", color = Ne.Dim) } })
 }
@@ -62,19 +62,23 @@ fun SleepDialog(playback: PlaybackState, onDismiss: () -> Unit, onConfirm: (Int)
         Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.58f)).clickable(onClick = onDismiss), contentAlignment = Alignment.Center) {
             GlassPanel(Modifier.fillMaxWidth().padding(horizontal = 24.dp).pointerInput(Unit) { detectTapGestures { } }, corner = 28.dp, haze = null) {
                 Column(Modifier.fillMaxWidth().padding(20.dp)) {
-                    NeText("Таймер сна", size = 20.sp, weight = androidx.compose.ui.text.font.FontWeight.Bold)
-                    Spacer(Modifier.height(6.dp))
-                    NeText("Музыка мягко остановится по таймеру.", size = 12.sp, color = Ne.Dim, maxLines = 2)
+                    NeText("Таймер сна", size = NeType.title, lineHeight = NeType.titleLine, weight = androidx.compose.ui.text.font.FontWeight.Bold)
+                    Spacer(Modifier.height(NeSpace.xs))
+                    NeText("Музыка мягко остановится по таймеру.", size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 2)
                     Spacer(Modifier.height(14.dp))
                     listOf(0, 15, 30, 45, 60, 90).forEach { minutes ->
                         val active = if (minutes == 0) playback.sleepRemainingMs == 0L
                             else playback.sleepRemainingMs in ((minutes - 15) * 60_000L + 1)..(minutes * 60_000L)
                         Row(Modifier.fillMaxWidth().heightIn(min = 52.dp).clip(RoundedCornerShape(14.dp))
-                            .background(if (active) Color.White.copy(alpha = 0.07f) else Color.Transparent)
+                            .background(if (active) accent().copy(alpha = 0.12f) else Color.Transparent)
                             .clickable { onConfirm(minutes); onDismiss() }.padding(horizontal = 14.dp, vertical = 10.dp),
                             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                            NeText(if (minutes == 0) "Выключить таймер" else "$minutes минут", Modifier.weight(1f), size = 14.sp)
-                            if (active) NeIconView(NeIcon.Check, 18.dp, accent())
+                            NeText(
+                                if (minutes == 0) "Выключить таймер" else "$minutes минут", Modifier.weight(1f),
+                                size = NeType.body, lineHeight = NeType.bodyLine, maxLines = 1,
+                                color = if (active) accent() else Ne.Text,
+                            )
+                            if (active) { Spacer(Modifier.width(NeSpace.sm)); NeIconView(NeIcon.Check, NeIconSize.sm, accent()) }
                         }
                     }
                     Spacer(Modifier.height(14.dp))

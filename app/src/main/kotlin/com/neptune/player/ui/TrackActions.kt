@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.neptune.player.model.Track
+import com.neptune.player.model.trackCount
 import com.neptune.player.state.NeptuneState
 import com.neptune.player.ui.screens.NameDialog
 
@@ -43,8 +44,12 @@ fun TrackActionsSheet(state: NeptuneState, track: Track, onDismiss: () -> Unit, 
     ModalBottomSheet(onDismissRequest = close, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = Ne.Ink, dragHandle = null) {
         Column(Modifier.fillMaxWidth().navigationBarsPadding().padding(bottom = 16.dp)) {
             Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 22.dp), verticalAlignment = Alignment.CenterVertically) {
-                TrackThumb(track, 56.dp, 10.dp); Spacer(Modifier.width(14.dp))
-                Column(Modifier.weight(1f)) { NeText(track.title, size = 17.sp, weight = FontWeight.Bold, maxLines = 2); Spacer(Modifier.height(5.dp)); NeText(track.artist, size = 12.sp, color = Ne.Dim) }
+                TrackThumb(track, NeRow.thumb, 10.dp); Spacer(Modifier.width(NeSpace.md))
+                Column(Modifier.weight(1f)) {
+                    NeText(track.title, size = NeType.section, lineHeight = NeType.sectionLine, weight = FontWeight.Bold, maxLines = 2)
+                    Spacer(Modifier.height(NeSpace.xs))
+                    NeText(track.artist, size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 1)
+                }
             }
             SettingRow(if (track.id in users.liked) "Убрать из любимого" else "В любимое", icon = if (track.id in users.liked) NeIcon.HeartFill else NeIcon.Heart) { state.like(track); close() }
             SettingRow("Играть следующим", icon = NeIcon.Next) { state.playNext(track); close() }
@@ -60,13 +65,13 @@ fun TrackActionsSheet(state: NeptuneState, track: Track, onDismiss: () -> Unit, 
         }
     }
     if (playlistPicker) AlertDialog(onDismissRequest = { playlistPicker = false }, containerColor = Ne.Elevated,
-        title = { NeText("В плейлист", size = 20.sp, weight = FontWeight.Bold) },
+        title = { NeText("В плейлист", size = NeType.title, lineHeight = NeType.titleLine, weight = FontWeight.Bold) },
         text = { Column {
             SettingRow("Новый плейлист", icon = NeIcon.Plus) { playlistPicker = false; createPlaylist = true }
-            users.playlists.forEach { p -> SettingRow(p.name, "${p.trackIds.size} треков", if (track.id in p.trackIds) NeIcon.Check else NeIcon.Music) {
+            users.playlists.forEach { p -> SettingRow(p.name, trackCount(p.trackIds.size), if (track.id in p.trackIds) NeIcon.Check else NeIcon.Music) {
                 state.addToPlaylist(p.id, track); playlistPicker = false; close()
             } }
-            if (users.playlists.isEmpty()) NeText("Создай первый плейлист — он появится здесь.", Modifier.padding(16.dp), size = 12.sp, color = Ne.Dim, maxLines = 3)
+            if (users.playlists.isEmpty()) NeText("Создай первый плейлист — он появится здесь.", Modifier.padding(NeSpace.lg), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 3)
         } }, confirmButton = {})
     if (createPlaylist) NameDialog("Новый плейлист", "Название", "", { createPlaylist = false }) {
         val p = state.createPlaylist(it); state.addToPlaylist(p.id, track); createPlaylist = false; close()

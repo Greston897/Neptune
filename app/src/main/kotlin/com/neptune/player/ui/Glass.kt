@@ -35,7 +35,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 /**
- * Black liquid-glass surface.
+ * Neutral black liquid-glass surface (no blue/graphite cast: every channel is equal).
  *
  * The visual recipe was studied from Telegram Android's blur3 pipeline (rounded panels, blurred
  * backdrop, bright top rim / dark bottom rim, scroll-aware invalidation). This is an original
@@ -51,11 +51,11 @@ val LocalBottomInset = staticCompositionLocalOf { 24.dp }
 
 @Composable
 fun glassStyle(settings: Settings): HazeStyle = HazeStyle(
-    backgroundColor = Color(0xFF07070A),
-    tints = listOf(HazeTint(Color(0xFF0D0D13).copy(alpha = settings.glassTint))),
+    backgroundColor = Color(0xFF060606),
+    tints = listOf(HazeTint(Color(0xFF0D0D0D).copy(alpha = settings.glassTint))),
     blurRadius = settings.glassBlur.dp,
     noiseFactor = 0.05f,
-    fallbackTint = HazeTint(Color(0xFF12121A).copy(alpha = 0.96f)),
+    fallbackTint = HazeTint(Color(0xFF121212).copy(alpha = 0.96f)),
 )
 
 @Composable
@@ -71,7 +71,7 @@ fun GlassPanel(
     val base = Modifier.clip(shape)
     val surface = if (s.glassEnabled && haze != null) base.hazeChild(haze, glassStyle(s)) {
         blurEnabled = Build.VERSION.SDK_INT >= 31
-    } else base.background(Color(0xFF12121A).copy(alpha = if (s.glassEnabled) 0.94f else 1f))
+    } else base.background(Color(0xFF121212).copy(alpha = if (s.glassEnabled) 0.94f else 1f))
     Box(modifier.then(surface)) {
         content()
         if (rim && s.glassEnabled) Canvas(Modifier.matchParentSize()) {

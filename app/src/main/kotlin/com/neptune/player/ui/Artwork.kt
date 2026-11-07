@@ -40,7 +40,6 @@ import com.neptune.player.model.AvatarShape
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.foundation.border
 import com.neptune.player.model.Track
 import kotlin.math.cos
 import kotlin.math.sin

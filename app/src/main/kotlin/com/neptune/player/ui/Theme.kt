@@ -8,7 +8,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -54,7 +56,7 @@ fun NeptuneTheme(settings: Settings, content: @Composable () -> Unit) {
         secondary = accent, tertiary = accent)
     val density = LocalDensity.current
     CompositionLocalProvider(LocalSettings provides settings,
-        LocalDensity provides Density(density.density, density.fontScale * settings.fontScale)) {
+        LocalDensity provides Density(density.density, combinedFontScale(density.fontScale, settings.fontScale))) {
         MaterialTheme(colorScheme = scheme, typography = NeptuneTypography, content = content)
     }
 }
@@ -69,12 +71,37 @@ private val NeptuneTypography = Typography(
     labelLarge = TextStyle(fontFamily = Manrope, fontWeight = FontWeight.Bold, fontSize = 14.sp),
     labelSmall = TextStyle(fontFamily = Manrope, fontWeight = FontWeight.SemiBold, fontSize = 11.sp),
 )
+/**
+ * The single text primitive.
+ *
+ * Two things used to break copy: `includeFontPadding` added a phantom top/bottom gap that made
+ * rows look misaligned, and the default line box clipped descenders on Cyrillic at large sizes.
+ * `PlatformTextStyle(includeFontPadding = false)` plus a proportional, trimmed line box removes
+ * both, so every label sits exactly on the grid and wraps instead of being cut in half.
+ *
+ * `lineHeight` defaults to 1.3× the size; call sites pass whole-sp tokens from [NeType].
+ */
 @Composable
 fun NeText(
     text: String, modifier: androidx.compose.ui.Modifier = androidx.compose.ui.Modifier,
-    size: TextUnit = 14.sp, weight: FontWeight = FontWeight.SemiBold, color: Color = Ne.Text,
+    size: TextUnit = NeType.label, weight: FontWeight = FontWeight.SemiBold, color: Color = Ne.Text,
     tracking: TextUnit = (-0.15).sp, align: TextAlign = TextAlign.Start, maxLines: Int = 1,
     lineHeight: TextUnit = TextUnit.Unspecified,
-) = androidx.compose.material3.Text(text, modifier, color = color, fontFamily = Manrope, fontWeight = weight,
-    fontSize = size, letterSpacing = tracking, textAlign = align, maxLines = maxLines,
-    lineHeight = if (lineHeight == TextUnit.Unspecified) size * 1.25f else lineHeight, overflow = TextOverflow.Ellipsis)
+) {
+    val resolvedLine = if (lineHeight == TextUnit.Unspecified) size * 1.3f else lineHeight
+    androidx.compose.material3.Text(
+        text = text,
+        modifier = modifier,
+        style = TextStyle(
+            color = color, fontFamily = Manrope, fontWeight = weight, fontSize = size,
+            letterSpacing = tracking, textAlign = align, lineHeight = resolvedLine,
+            platformStyle = PlatformTextStyle(includeFontPadding = false),
+            lineHeightStyle = LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Proportional,
+                trim = LineHeightStyle.Trim.Both,
+            ),
+        ),
+        maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis,
+    )
+}

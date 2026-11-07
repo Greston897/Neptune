@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
@@ -53,35 +55,38 @@ fun CollectionScreen(state: NeptuneState, kind: String, key: String, onBack: () 
             else -> emptyList()
         }
     }
-    val title = when (kind) { "liked" -> "Любимые треки"; "recent" -> "Недавно слушали"; "album" -> key.substringAfter('\u0000'); "artist" -> key; "playlist" -> playlist?.name ?: "Плейлист"; "demo" -> "Neptune Sessions"; else -> "Подборка" }
+    val title = when (kind) { "liked" -> "Любимые треки"; "recent" -> "Недавно слушали"; "album" -> key.substringAfter('\u0000'); "artist" -> key; "playlist" -> playlist?.name ?: "Плейлист"; "demo" -> "Демо-треки"; else -> "Подборка" }
     var menu by remember { mutableStateOf(false) }
     var rename by remember { mutableStateOf(false) }
     var delete by remember { mutableStateOf(false) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 8.dp, bottom = LocalBottomInset.current)) {
-        item { Row(Modifier.fillMaxWidth().height(52.dp), verticalAlignment = Alignment.CenterVertically) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm, bottom = LocalBottomInset.current)) {
+        item { Row(Modifier.fillMaxWidth().heightIn(min = NeRow.header), verticalAlignment = Alignment.CenterVertically) {
             NeIconButton(NeIcon.Back, "Назад", onBack, modifier = Modifier.padding(start = -8.dp))
-            NeText("ПОДБОРКА", Modifier.weight(1f).padding(horizontal = 8.dp), size = 10.sp, color = Ne.Dim, tracking = 1.5.sp)
+            NeText("ПОДБОРКА", Modifier.weight(1f).padding(horizontal = NeSpace.sm), size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Dim, tracking = 1.2.sp, weight = FontWeight.Bold)
             if (kind == "playlist" && playlist != null) Box {
                 NeIconButton(NeIcon.More, "Действия с плейлистом", { menu = true })
                 DropdownMenu(menu, { menu = false }, containerColor = Ne.Elevated) {
-                    DropdownMenuItem(text = { NeText("Переименовать") }, leadingIcon = { NeIconView(NeIcon.Edit, 19.dp) }, onClick = { menu = false; rename = true })
-                    DropdownMenuItem(text = { NeText("Удалить плейлист", color = Ne.Error) }, leadingIcon = { NeIconView(NeIcon.Trash, 19.dp, Ne.Error) }, onClick = { menu = false; delete = true })
+                    DropdownMenuItem(text = { NeText("Переименовать") }, leadingIcon = { NeIconView(NeIcon.Edit, NeIconSize.sm) }, onClick = { menu = false; rename = true })
+                    DropdownMenuItem(text = { NeText("Удалить плейлист", color = Ne.Error) }, leadingIcon = { NeIconView(NeIcon.Trash, NeIconSize.sm, Ne.Error) }, onClick = { menu = false; delete = true })
                 }
             }
         } }
-        item { Column(Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 22.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            if (tracks.firstOrNull() != null) TrackArtwork(tracks.first(), Modifier.size(190.dp), neRadius())
-            else Box(Modifier.size(160.dp), contentAlignment = Alignment.Center) { NeIconView(if (kind == "liked") NeIcon.Heart else NeIcon.Music, 64.dp, Ne.Whisper) }
-            Spacer(Modifier.height(22.dp))
-            NeText(title, size = 27.sp, weight = FontWeight.ExtraBold, tracking = (-0.8).sp, maxLines = 2, align = TextAlign.Center)
-            Spacer(Modifier.height(8.dp))
-            NeText("${trackCount(tracks.size)} · ${formatTime(tracks.sumOf { it.durationMs })}", size = 12.sp, color = Ne.Dim)
-            Spacer(Modifier.height(20.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                NeButton("Слушать", { state.play(tracks) }, icon = NeIcon.Play, enabled = tracks.isNotEmpty())
-                NeButton("Вперемешку", { state.play(tracks, shuffled = true) }, icon = NeIcon.Shuffle, primary = false, enabled = tracks.isNotEmpty())
+        item {
+            Column(Modifier.fillMaxWidth().padding(top = NeSpace.md, bottom = NeSpace.xxl), horizontalAlignment = Alignment.CenterHorizontally) {
+                if (tracks.firstOrNull() != null) TrackArtwork(tracks.first(), Modifier.size(184.dp), neRadius())
+                else Box(Modifier.size(160.dp), contentAlignment = Alignment.Center) { NeIconView(if (kind == "liked") NeIcon.Heart else NeIcon.Music, 56.dp, Ne.Whisper) }
+                Spacer(Modifier.height(NeSpace.xl))
+                NeText(title, size = NeType.headline, lineHeight = NeType.headlineLine, weight = FontWeight.ExtraBold, tracking = (-0.6).sp, maxLines = 2, align = TextAlign.Center)
+                Spacer(Modifier.height(NeSpace.sm))
+                NeText("${trackCount(tracks.size)} · ${formatTime(tracks.sumOf { it.durationMs })}", size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 1)
+                Spacer(Modifier.height(NeSpace.xl))
+                // Two equal cells: the pair can never overflow, whatever the font scale.
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(NeSpace.sm)) {
+                    NeButton("Слушать", { state.play(tracks) }, Modifier.weight(1f), icon = NeIcon.Play, enabled = tracks.isNotEmpty())
+                    NeButton("Вперемешку", { state.play(tracks, shuffled = true) }, Modifier.weight(1f), icon = NeIcon.Shuffle, primary = false, enabled = tracks.isNotEmpty())
+                }
             }
-        } }
+        }
         items(tracks, key = { it.id }) { track -> TrackRow(track, playback.track?.id == track.id, playback.isPlaying, { state.playTrack(track, tracks) },
             onMore = { state.contextTrack = track; state.contextPlaylist = if (kind == "playlist") key else null }) }
         if (tracks.isEmpty()) item { EmptyState(NeIcon.Music, if (kind == "liked") "Здесь будут любимые" else "Пока пусто",

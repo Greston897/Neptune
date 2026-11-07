@@ -1,21 +1,20 @@
 package com.neptune.player.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.neptune.player.data.LibraryLogic
+import com.neptune.player.model.trackCount
 import com.neptune.player.state.NeptuneState
 import com.neptune.player.ui.*
 
@@ -47,43 +46,70 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
     val results = remember(state.search, library.tracks) { state.search(library.tracks) }
     val albums = remember(results) { LibraryLogic.albums(results) }
     val artists = remember(results) { LibraryLogic.artists(results) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp, bottom = LocalBottomInset.current)) {
-        item { NeText("Поиск", Modifier.padding(vertical = 14.dp), size = 30.sp, weight = FontWeight.ExtraBold, tracking = (-1).sp) }
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
+        item { NeText("Поиск", Modifier.padding(vertical = NeSpace.md), size = NeType.display, lineHeight = NeType.displayLine, weight = FontWeight.ExtraBold, tracking = (-0.8).sp) }
         item {
-            GlassPanel(Modifier.fillMaxWidth().height(54.dp)) {
-            Row(Modifier.fillMaxSize().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-                NeIconView(NeIcon.Search, 20.dp, Ne.Dim); Spacer(Modifier.width(12.dp))
+            GlassPanel(Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
+            Row(Modifier.fillMaxWidth().padding(horizontal = NeSpace.lg, vertical = NeSpace.xs), verticalAlignment = Alignment.CenterVertically) {
+                NeIconView(NeIcon.Search, NeIconSize.md, Ne.Dim); Spacer(Modifier.width(NeSpace.md))
                 BasicTextField(state.search, { state.search = it.take(100) }, Modifier.weight(1f), singleLine = true,
-                    textStyle = TextStyle(fontFamily = Manrope, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Ne.Text),
+                    textStyle = TextStyle(fontFamily = Manrope, fontSize = NeType.body, fontWeight = FontWeight.Medium, color = Ne.Text,
+                        platformStyle = androidx.compose.ui.text.PlatformTextStyle(includeFontPadding = false)),
                     cursorBrush = SolidColor(accent()), keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                     keyboardActions = KeyboardActions(onSearch = { state.submitSearch() }),
-                    decorationBox = { field -> if (state.search.isEmpty()) NeText("Трек, исполнитель или альбом", size = 13.sp, color = Ne.Faint); field() })
-                if (state.search.isNotEmpty()) NeIconButton(NeIcon.Close, "Очистить поиск", { state.search = "" }, size = 40.dp, iconSize = 16.dp, color = Ne.Dim)
+                    decorationBox = { field ->
+                        androidx.compose.foundation.layout.Box(contentAlignment = Alignment.CenterStart) {
+                            if (state.search.isEmpty()) NeText("Трек, исполнитель или альбом", size = NeType.label, lineHeight = NeType.labelLine, color = Ne.Faint)
+                            field()
+                        }
+                    })
+                if (state.search.isNotEmpty()) NeIconButton(NeIcon.Close, "Очистить поиск", { state.search = "" }, size = NeTouch.min, iconSize = NeIconSize.xs, color = Ne.Dim)
             }
             }
         }
         if (state.search.isBlank()) {
             if (users.searches.isNotEmpty()) {
                 item { SectionHeader("Недавние запросы", action = "Очистить", onAction = state::clearSearches) }
-                items(users.searches) { q -> Row(Modifier.fillMaxWidth().clickable { state.search = q }.padding(vertical = 13.dp), verticalAlignment = Alignment.CenterVertically) {
-                    NeIconView(NeIcon.Clock, 18.dp, Ne.Faint); Spacer(Modifier.width(12.dp)); NeText(q, Modifier.weight(1f), size = 13.sp, color = Ne.Dim); NeIconView(NeIcon.ChevronRight, 15.dp, Ne.Whisper)
-                } }
+                items(users.searches) { q ->
+                    Row(Modifier.fillMaxWidth().heightIn(min = NeTouch.standard).clickable { state.search = q }.padding(vertical = NeSpace.md),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        NeIconView(NeIcon.Clock, NeIconSize.sm, Ne.Faint); Spacer(Modifier.width(NeSpace.md))
+                        NeText(q, Modifier.weight(1f), size = NeType.label, lineHeight = NeType.labelLine, color = Ne.Dim, maxLines = 1)
+                        Spacer(Modifier.width(NeSpace.sm)); NeIconView(NeIcon.ChevronRight, NeIconSize.xs, Ne.Whisper)
+                    }
+                }
             }
-            item { SectionHeader("Исследуй альбомы", Modifier.padding(top = 18.dp)) }
+            item { SectionHeader("Альбомы", Modifier.padding(top = NeSpace.lg)) }
             items(LibraryLogic.albums(library.tracks).chunked(2)) { row ->
-                Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(Modifier.fillMaxWidth().padding(vertical = NeSpace.sm), horizontalArrangement = Arrangement.spacedBy(NeSpace.md)) {
                     row.forEach { (meta, tracks) -> AlbumCard(meta.second, meta.first, tracks.first(), { onCollection("album", "${meta.first}\u0000${meta.second}") }, Modifier.weight(1f)) }
                     if (row.size == 1) Spacer(Modifier.weight(1f))
                 }
             }
         } else {
-            item { Row(Modifier.padding(vertical = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf("Всё", "Треки", "Альбомы", "Артисты").forEachIndexed { i, title -> NeChip(title, filter == i, { filter = i; state.submitSearch() }) }
-            } }
+            // The filter row scrolls horizontally: four chips previously overflowed a 360dp
+            // screen and the last one was clipped mid-label.
+            item {
+                Row(
+                    Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(vertical = NeSpace.lg),
+                    horizontalArrangement = Arrangement.spacedBy(NeSpace.sm),
+                ) {
+                    listOf("Всё", "Треки", "Альбомы", "Артисты").forEachIndexed { i, title ->
+                        NeChip(title, filter == i, { filter = i; state.submitSearch() })
+                    }
+                }
+            }
             if (results.isEmpty()) item { EmptyState(NeIcon.Search, "Ничего не найдено", "Попробуйте другое название или имя исполнителя. Поиск работает по всей вашей медиатеке.", action = "Сбросить", onAction = { state.search = "" }) }
             if (filter == 0 || filter == 1) items(results, key = { it.id }) { track -> TrackRow(track, playback.track?.id == track.id, playback.isPlaying, { state.playTrack(track, results); state.submitSearch() }, onMore = { state.contextTrack = track }) }
-            if (filter == 0 || filter == 2) items(albums) { (meta, tracks) -> AlbumCard(meta.second, meta.first, tracks.first(), { onCollection("album", "${meta.first}\u0000${meta.second}") }, Modifier.fillMaxWidth().padding(vertical = 8.dp)) }
-            if (filter == 0 || filter == 3) items(artists) { (artist, tracks) -> SettingRow(artist, "${tracks.size} треков", NeIcon.Artist, onClick = { onCollection("artist", artist) }) }
+            if (filter == 0 || filter == 2) items(albums.chunked(2), key = { it.first().first.first + it.first().first.second }) { row ->
+                Row(Modifier.fillMaxWidth().padding(vertical = NeSpace.sm), horizontalArrangement = Arrangement.spacedBy(NeSpace.md)) {
+                    row.forEach { (meta, tracks) -> AlbumCard(meta.second, meta.first, tracks.first(), { onCollection("album", "${meta.first}\u0000${meta.second}") }, Modifier.weight(1f)) }
+                    if (row.size == 1) Spacer(Modifier.weight(1f))
+                }
+            }
+            if (filter == 0 || filter == 3) items(artists, key = { it.first }) { (artist, tracks) ->
+                Panel(Modifier.padding(vertical = NeSpace.xs)) { SettingRow(artist, trackCount(tracks.size), NeIcon.Artist, onClick = { onCollection("artist", artist) }) }
+            }
         }
     }
 }
