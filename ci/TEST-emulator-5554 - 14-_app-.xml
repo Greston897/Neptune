@@ -1,20 +1,20 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<testsuite name="com.neptune.player.PlayerFlowTest" tests="4" failures="1" errors="0" skipped="0" time="47.375" timestamp="2026-11-07T02:17:53" hostname="localhost">
+<testsuite name="com.neptune.player.PlayerFlowTest" tests="4" failures="1" errors="0" skipped="0" time="32.929" timestamp="2026-11-07T02:27:27" hostname="localhost">
   <properties>
     <property name="device" value="emulator-5554 - 14" />
     <property name="flavor" value="" />
     <property name="project" value=":app" />
   </properties>
-  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="9.542" />
-  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="5.797" />
-  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="26.27">
-    <failure>androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
-at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
-at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
-at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:27)
-at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:26)
-at com.neptune.player.PlayerFlowTest.sleepTimerOpensOnlyFromItsRowAndAlwaysCloses(PlayerFlowTest.kt:66)
+  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="10.768" />
+  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="5.976" />
+  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="7.112">
+    <failure>java.lang.AssertionError: expected:&lt;0&gt; but was:&lt;1&gt;
+at org.junit.Assert.fail(Assert.java:89)
+at org.junit.Assert.failNotEquals(Assert.java:835)
+at org.junit.Assert.assertEquals(Assert.java:120)
+at org.junit.Assert.assertEquals(Assert.java:146)
+at com.neptune.player.PlayerFlowTest.sleepTimerOpensOnlyFromItsRowAndAlwaysCloses(PlayerFlowTest.kt:73)
 </failure>
   </testcase>
-  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="4.554" />
+  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="6.915" />
 </testsuite>
