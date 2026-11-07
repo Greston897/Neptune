@@ -10,9 +10,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -58,10 +58,15 @@ class LayoutTest {
         }
     }
 
-    @Test fun iconsStaySquareInsideANarrowParent() {
+    @Test fun iconsStaySquareNextToALongLabel() {
         host {
-            // A 40dp-wide column used to squash the glyph into an ellipse.
-            Column(Modifier.width(40.dp)) {
+            // The real regression: an unweighted label ate the row and squashed the glyph into an
+            // ellipse. The label must take the flexible cell and the icon must keep its square.
+            Row(Modifier.width(200.dp)) {
+                NeText(
+                    "Очень длинная подпись, которая не должна сжимать иконку",
+                    Modifier.weight(1f).testTag("label"), maxLines = 1,
+                )
                 NeIconView(NeIcon.Play, NeIconSize.lg, modifier = Modifier.testTag("glyph"))
             }
         }
@@ -69,6 +74,8 @@ class LayoutTest {
         val density = compose.density.density
         assertEquals("icon must stay square", b.width, b.height, 1.0f)
         assertEquals("icon must keep its declared size", NeIconSize.lg.value * density, b.width, 1.5f)
+        val label = compose.onNodeWithTag("label", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        assertTrue("label must leave room for the glyph", label.right <= b.left + 1f)
     }
 
     @Test fun longTrackTitleNeverPushesControlsOffScreen() {
@@ -130,13 +137,9 @@ class LayoutTest {
 
     @Test fun selectedTabIsExposedToAccessibility() {
         host { NeptuneNavBar(route = "library") {} }
-        val library = compose.onAllNodes(hasContentDescription("Медиатека")).fetchSemanticsNodes()
-        assertTrue("library tab must be marked selected",
-            library.any { it.config.getOrNull(SemanticsProperties.Selected) == true })
-        val home = compose.onAllNodes(hasContentDescription("Главная")).fetchSemanticsNodes()
-        assertTrue("home tab must exist", home.isNotEmpty())
-        assertTrue("inactive tab must not report selected",
-            home.none { it.config.getOrNull(SemanticsProperties.Selected) == true })
+        compose.onNodeWithContentDescription("Медиатека").assertIsSelected()
+        compose.onNodeWithContentDescription("Главная").assertIsNotSelected()
+        compose.onNodeWithContentDescription("Поиск").assertIsNotSelected()
     }
 
     @Test fun tabLabelsFitInsideTheirCells() {
