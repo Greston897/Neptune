@@ -36,6 +36,7 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeChild
 import androidx.compose.ui.graphics.BlendMode
 import kotlin.math.cos
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 /**
@@ -166,14 +167,31 @@ fun GlassPanel(
     }
 }
 
-/** Shared drift phase so every sampled copy of the ambient backdrop stays pixel-aligned. */
+/** Discrete phases in one 26s ambient drift. See [rememberAmbientPhase]. */
+private const val AmbientSteps = 120
+private const val Tau = 6.2831853f
+
+/**
+ * Shared drift phase so every sampled copy of the ambient backdrop stays pixel-aligned.
+ *
+ * The value is deliberately **quantised**. This layer is expensive — gradient aurora arcs plus a
+ * full-screen radial vignette — and it is rasterised twice per invalidation, once as the background
+ * haze source and once as the content haze source. Returning the raw animated value recomposed and
+ * redrew both copies at display rate, which is what made the richer 2.7 backdrop crawl on a software
+ * renderer. Over a 26s drift, 120 steps move a glow by well under a pixel, so snapping to them cuts
+ * redraws to roughly five per second with no visible stepping.
+ *
+ * The glass sheen is *not* quantised: it is two rounded rects per panel and must stay smooth.
+ */
 @Composable
 fun rememberAmbientPhase(): Float {
     val s = LocalSettings.current
     return if (s.animations && s.ambientGlow) {
-        rememberInfiniteTransition(label = "ambient").animateFloat(
-            0f, 6.2831853f, infiniteRepeatable(tween(26000, easing = LinearEasing), RepeatMode.Restart), label = "drift",
+        val raw = rememberInfiniteTransition(label = "ambient").animateFloat(
+            0f, Tau, infiniteRepeatable(tween(26000, easing = LinearEasing), RepeatMode.Restart), label = "drift",
         ).value
+        val step = Tau / AmbientSteps
+        (raw / step).roundToInt() * step
     } else 0.8f
 }
 
@@ -224,7 +242,7 @@ fun AmbientBackground(modifier: Modifier = Modifier, phase: Float = rememberAmbi
                 drawArc(
                     brush = Brush.horizontalGradient(listOf(Color.Transparent, hue.copy(alpha = 0.05f), Color.Transparent)),
                     startAngle = start, sweepAngle = 148f, useCenter = false, topLeft = tl, size = sz,
-                    style = Stroke(width = 24.dp.toPx(), cap = StrokeCap.Round),
+                    style = Stroke(width = 18.dp.toPx(), cap = StrokeCap.Round),
                 )
                 drawArc(
                     brush = Brush.horizontalGradient(listOf(Color.Transparent, hue.copy(alpha = 0.10f), Color.Transparent)),

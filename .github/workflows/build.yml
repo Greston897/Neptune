@@ -48,6 +48,8 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
       - name: Android UI and playback tests
+        # A wedged emulator must fail fast instead of holding the branch for half an hour.
+        timeout-minutes: 14
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
