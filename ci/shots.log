@@ -1,1 +1,2 @@
-/home/runner/work/_temp/dc2626b6-5878-45cf-b6d4-b7d829e0d23a.sh: line 6: adb: command not found
+* daemon not running; starting now at tcp:5037
+* daemon started successfully

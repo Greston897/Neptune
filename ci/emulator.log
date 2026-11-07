@@ -1,1 +1,5 @@
-nohup: failed to run command 'emulator': No such file or directory
+INFO         | Android emulator version 37.2.13.0 (build_id 16740729) (CL:N/A)
+INFO         | Graphics backend: gfxstream
+ERROR        | Unknown AVD name [neptune], use -list-avds to see valid list.
+ERROR        | HOME is defined but there is no file neptune.ini in $HOME/.android/avd
+ERROR        | (Note: Directories are searched in the order $ANDROID_AVD_HOME, $ANDROID_SDK_HOME/avd and $HOME/.android/avd)
