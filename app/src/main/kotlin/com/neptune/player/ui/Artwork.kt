@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -37,6 +37,7 @@ import com.neptune.player.model.AvatarShape
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import com.neptune.player.model.Track
 import kotlin.math.sin
 
@@ -105,14 +106,17 @@ fun TrackThumb(track: Track, size: Dp = 48.dp, corner: Dp = 8.dp) = TrackArtwork
 fun NeptuneMark(modifier: Modifier = Modifier, tone: Color = Ne.Text, animated: Boolean = false) {
     val settings = LocalSettings.current
     val moving = animated && settings.animations && settings.artworkMotion
-    val scale by if (moving) rememberInfiniteTransition(label = "neptune").animateFloat(0.97f, 1.03f,
-        infiniteRepeatable(tween(3600, easing = LinearEasing), RepeatMode.Reverse), label = "breath")
-        else androidx.compose.runtime.mutableFloatStateOf(1f)
+    // Read the animation inside graphicsLayer, never in composition. `Modifier.scale(animated)`
+    // recomposes this Image every frame; the layer block only updates a transform property. This is
+    // the same invalidation-scope mistake that wedged the emulator when Ambient was enriched.
+    val breath: State<Float> = if (moving) rememberInfiniteTransition(label = "neptune").animateFloat(
+        0.97f, 1.03f, infiniteRepeatable(tween(3600, easing = LinearEasing), RepeatMode.Reverse), label = "breath")
+        else remember { mutableFloatStateOf(1f) }
     Image(
         painter = painterResource(R.drawable.ne_orbit),
         contentDescription = null,
         contentScale = ContentScale.Fit,
-        modifier = modifier.scale(scale),
+        modifier = modifier.graphicsLayer { scaleX = breath.value; scaleY = breath.value },
         colorFilter = ColorFilter.tint(tone),
     )
 }
@@ -134,11 +138,14 @@ fun ProfileAvatar(modifier: Modifier = Modifier, animated: Boolean = false) {
 @Composable
 fun EqualizerBars(playing: Boolean, modifier: Modifier = Modifier, color: Color = Ne.Text, maxHeight: Dp = 16.dp) {
     val animated = playing && LocalSettings.current.animations
-    val phase = if (animated) rememberInfiniteTransition(label = "equalizer").animateFloat(0f, 6.28f,
-        infiniteRepeatable(tween(900, easing = LinearEasing), RepeatMode.Restart), label = "bars").value else 0f
+    val phase: State<Float> = if (animated) rememberInfiniteTransition(label = "equalizer").animateFloat(0f, 6.28f,
+        infiniteRepeatable(tween(900, easing = LinearEasing), RepeatMode.Restart), label = "bars")
+        else remember { mutableFloatStateOf(0f) }
     Canvas(modifier.size(width = 18.dp, height = maxHeight)) {
+        // Draw-phase read: animating bars redraw the Canvas without recomposing the row around it.
+        val p = phase.value
         for (i in 0..2) {
-            val h = if (animated) size.height * (0.35f + 0.6f * ((sin((phase + i * 1.7).toDouble()).toFloat() + 1f) / 2f)) else size.height * (0.3f + i * 0.15f)
+            val h = if (animated) size.height * (0.35f + 0.6f * ((sin((p + i * 1.7).toDouble()).toFloat() + 1f) / 2f)) else size.height * (0.3f + i * 0.15f)
             drawRoundRect(color, Offset(i * size.width / 3f, size.height - h), Size(size.width / 5f, h),
                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(2f))
         }

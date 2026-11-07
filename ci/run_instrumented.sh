@@ -26,11 +26,35 @@ raw="$(mktemp /tmp/neptune-logcat-XXXXXX)"
 adb logcat -v threadtime >"$raw" 2>&1 &
 logcat_pid=$!
 
-status=0
-gradle --no-daemon --console=plain connectedDebugAndroidTest 2>&1 | tee emulator-tests.log || status=$?
+# The step log cannot be downloaded from every environment, and when the guest dies the guest's own
+# log dies with it. Sample the HOST side too: total RAM, the emulator's RSS, and whether adb still
+# sees a device. If qemu is being OOM-killed by the host, this is the only place it shows up.
+health=ci/host-health.txt
+: > "$health"
+(
+  while true; do
+    {
+      echo "--- $(date -u +%H:%M:%S) ---"
+      free -m | head -2
+      ps -eo rss,comm,args --sort=-rss 2>/dev/null | grep -E "qemu|emulator|java" | head -4 | cut -c1-160
+      adb devices | tr '\n' ' '
+      echo
+    } >> "$health" 2>&1
+    sleep 5
+  done
+) &
+health_pid=$!
 
-kill "$logcat_pid" 2>/dev/null || true
-wait "$logcat_pid" 2>/dev/null || true
+status=0
+# Smaller heap and fewer workers than the build step: here the guest needs the RAM, and this step
+# only compiles the test APK. Two heavy JVMs plus a software-GPU guest is what starves the host.
+gradle --no-daemon --console=plain --max-workers=2 -Dorg.gradle.jvmargs=-Xmx2560m \
+  connectedDebugAndroidTest 2>&1 | tee emulator-tests.log || status=$?
+
+kill "$logcat_pid" "$health_pid" 2>/dev/null || true
+wait "$logcat_pid" "$health_pid" 2>/dev/null || true
+# Host OOM killer verdict, if any. Needs sudo on the runner; harmless when unavailable.
+{ echo "--- dmesg: oom / qemu ---"; sudo dmesg 2>/dev/null | grep -iE "out of memory|oom-kill|killed process" | tail -20; } >> "$health" || true
 grep -E "TestRunner|AndroidRuntime|com.neptune|permissioncontroller|ActivityTaskManager|lowmemorykiller|lmkd|FATAL|ANR in" \
   "$raw" > ci/logcat.txt || true
 rm -f "$raw"

@@ -61,7 +61,7 @@ jobs:
           # The guest died mid-suite twice (`device 'emulator-5554' not found`, 25 of 29 tests).
           # Software-GPU blur plus a media session is memory-hungry; the 2 GB default is the
           # tightest resource here, so give the guest room instead of masking it with retries.
-          ram-size: 4096M
+          ram-size: 3072M
           heap-size: 512M
           disable-animations: true
           # ONE line on purpose: this action runs every script line in its own `sh -c`, so an
@@ -77,7 +77,7 @@ jobs:
           find app/build/outputs/androidTest-results -name '*.xml' -exec cp {} ci/ \; || true
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
-          git add -f ci/last-build.log ci/emulator-tests.log ci/logcat.txt ci/TEST-*.xml
+          git add -f ci/last-build.log ci/emulator-tests.log ci/logcat.txt ci/host-health.txt ci/TEST-*.xml
           git commit -m "ci: build diagnostics [skip ci]" || exit 0
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
