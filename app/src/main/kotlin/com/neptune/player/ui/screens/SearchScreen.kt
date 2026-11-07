@@ -83,7 +83,7 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
             if (results.isEmpty()) item { EmptyState(NeIcon.Search, "Ничего не найдено", "Попробуйте другое название или имя исполнителя. Поиск работает по всей вашей медиатеке.", action = "Сбросить", onAction = { state.search = "" }) }
             if (filter == 0 || filter == 1) items(results, key = { it.id }) { track -> TrackRow(track, playback.track?.id == track.id, playback.isPlaying, { state.playTrack(track, results); state.submitSearch() }, onMore = { state.contextTrack = track }) }
             if (filter == 0 || filter == 2) items(albums) { (meta, tracks) -> AlbumCard(meta.second, meta.first, tracks.first(), { onCollection("album", "${meta.first}\u0000${meta.second}") }, Modifier.fillMaxWidth().padding(vertical = 8.dp)) }
-            if (filter == 0 || filter == 3) items(artists) { (artist, tracks) -> SettingRow(artist, "${tracks.size} треков", NeIcon.Artist, { onCollection("artist", artist) }) }
+            if (filter == 0 || filter == 3) items(artists) { (artist, tracks) -> SettingRow(artist, "${tracks.size} треков", NeIcon.Artist, onClick = { onCollection("artist", artist) }) }
         }
     }
 }

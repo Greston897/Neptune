@@ -75,10 +75,10 @@ fun SettingsScreen(state: NeptuneState, onProfile: () -> Unit, onAppearance: () 
             }
         }
         item { SettingsGroup("ПРИЛОЖЕНИЕ") {
-            SettingRow("Внешний вид", "Цвета, форма, движение и размер текста", NeIcon.Palette, onAppearance)
-            SettingRow("Воспроизведение", "Скорость, громкость и таймер сна", NeIcon.Wave, onPlayback)
-            SettingRow("Музыка и данные", "Доступ к файлам, импорт и история", NeIcon.Folder, onData)
-            SettingRow("О Neptune", "Версия ${BuildConfig.VERSION_NAME} · локальный плеер", NeIcon.Info, onAbout)
+            SettingRow("Внешний вид", "Цвета, форма, движение и размер текста", NeIcon.Palette, onClick = onAppearance)
+            SettingRow("Воспроизведение", "Скорость, громкость и таймер сна", NeIcon.Wave, onClick = onPlayback)
+            SettingRow("Музыка и данные", "Доступ к файлам, импорт и история", NeIcon.Folder, onClick = onData)
+            SettingRow("О Neptune", "Версия ${BuildConfig.VERSION_NAME} · локальный плеер", NeIcon.Info, onClick = onAbout)
         } }
         item { NeText("Настройки сохраняются автоматически", Modifier.fillMaxWidth().padding(top = 24.dp), size = 11.sp, color = Ne.Faint, align = TextAlign.Center) }
     }
@@ -203,7 +203,7 @@ fun PlaybackSettingsScreen(state: NeptuneState, onBack: () -> Unit) {
         } }
         item { SettingsGroup("КОМФОРТ") {
             SettingRow("Таймер сна", if (p.sleepRemainingMs > 0) "Остановится через ${formatTime(p.sleepRemainingMs)}" else "Выключен", NeIcon.Timer) { sleep = true }
-            SettingRow("Повтор очереди", when (p.repeat) { 1 -> "Вся очередь"; 2 -> "Один трек"; else -> "Выключен" }, NeIcon.Repeat, state::cycleRepeat)
+            SettingRow("Повтор очереди", when (p.repeat) { 1 -> "Вся очередь"; 2 -> "Один трек"; else -> "Выключен" }, NeIcon.Repeat, onClick = state::cycleRepeat)
             ToggleRow("Перемешивание", "Случайный порядок воспроизведения", p.shuffle) { state.toggleShuffle() }
             if (Build.VERSION.SDK_INT >= 33) SettingRow("Уведомление плеера", "Управление с экрана блокировки и из шторки", NeIcon.Bell) {
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) state.message("Уведомления уже разрешены")
@@ -224,12 +224,12 @@ fun DataScreen(state: NeptuneState, onBack: () -> Unit, onRecent: () -> Unit = {
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)) {
         item { ScreenTitle("Музыка и данные", onBack, "Твоя коллекция остаётся на твоём устройстве.") }
         item { SettingsGroup("ИСТОЧНИКИ") {
-            SettingRow("Музыка на устройстве", if (library.permission) "${library.localCount} локальных треков · доступ разрешён" else "Нет доступа к аудиофайлам", NeIcon.Device, if (library.permission) actions.appSettings else actions.permission)
-            SettingRow("Импорт аудиофайлов", "Выбрать музыку через системный проводник", NeIcon.Folder, actions.import)
-            SettingRow("Обновить медиатеку", if (library.loading) "Сканирование…" else "Найти новые треки", NeIcon.Reset, state::refreshLibrary)
+            SettingRow("Музыка на устройстве", if (library.permission) "${library.localCount} локальных треков · доступ разрешён" else "Нет доступа к аудиофайлам", NeIcon.Device, onClick = if (library.permission) actions.appSettings else actions.permission)
+            SettingRow("Импорт аудиофайлов", "Выбрать музыку через системный проводник", NeIcon.Folder, onClick = actions.import)
+            SettingRow("Обновить медиатеку", if (library.loading) "Сканирование…" else "Найти новые треки", NeIcon.Reset, onClick = state::refreshLibrary)
         } }
         item { SettingsGroup("ИСТОРИЯ") {
-            SettingRow("Недавно прослушанные", "${users.recent.size} треков в истории", NeIcon.Clock, onRecent)
+            SettingRow("Недавно прослушанные", "${users.recent.size} треков в истории", NeIcon.Clock, onClick = onRecent)
             SettingRow("Очистить историю", "Не затрагивает любимое и плейлисты", NeIcon.Trash) { clear = true }
         } }
         item { NeText("Neptune Sessions — шесть оригинальных синтезированных аудиосессий. Они доступны без разрешений. Обложки локальных треков читаются из системной медиатеки.", Modifier.padding(top = 22.dp), size = 11.sp, color = Ne.Faint, maxLines = 5, lineHeight = 17.sp) }

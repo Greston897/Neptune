@@ -160,7 +160,7 @@ fun EmptyState(icon: NeIcon, title: String, text: String, modifier: Modifier = M
 }
 
 @Composable
-fun SettingRow(title: String, subtitle: String? = null, icon: NeIcon? = null, onClick: (() -> Unit)? = null, trailing: (@Composable () -> Unit)? = null) {
+fun SettingRow(title: String, subtitle: String? = null, icon: NeIcon? = null, trailing: (@Composable () -> Unit)? = null, onClick: (() -> Unit)? = null) {
     val haptic = LocalHaptics.current
     Row(Modifier.fillMaxWidth().heightIn(min = 64.dp).then(if (onClick != null) Modifier.clickable(role = Role.Button) { haptic(); onClick() } else Modifier).padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
         if (icon != null) { Box(Modifier.size(34.dp).clip(RoundedCornerShape(10.dp)).background(Color.White.copy(alpha = 0.06f)), contentAlignment = Alignment.Center) { NeIconView(icon, 18.dp, Ne.Dim) }; Spacer(Modifier.width(12.dp)) }
