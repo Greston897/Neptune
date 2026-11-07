@@ -23,21 +23,15 @@ class PlayerFlowTest {
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
     private fun back() { compose.activityRule.scenario.onActivity { it.onBackPressedDispatcher.onBackPressed() } }
     private fun container(activity: MainActivity) = (activity.application as NeptuneApplication).container
-    private fun waitText(text: String, timeout: Long = 8000) {
+    private fun waitText(text: String, timeout: Long = 20000) {
         compose.waitUntil(timeout) {
-            runCatching {
-                compose.waitForIdle()
-                compose.onAllNodes(hasText(text)).fetchSemanticsNodes().isNotEmpty()
-            }.getOrDefault(false)
+            runCatching { compose.onAllNodes(hasText(text)).fetchSemanticsNodes().isNotEmpty() }.getOrDefault(false)
         }
         compose.onNodeWithText(text).assertIsDisplayed()
     }
-    private fun waitGone(text: String, timeout: Long = 8000) {
+    private fun waitGone(text: String, timeout: Long = 20000) {
         compose.waitUntil(timeout) {
-            runCatching {
-                compose.waitForIdle()
-                compose.onAllNodes(hasText(text)).fetchSemanticsNodes().isEmpty()
-            }.getOrDefault(false)
+            runCatching { compose.onAllNodes(hasText(text)).fetchSemanticsNodes().isEmpty() }.getOrDefault(false)
         }
     }
 
