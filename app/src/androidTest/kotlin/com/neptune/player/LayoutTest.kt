@@ -194,7 +194,11 @@ class LayoutTest {
         cells.zipWithNext().forEach { (a, b) ->
             assertTrue("transport cells overlap: ${a.right} vs ${b.left}", a.right <= b.left + 1f)
         }
-        assertTrue("transport must stay on one line", cells.all { kotlin.math.abs(it.top - cells.first().top) <= 1f })
+        // Cells are deliberately different sizes (play/pause is 48dp, the rest 44dp), so
+        // CenterVertically aligns their centres, not their tops. The centre line is the invariant.
+        val centre = (cells.first().top + cells.first().bottom) / 2
+        assertTrue("transport must share one centre line: ${cells.map { (it.top + it.bottom) / 2 }}",
+            cells.all { kotlin.math.abs((it.top + it.bottom) / 2 - centre) <= 1f })
     }
 
     /**

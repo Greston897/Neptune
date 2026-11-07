@@ -232,9 +232,9 @@ fun AmbientBackground(modifier: Modifier = Modifier, phase: Float = rememberAmbi
             // a Gaussian blur turns a straight line back into a straight line, but smears an arc
             // into a soft directional glow. drawArc is used instead of a cubic Path so no Path is
             // allocated per frame. Each ribbon is a wide faint pass plus a narrow brighter core.
-            for (i in 0 until 3) {
+            for (i in 0 until 2) {
                 val drift = phase * (0.6f + i * 0.25f)
-                val oy = h * (0.14f + i * 0.30f) + sin(drift) * h * 0.03f
+                val oy = h * (0.18f + i * 0.42f) + sin(drift) * h * 0.03f
                 val hue = if (i == 1) Color.White else tint
                 val tl = Offset(-w * 0.25f, oy - h * 0.42f)
                 val sz = Size(w * 1.5f, h * 0.84f)
