@@ -74,9 +74,10 @@ jobs:
           mkdir -p ci apk
           cp build.log ci/last-build.log
           cp app/build/outputs/apk/release/app-release.apk apk/Neptune.apk
+          find app/build/outputs/androidTest-results -name '*.xml' -exec cp {} ci/ \; || true
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
-          git add -f ci/last-build.log apk/Neptune.apk app/neptune.jks
+          git add -f ci/last-build.log ci/TEST-*.xml apk/Neptune.apk app/neptune.jks
           git commit -m "ci: verified apk [skip ci]" || echo "nothing to commit"
           for i in 1 2 3; do
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true

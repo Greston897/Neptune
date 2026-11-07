@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
@@ -63,7 +64,7 @@ fun NowPlayingScreen(state: NeptuneState, onBack: () -> Unit, onQueue: () -> Uni
     var sleep by remember { mutableStateOf(false) }
     var volumeOpen by remember { mutableStateOf(false) }
     var drag by remember { mutableFloatStateOf(0f) }
-    Column(Modifier.fillMaxSize().background(MaterialBackground()).statusBarsPadding().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp)) {
+    Column(Modifier.fillMaxSize().background(MaterialBackground()).statusBarsPadding().navigationBarsPadding().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp)) {
         Row(Modifier.fillMaxWidth().height(56.dp), verticalAlignment = Alignment.CenterVertically) {
             NeIconButton(NeIcon.ChevronDown, "Вернуться назад", onBack)
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
