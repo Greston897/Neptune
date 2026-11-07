@@ -45,7 +45,7 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
     val results = remember(state.search, library.tracks) { state.search(library.tracks) }
     val albums = remember(results) { LibraryLogic.albums(results) }
     val artists = remember(results) { LibraryLogic.artists(results) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item { NeText("Поиск", Modifier.padding(vertical = NeSpace.md), size = NeType.display, lineHeight = NeType.displayLine, weight = FontWeight.ExtraBold, tracking = (-0.8).sp) }
         item {
             GlassPanel(Modifier.fillMaxWidth().heightIn(min = NeRow.field)) {

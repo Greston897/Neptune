@@ -2,6 +2,7 @@ package com.neptune.player
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.neptune.player.ui.DockMetrics
 import com.neptune.player.ui.NeIcon
 import com.neptune.player.ui.NeIconSize
 import com.neptune.player.ui.NeRow
@@ -65,6 +66,31 @@ class DesignSystemTest {
         // Worst case must still fit: a two-line settings title inside a flexible row.
         val worst = combinedFontScale(2f, 1.2f)
         assertTrue(NeType.body.value * worst * 2 < NeRow.setting.value)
+    }
+
+    /**
+     * The top pill and the bottom dock must reserve clearance exactly when they are visible —
+     * otherwise a header hides under the pill, or a list ends beneath the navbar.
+     */
+    @Test fun trackPillClearanceMatchesItsVisibility() {
+        assertTrue("no track means no pill", DockMetrics.topHeight("home", false) == 0.dp)
+        assertTrue("immersive player hides the pill", DockMetrics.topHeight("player", true) == 0.dp)
+        assertTrue("settings subpage hides the pill", DockMetrics.topHeight("appearance", true) == 0.dp)
+        listOf("home", "search", "library", "settings", "collection/liked/-").forEach { route ->
+            val inset = DockMetrics.topHeight(route, true)
+            assertTrue("$route must clear the pill", inset > NeRow.pill)
+        }
+        // Identity up top and transport down bottom are independent surfaces.
+        assertTrue(DockMetrics.showsTrackPill("home", true))
+        assertTrue(DockMetrics.showsMiniPlayer("home", true))
+    }
+
+    @Test fun pillTokensAreOnGridAndLeaveRoomForArtwork() {
+        assertEquals("pill height must be whole dp", NeRow.pill.value, kotlin.math.round(NeRow.pill.value), 0.0001f)
+        assertTrue("pill must be a touch target", NeRow.pill >= NeTouch.min)
+        assertTrue("artwork must fit inside the capsule", NeRow.pillArt < NeRow.pill)
+        assertTrue("artwork must stay tappable-sized", NeRow.pillArt >= 32.dp)
+        assertTrue(DockMetrics.PillMaxWidth > NeRow.pill * 3)
     }
 
     @Test fun everyIconHasAResourceAndTabsHaveBoldTwins() {

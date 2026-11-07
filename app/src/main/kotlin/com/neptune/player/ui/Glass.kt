@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
@@ -51,6 +52,30 @@ val LocalContentHaze = staticCompositionLocalOf<HazeState?> { null }
 /** Bottom clearance reserved for the floating dock, so lists never end underneath the navbar. */
 val LocalBottomInset = staticCompositionLocalOf { 24.dp }
 
+/** Top clearance reserved for the floating now-playing pill, so headers never sit underneath it. */
+val LocalTopInset = staticCompositionLocalOf { 0.dp }
+
+/**
+ * Shared specular sweep phase, as a *getter* rather than a value.
+ *
+ * Every panel shimmer uses one clock, so the highlights travel across the UI as one wave instead of
+ * each cell flickering on its own. It is published as `() -> Float` on purpose: a per-frame `Float`
+ * in a composition local would recompose every panel on every frame, while reading the underlying
+ * State inside the draw lambda invalidates only the draw phase.
+ */
+val LocalSheenPhase = staticCompositionLocalOf<() -> Float> { { 0.35f } }
+
+@Composable
+fun rememberSheenPhase(): () -> Float {
+    val s = LocalSettings.current
+    return if (s.animations) {
+        val phase = rememberInfiniteTransition(label = "sheen").animateFloat(
+            0f, 1f, infiniteRepeatable(tween(9000, easing = LinearEasing), RepeatMode.Restart), label = "sweep",
+        )
+        remember(phase) { { phase.value } }
+    } else remember { { 0.35f } }
+}
+
 /**
  * Blur recipe.
  *
@@ -83,6 +108,8 @@ fun GlassPanel(
     val s = LocalSettings.current
     val shape = RoundedCornerShape(corner)
     val base = Modifier.clip(shape)
+    val sheenPhase = LocalSheenPhase.current
+    val sheenTint = accent()
     val style = glassStyle(s)
     // Uniform RenderEffect blur only. Haze's progressive/shader path looks marginally nicer but
     // collapses to a crawl on software renderers (and some low-end GPUs), so it is not worth it.
@@ -94,6 +121,33 @@ fun GlassPanel(
     // heightIn(min = 52.dp), a quick tile with heightIn(min = 80.dp)) the row was pinned to the top
     // and looked "завышено". Centring by default puts icon + label on the panel's centre line.
     Box(modifier.then(surface), contentAlignment = contentAlignment) {
+        // Sheen sits *under* the content so icons and text stay crisp, and is always present: a
+        // static pearlescent lift plus a travelling accent-tinted highlight. Drawn with two rounded
+        // rects, so it costs nothing like the shader blur that had to be removed in 2.4.
+        if (s.glassEnabled) Canvas(Modifier.matchParentSize()) {
+            val phase = sheenPhase()
+            val r = CornerRadius(corner.toPx().coerceAtMost(size.minDimension / 2f))
+            drawRoundRect(
+                brush = Brush.linearGradient(
+                    listOf(Color.White.copy(alpha = 0.055f), Color.Transparent, sheenTint.copy(alpha = 0.05f)),
+                    start = Offset.Zero, end = Offset(size.width, size.height),
+                ),
+                cornerRadius = r,
+            )
+            val band = size.width * 0.55f + size.height * 0.45f
+            val head = -size.height + (size.width + size.height * 2f) * phase
+            drawRoundRect(
+                brush = Brush.linearGradient(
+                    0f to Color.Transparent,
+                    0.42f to sheenTint.copy(alpha = 0.10f),
+                    0.5f to Color.White.copy(alpha = 0.13f),
+                    0.58f to sheenTint.copy(alpha = 0.10f),
+                    1f to Color.Transparent,
+                    start = Offset(head - band / 2f, 0f), end = Offset(head + band / 2f, size.height),
+                ),
+                cornerRadius = r,
+            )
+        }
         content()
         if (rim && s.glassEnabled) Canvas(Modifier.matchParentSize()) {
             val r = corner.toPx().coerceAtMost(size.minDimension / 2f)

@@ -54,6 +54,9 @@ object NeRow {
     val header: Dp = 56.dp
     /** Input field height; the row inside is centred by GlassPanel. */
     val field: Dp = 56.dp
+    /** Top now-playing pill: a fully rounded capsule, artwork on the left. */
+    val pill: Dp = 52.dp
+    val pillArt: Dp = 36.dp
     val thumbCompact: Dp = 44.dp
     val thumb: Dp = 52.dp
     val leadingBadge: Dp = 40.dp

@@ -72,7 +72,7 @@ fun ScreenTitle(title: String, onBack: (() -> Unit)? = null, subtitle: String? =
 @Composable
 fun SettingsScreen(state: NeptuneState, onProfile: () -> Unit, onAppearance: () -> Unit, onPlayback: () -> Unit, onData: () -> Unit, onAbout: () -> Unit) {
     val settings = LocalSettings.current
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Настройки", subtitle = "Всё под тебя. Без лишнего.") }
         item {
             Column(

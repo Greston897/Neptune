@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -57,11 +58,23 @@ object DockMetrics {
     val NavHeight = 68.dp
     val MiniHeight = 72.dp
     val Breath = NeSpace.xxl
+    val PillTop = NeSpace.sm
+    val PillMaxWidth = 340.dp
 
     fun showsNavbar(route: String?): Boolean =
         route in Tab.entries.map { it.route } || route?.startsWith("collection/") == true
 
     fun showsMiniPlayer(route: String?, hasTrack: Boolean): Boolean = hasTrack && showsNavbar(route)
+
+    /**
+     * The top pill carries *identity* (artwork, title, artist); the bottom mini-player keeps
+     * *transport*. Both are shown on tab/collection routes, neither on the immersive full player.
+     */
+    fun showsTrackPill(route: String?, hasTrack: Boolean): Boolean = hasTrack && showsNavbar(route)
+
+    /** Top clearance a screen must reserve so its header never sits underneath the pill. */
+    fun topHeight(route: String?, hasTrack: Boolean): Dp =
+        if (showsTrackPill(route, hasTrack)) PillTop + NeRow.pill + Gap else 0.dp
 
     fun height(route: String?, hasTrack: Boolean): Dp {
         val nav = showsNavbar(route)
@@ -111,6 +124,46 @@ fun NeptuneNavBar(route: String?, onSelect: (Tab) -> Unit) {
                     }
                 }
             }
+        }
+    }
+}
+
+/**
+ * Floating now-playing capsule, centred at the top of the screen.
+ *
+ * Reads as a single rounded object: artwork on the left, title over artist, live equalizer on the
+ * right. Tapping it opens the full player. The pill deliberately carries no transport buttons —
+ * those stay in the mini-player, so the two surfaces do not duplicate each other's controls.
+ */
+@Composable
+fun TrackPill(playback: PlaybackState, onOpen: () -> Unit, modifier: Modifier = Modifier) {
+    val track = playback.track ?: return
+    GlassPanel(
+        modifier.widthIn(max = DockMetrics.PillMaxWidth).fillMaxWidth().height(NeRow.pill),
+        corner = NeRow.pill / 2, haze = LocalContentHaze.current,
+    ) {
+        Row(
+            Modifier.fillMaxSize()
+                .clickable(onClickLabel = "Открыть плеер", onClick = onOpen)
+                .semantics { contentDescription = "Сейчас играет: ${track.title} — ${track.artist}" }
+                .padding(start = NeSpace.xs, end = NeSpace.md),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TrackThumb(track, NeRow.pillArt, 12.dp)
+            Spacer(Modifier.width(NeSpace.md))
+            Column(Modifier.weight(1f)) {
+                NeText(
+                    track.title, size = NeType.label, lineHeight = NeType.labelLine,
+                    weight = FontWeight.Bold, maxLines = 1,
+                )
+                Spacer(Modifier.height(NeSpace.xxs))
+                NeText(
+                    if (playback.isBuffering) "Загрузка…" else track.artist,
+                    size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Dim, maxLines = 1,
+                )
+            }
+            Spacer(Modifier.width(NeSpace.sm))
+            EqualizerBars(playback.isPlaying, color = accent(), maxHeight = 14.dp)
         }
     }
 }

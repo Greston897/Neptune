@@ -62,7 +62,7 @@ fun HomeScreen(
     LazyColumn(
         Modifier.fillMaxSize().statusBarsPadding(),
         contentPadding = PaddingValues(
-            start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.xs, bottom = LocalBottomInset.current,
+            start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.xs + LocalTopInset.current, bottom = LocalBottomInset.current,
         ),
     ) {
         // Header: brand left, centred avatar, settings right — all on one 56dp baseline.

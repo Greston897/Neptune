@@ -64,4 +64,6 @@ enum class NeIcon(@DrawableRes val res: Int, @DrawableRes val boldRes: Int = res
     Bell(R.drawable.ne_bell),
     ChevronRight(R.drawable.ne_chevron_right),
     Logout(R.drawable.ne_logout),
+    /** Brand mark: the same orbit glyph the launcher icon uses. */
+    Orbit(R.drawable.ne_orbit),
 }

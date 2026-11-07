@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -70,12 +71,16 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
             val backgroundHaze = remember { HazeState() }
             val contentHaze = remember { HazeState() }
             val ambientPhase = rememberAmbientPhase()
+            val sheenPhase = rememberSheenPhase()
             val navigationBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-            val bottomInset = navigationBottom + DockMetrics.height(route, playback.track != null) + DockMetrics.Breath
+            val hasTrack = playback.track != null
+            val bottomInset = navigationBottom + DockMetrics.height(route, hasTrack) + DockMetrics.Breath
+            val topInset = DockMetrics.topHeight(route, hasTrack)
             Box(Modifier.fillMaxSize()) {
                 // Sibling backdrop source: glass panels inside the NavHost sample this layer.
                 AmbientBackground(Modifier.fillMaxSize().haze(backgroundHaze), ambientPhase)
-                CompositionLocalProvider(LocalBackgroundHaze provides backgroundHaze, LocalContentHaze provides contentHaze, LocalBottomInset provides bottomInset) {
+                CompositionLocalProvider(LocalBackgroundHaze provides backgroundHaze, LocalContentHaze provides contentHaze,
+                    LocalBottomInset provides bottomInset, LocalTopInset provides topInset, LocalSheenPhase provides sheenPhase) {
                     // Full-size content source: the floating dock samples everything that scrolls under it.
                     Box(Modifier.fillMaxSize().haze(contentHaze)) {
                         AmbientBackground(Modifier.fillMaxSize(), ambientPhase)
@@ -99,6 +104,15 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                                 CollectionScreen(state, backStack.arguments?.getString("kind") ?: "", (backStack.arguments?.getString("key") ?: "").let { if (it == "-") "" else it }, { nav.popBackStack() }) { nav.popBackStack() }
                             }
                         }
+                    }
+                    // Identity up top, transport down bottom: the pill never covers a header because
+                    // every screen reserves LocalTopInset in its content padding.
+                    if (DockMetrics.showsTrackPill(route, hasTrack)) {
+                        TrackPill(
+                            playback, { nav.navigateOnce("player") },
+                            Modifier.align(Alignment.TopCenter).statusBarsPadding()
+                                .padding(top = DockMetrics.PillTop, start = NeSpace.xl, end = NeSpace.xl),
+                        )
                     }
                     if (!fullPlayer) PlayerDock(Modifier.align(Alignment.BottomCenter), true, state, playback, { nav.navigateOnce("player") }, route) { tab -> nav.navigateTab(tab) }
                     SnackbarHost(snackbar, Modifier.align(Alignment.BottomCenter).padding(bottom = bottomInset + 8.dp, start = 16.dp, end = 16.dp)) {

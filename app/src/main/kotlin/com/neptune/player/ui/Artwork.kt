@@ -131,6 +131,13 @@ private fun DrawScope.drawCover(seed: Int, tint: Color, phase: Float) {
 @Composable
 fun TrackThumb(track: Track, size: Dp = 48.dp, corner: Dp = 8.dp) = TrackArtwork(track, Modifier.size(size), corner)
 
+/**
+ * In-app brand mark.
+ *
+ * Uses the very same `orbit` glyph as the adaptive launcher icon, so the avatar, the Home wordmark
+ * and the About page all read as one brand. The previous asset was a flat white disc with no
+ * internal detail, which looked like a placeholder next to the stroked icon set.
+ */
 @Composable
 fun NeptuneMark(modifier: Modifier = Modifier, tone: Color = Ne.Text, animated: Boolean = false) {
     val settings = LocalSettings.current
@@ -138,8 +145,13 @@ fun NeptuneMark(modifier: Modifier = Modifier, tone: Color = Ne.Text, animated: 
     val scale by if (moving) rememberInfiniteTransition(label = "neptune").animateFloat(0.97f, 1.03f,
         infiniteRepeatable(tween(3600, easing = LinearEasing), RepeatMode.Reverse), label = "breath")
         else androidx.compose.runtime.mutableFloatStateOf(1f)
-    Image(painterResource(R.drawable.neptune_white), contentDescription = null,
-        modifier = modifier.scale(scale), colorFilter = if (tone == Ne.Text) null else ColorFilter.tint(tone))
+    Image(
+        painter = painterResource(R.drawable.ne_orbit),
+        contentDescription = null,
+        contentScale = ContentScale.Fit,
+        modifier = modifier.scale(scale),
+        colorFilter = ColorFilter.tint(tone),
+    )
 }
 
 @Composable

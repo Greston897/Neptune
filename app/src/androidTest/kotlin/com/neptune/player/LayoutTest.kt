@@ -327,6 +327,46 @@ class LayoutTest {
             cells.maxOf { it.width } - cells.minOf { it.width } <= 1.0f)
     }
 
+    /**
+     * The top pill is a centred capsule of exactly the token height. It must not grow when the
+     * sheen/rim overlays are added: those use matchParentSize and must never feed back into layout.
+     */
+    @Test fun trackPillIsACentredCapsuleOfTheTokenHeight() {
+        val playback = PlaybackState(track = longTrack, isPlaying = true, durationMs = 245000, positionMs = 30000)
+        host {
+            Box(Modifier.width(360.dp).testTag("holder")) {
+                TrackPill(playback, {}, Modifier.align(Alignment.TopCenter).testTag("pill"))
+            }
+        }
+        val holder = compose.onNodeWithTag("holder", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val pill = compose.onNodeWithTag("pill", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val expected = NeRow.pill.value * compose.density.density
+        assertTrue("pill height ${pill.height} must equal token $expected", kotlin.math.abs(pill.height - expected) <= 1.5f)
+        assertTrue("pill must be horizontally centred",
+            kotlin.math.abs((pill.left + pill.right) / 2 - (holder.left + holder.right) / 2) <= 1.5f)
+        assertTrue("pill must be narrower than its holder", pill.width < holder.width)
+    }
+
+    /** The pill announces both the track and the artist, not just "now playing". */
+    @Test fun trackPillAnnouncesTrackAndArtist() {
+        val playback = PlaybackState(track = longTrack, isPlaying = true, durationMs = 245000, positionMs = 30000)
+        host { Box(Modifier.width(360.dp)) { TrackPill(playback, {}) } }
+        compose.onNodeWithContentDescription("Сейчас играет: ${longTrack.title} — ${longTrack.artist}")
+            .assertIsDisplayed()
+    }
+
+    /**
+     * Regression guard for the always-on glass sheen: it is drawn with matchParentSize, so it must
+     * not inflate the panel. A fillMaxSize overlay here would have made every panel expand.
+     */
+    @Test fun glassSheenOverlayDoesNotInflateThePanel() {
+        host { GlassPanel(Modifier.testTag("panel").size(120.dp)) { Box(Modifier.size(20.dp)) } }
+        val b = compose.onNodeWithTag("panel", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val expected = 120f * compose.density.density
+        assertTrue("sheen inflated panel width: ${b.width} vs $expected", kotlin.math.abs(b.width - expected) <= 1.5f)
+        assertTrue("sheen inflated panel height: ${b.height} vs $expected", kotlin.math.abs(b.height - expected) <= 1.5f)
+    }
+
     @Test fun noPromotionalCopyIsRendered() {
         host {
             Column {

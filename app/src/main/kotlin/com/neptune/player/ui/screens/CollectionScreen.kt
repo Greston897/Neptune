@@ -59,7 +59,7 @@ fun CollectionScreen(state: NeptuneState, kind: String, key: String, onBack: () 
     var menu by remember { mutableStateOf(false) }
     var rename by remember { mutableStateOf(false) }
     var delete by remember { mutableStateOf(false) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm, bottom = LocalBottomInset.current)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item { Row(Modifier.fillMaxWidth().heightIn(min = NeRow.header), verticalAlignment = Alignment.CenterVertically) {
             NeIconButton(NeIcon.Back, "Назад", onBack, modifier = Modifier.padding(start = -8.dp))
             NeText("ПОДБОРКА", Modifier.weight(1f).padding(horizontal = NeSpace.sm), size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Dim, tracking = 1.2.sp, weight = FontWeight.Bold)
