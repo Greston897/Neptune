@@ -53,6 +53,18 @@ jobs:
           set -o pipefail
           gradle --no-daemon --console=plain testDebugUnitTest assembleRelease 2>&1 | tee build.log | tail -n 100
 
+      - name: Preserve build diagnostics
+        if: failure()
+        run: |
+          mkdir -p ci
+          cp build.log ci/last-build.log
+          git config user.name "neptune-ci"
+          git config user.email "ci@neptune.local"
+          git add -f ci/last-build.log
+          git commit -m "ci: build diagnostics [skip ci]" || exit 0
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
       - name: Publish APK
         if: success()
         run: |
