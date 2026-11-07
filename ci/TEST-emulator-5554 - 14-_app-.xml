@@ -1,21 +1,25 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<testsuite name="com.neptune.player.PlayerFlowTest" tests="4" failures="1" errors="0" skipped="0" time="66.969" timestamp="2026-11-07T12:07:01" hostname="localhost">
+<testsuite name="com.neptune.player.PlayerFlowTest" tests="4" failures="1" errors="0" skipped="0" time="45.033" timestamp="2026-11-07T12:18:16" hostname="localhost">
   <properties>
     <property name="device" value="emulator-5554 - 14" />
     <property name="flavor" value="" />
     <property name="project" value=":app" />
   </properties>
-  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="14.109" />
-  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="15.282" />
-  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="28.14">
-    <failure>androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="9.773" />
+  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="6.17" />
+  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="25.057">
+    <failure>java.lang.AssertionError: Timed out waiting for 'Таймер сна'. Roots: SemanticsConfiguration&#64;1b5de78{  }
+at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:39)
+at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:30)
+at com.neptune.player.PlayerFlowTest.clickText(PlayerFlowTest.kt:49)
+at com.neptune.player.PlayerFlowTest.sleepTimerOpensOnlyFromItsRowAndAlwaysCloses(PlayerFlowTest.kt:94)
+... 54 trimmed
+Caused by: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
 at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
 at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
-at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:31)
-at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:30)
-at com.neptune.player.PlayerFlowTest.clickText(PlayerFlowTest.kt:42)
-at com.neptune.player.PlayerFlowTest.sleepTimerOpensOnlyFromItsRowAndAlwaysCloses(PlayerFlowTest.kt:87)
+at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:32)
+... 58 more
 </failure>
   </testcase>
-  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="7.872" />
+  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="2.704" />
 </testsuite>
