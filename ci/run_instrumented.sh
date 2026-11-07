@@ -60,7 +60,17 @@ grep -E "TestRunner|AndroidRuntime|com.neptune|permissioncontroller|ActivityTask
 rm -f "$raw"
 
 # A genuine gate: non-zero here fails the step, because this whole file is one shell.
-python3 ci/check_instrumented.py || status=$?
+# The verdict is teed to a file AND appended to the gradle log: step stdout is not downloadable from
+# every environment, so a verdict that only exists there is a verdict nobody can read after the fact.
+# pipefail is set, so `|| status=$?` still sees python's exit code through tee.
+python3 ci/check_instrumented.py 2>&1 | tee ci/gate-verdict.txt || status=$?
+
+{
+  echo
+  echo "================ instrumented gate ================"
+  cat ci/gate-verdict.txt
+  echo "instrumented suite exit status: $status"
+} >> emulator-tests.log
 
 echo "instrumented suite exit status: $status"
 exit "$status"

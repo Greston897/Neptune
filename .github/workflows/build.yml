@@ -77,7 +77,7 @@ jobs:
           find app/build/outputs/androidTest-results -name '*.xml' -exec cp {} ci/ \; || true
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
-          git add -f ci/last-build.log ci/emulator-tests.log ci/logcat.txt ci/host-health.txt ci/TEST-*.xml
+          git add -f ci/last-build.log ci/emulator-tests.log ci/logcat.txt ci/host-health.txt ci/gate-verdict.txt ci/TEST-*.xml
           git commit -m "ci: build diagnostics [skip ci]" || exit 0
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
@@ -86,11 +86,14 @@ jobs:
         run: |
           mkdir -p ci apk
           cp build.log ci/last-build.log
+          # Refresh the test log on success as well. Committing it only on failure left the repo
+          # permanently showing the last FAILED run, which reads as "still broken" after a green one.
+          cp emulator-tests.log ci/emulator-tests.log
           cp app/build/outputs/apk/release/app-release.apk apk/Neptune.apk
           find app/build/outputs/androidTest-results -name '*.xml' -exec cp {} ci/ \; || true
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
-          git add -f ci/last-build.log ci/TEST-*.xml apk/Neptune.apk app/neptune.jks
+          git add -f ci/last-build.log ci/emulator-tests.log ci/gate-verdict.txt ci/TEST-*.xml apk/Neptune.apk app/neptune.jks
           git commit -m "ci: verified apk [skip ci]" || echo "nothing to commit"
           for i in 1 2 3; do
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
