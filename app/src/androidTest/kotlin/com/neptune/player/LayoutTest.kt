@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -245,6 +246,85 @@ class LayoutTest {
         }
         // Descenders and capitals must not change the box: Trim.Both used to make each one differ.
         assertTrue("label boxes differ: $hs", hs.max() - hs.min() <= 1.0f)
+    }
+
+    /**
+     * The defect: GlassPanel is a Box, and a Box defaults to TopStart. A panel with
+     * heightIn(min = 56.dp) whose row is only 24dp tall pinned that row to the top edge, so the
+     * search field's icon and text sat ~16dp above the centre line ("завышено").
+     */
+    @Test fun panelCentresContentShorterThanItself() {
+        host {
+            GlassPanel(Modifier.testTag("panel").size(width = 240.dp, height = 80.dp)) {
+                Box(Modifier.testTag("inner").size(24.dp))
+            }
+        }
+        val panel = compose.onNodeWithTag("panel", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val inner = compose.onNodeWithTag("inner", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val panelCy = (panel.top + panel.bottom) / 2
+        val innerCy = (inner.top + inner.bottom) / 2
+        assertTrue("content pinned to the top: panel centre $panelCy vs content centre $innerCy",
+            kotlin.math.abs(panelCy - innerCy) <= 1.0f)
+    }
+
+    /** Same regression on the horizontal axis: a narrow row must be centred, not left-aligned. */
+    @Test fun panelCentresContentOnBothAxes() {
+        host {
+            GlassPanel(Modifier.testTag("panel").size(120.dp)) {
+                Box(Modifier.testTag("inner").size(20.dp))
+            }
+        }
+        val panel = compose.onNodeWithTag("panel", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val inner = compose.onNodeWithTag("inner", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        assertTrue("horizontally off-centre", kotlin.math.abs((panel.left + panel.right) / 2 - (inner.left + inner.right) / 2) <= 1.0f)
+        assertTrue("vertically off-centre", kotlin.math.abs((panel.top + panel.bottom) / 2 - (inner.top + inner.bottom) / 2) <= 1.0f)
+    }
+
+    /**
+     * The quick tiles ("Любимое" / "Недавнее") had a grey/accent plate behind the icon and a
+     * TopStart panel, so icon, title and count all floated high. The icon's centre line must now
+     * match the centre of the text block beside it.
+     */
+    @Test fun leadingIconSharesTheCentreLineOfItsLabelBlock() {
+        host {
+            Row(Modifier.testTag("row"), verticalAlignment = Alignment.CenterVertically) {
+                NeIconView(NeIcon.Heart, NeIconSize.xl, modifier = Modifier.testTag("icon"))
+                Column {
+                    NeText("Любимое", size = NeType.label, lineHeight = NeType.labelLine)
+                    NeText("12 треков", size = NeType.caption, lineHeight = NeType.captionLine)
+                }
+            }
+        }
+        val icon = compose.onNodeWithTag("icon", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val row = compose.onNodeWithTag("row", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        assertTrue("icon not on the row centre line",
+            kotlin.math.abs((icon.top + icon.bottom) / 2 - (row.top + row.bottom) / 2) <= 1.0f)
+    }
+
+    /** A bare leading icon must not reserve the old 40dp badge cell (which implied a plate). */
+    @Test fun leadingIconCellIsTheBareTokenSize() {
+        host { Box(Modifier.size(NeRow.leadingIcon).testTag("cell")) }
+        val b = compose.onNodeWithTag("cell", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val expected = NeRow.leadingIcon.value * compose.density.density
+        assertTrue("leading icon cell is $expected px wide, got ${b.width}", kotlin.math.abs(b.width - expected) <= 1.0f)
+        assertTrue("leading icon cell must be square", kotlin.math.abs(b.width - b.height) <= 1.0f)
+    }
+
+    /** Selection in the nav bar is colour + weight only: the glyph keeps its exact token size. */
+    @Test fun navGlyphsAreIdenticalSquaresWhetherSelectedOrNot() {
+        host { NeptuneNavBar(route = "home") {} }
+        compose.onNodeWithContentDescription("Главная").assertIsSelected()
+        compose.onNodeWithContentDescription("Поиск").assertIsNotSelected()
+        // Every tab cell keeps the same measured square footprint: selection must not inflate it
+        // with a capsule, which is what the old 52x28dp plate did.
+        val cells = listOf("Главная", "Поиск", "Медиатека", "Настройки").map {
+            compose.onNodeWithContentDescription(it).fetchSemanticsNode().boundsInRoot
+        }
+        cells.forEach { it.let { b -> assertTrue("tab cell has zero size", b.width > 0f && b.height > 0f) } }
+        assertTrue("tab cells differ in height: ${cells.map { it.height }}",
+            cells.maxOf { it.height } - cells.minOf { it.height } <= 1.0f)
+        assertTrue("tab cells differ in width: ${cells.map { it.width }}",
+            cells.maxOf { it.width } - cells.minOf { it.width } <= 1.0f)
     }
 
     @Test fun noPromotionalCopyIsRendered() {

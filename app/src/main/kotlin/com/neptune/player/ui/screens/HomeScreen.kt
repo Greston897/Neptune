@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -84,7 +83,7 @@ fun HomeScreen(
                 Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
                     NeIconButton(
                         NeIcon.Settings, "Настройки", onSettings, size = NeTouch.min,
-                        iconSize = NeIconSize.md, color = Ne.Dim, background = Color.White.copy(alpha = 0.06f),
+                        iconSize = NeIconSize.lg, color = Ne.Dim,
                     )
                 }
             }
@@ -209,11 +208,9 @@ fun HomeScreen(
         item {
             GlassPanel(Modifier.fillMaxWidth().padding(top = NeSpace.xl).clickable { onCollection("demo", "") }) {
                 Row(Modifier.fillMaxWidth().padding(NeSpace.lg), verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        Modifier.size(NeRow.leadingBadge).clip(RoundedCornerShape(12.dp))
-                            .background(accent().copy(alpha = 0.12f)),
-                        contentAlignment = Alignment.Center,
-                    ) { NeIconView(NeIcon.Wave, NeIconSize.md, accent()) }
+                    Box(Modifier.size(NeRow.leadingIcon), contentAlignment = Alignment.Center) {
+                        NeIconView(NeIcon.Wave, NeIconSize.lg, accent())
+                    }
                     Spacer(Modifier.width(NeSpace.md))
                     Column(Modifier.weight(1f)) {
                         NeText("Демо-треки", size = NeType.label, lineHeight = NeType.labelLine, weight = FontWeight.SemiBold, maxLines = 1)
@@ -232,20 +229,17 @@ fun HomeScreen(
 
 @Composable
 private fun QuickCollection(title: String, count: String, icon: NeIcon, modifier: Modifier, onClick: () -> Unit) {
-    GlassPanel(modifier.heightIn(min = 80.dp).clickable(onClick = onClick)) {
+    GlassPanel(modifier.heightIn(min = 76.dp).clickable(onClick = onClick)) {
         Row(
-            Modifier.fillMaxWidth().padding(NeSpace.md),
+            Modifier.fillMaxWidth().padding(horizontal = NeSpace.lg, vertical = NeSpace.md),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
-                Modifier.size(NeRow.leadingBadge).clip(RoundedCornerShape(12.dp)).background(accent().copy(alpha = 0.12f)),
-                contentAlignment = Alignment.Center,
-            ) { NeIconView(icon, NeIconSize.md, accent()) }
+            NeIconView(icon, NeIconSize.xl, accent())
             Spacer(Modifier.width(NeSpace.md))
             Column(Modifier.weight(1f)) {
                 NeText(title, size = NeType.label, lineHeight = NeType.labelLine, weight = FontWeight.SemiBold, maxLines = 1)
                 Spacer(Modifier.height(NeSpace.xxs))
-                NeText(count, size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Faint, maxLines = 1)
+                NeText(count, size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 1)
             }
         }
     }

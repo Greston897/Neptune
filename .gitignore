@@ -10,3 +10,4 @@ ci/job.log
 ci/logs.zip
 ci/TEST-*.xml
 image-search/
+ci/__pycache__/

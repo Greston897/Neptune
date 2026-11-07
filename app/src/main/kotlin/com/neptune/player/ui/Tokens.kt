@@ -52,9 +52,13 @@ object NeRow {
     val track: Dp = 72.dp
     val setting: Dp = 68.dp
     val header: Dp = 56.dp
+    /** Input field height; the row inside is centred by GlassPanel. */
+    val field: Dp = 56.dp
     val thumbCompact: Dp = 44.dp
     val thumb: Dp = 52.dp
     val leadingBadge: Dp = 40.dp
+    /** Bare leading icon cell: keeps the text start line aligned without a plate behind the glyph. */
+    val leadingIcon: Dp = 28.dp
 }
 
 /** Type scale. Line height is explicit so Manrope never clips descenders or Cyrillic diacritics. */

@@ -26,10 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.neptune.player.data.LibraryLogic
@@ -49,22 +48,44 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
         item { NeText("Поиск", Modifier.padding(vertical = NeSpace.md), size = NeType.display, lineHeight = NeType.displayLine, weight = FontWeight.ExtraBold, tracking = (-0.8).sp) }
         item {
-            GlassPanel(Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
-            Row(Modifier.fillMaxWidth().padding(horizontal = NeSpace.lg, vertical = NeSpace.xs), verticalAlignment = Alignment.CenterVertically) {
-                NeIconView(NeIcon.Search, NeIconSize.md, Ne.Dim); Spacer(Modifier.width(NeSpace.md))
-                BasicTextField(state.search, { state.search = it.take(100) }, Modifier.weight(1f), singleLine = true,
-                    textStyle = TextStyle(fontFamily = Manrope, fontSize = NeType.body, fontWeight = FontWeight.Medium, color = Ne.Text,
-                        platformStyle = androidx.compose.ui.text.PlatformTextStyle(includeFontPadding = false)),
-                    cursorBrush = SolidColor(accent()), keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(onSearch = { state.submitSearch() }),
-                    decorationBox = { field ->
-                        androidx.compose.foundation.layout.Box(contentAlignment = Alignment.CenterStart) {
-                            if (state.search.isEmpty()) NeText("Трек, исполнитель или альбом", size = NeType.label, lineHeight = NeType.labelLine, color = Ne.Faint)
-                            field()
-                        }
-                    })
-                if (state.search.isNotEmpty()) NeIconButton(NeIcon.Close, "Очистить поиск", { state.search = "" }, size = NeTouch.min, iconSize = NeIconSize.xs, color = Ne.Dim)
-            }
+            GlassPanel(Modifier.fillMaxWidth().heightIn(min = NeRow.field)) {
+                Row(
+                    Modifier.fillMaxWidth().padding(horizontal = NeSpace.lg, vertical = NeSpace.sm),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    NeIconView(NeIcon.Search, NeIconSize.lg, Ne.Dim)
+                    Spacer(Modifier.width(NeSpace.md))
+                    // The field's own text style must match NeText's line box, otherwise the typed
+                    // text and the placeholder sit on different baselines inside the same row.
+                    BasicTextField(
+                        value = state.search,
+                        onValueChange = { state.search = it.take(100) },
+                        modifier = Modifier.weight(1f),
+                        singleLine = true,
+                        textStyle = neFieldTextStyle(),
+                        cursorBrush = SolidColor(accent()),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                        keyboardActions = KeyboardActions(onSearch = { state.submitSearch() }),
+                        decorationBox = { field ->
+                            Box(Modifier.heightIn(min = NeIconSize.lg), contentAlignment = Alignment.CenterStart) {
+                                if (state.search.isEmpty()) {
+                                    NeText(
+                                        "Трек, исполнитель или альбом", size = NeType.body,
+                                        lineHeight = NeType.bodyLine, color = Ne.Faint,
+                                    )
+                                }
+                                field()
+                            }
+                        },
+                    )
+                    if (state.search.isNotEmpty()) {
+                        Spacer(Modifier.width(NeSpace.xs))
+                        NeIconButton(
+                            NeIcon.Close, "Очистить поиск", { state.search = "" },
+                            size = NeTouch.min, iconSize = NeIconSize.sm, color = Ne.Dim,
+                        )
+                    }
+                }
             }
         }
         if (state.search.isBlank()) {

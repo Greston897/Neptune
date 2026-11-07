@@ -77,7 +77,7 @@ fun SettingsScreen(state: NeptuneState, onProfile: () -> Unit, onAppearance: () 
         item {
             Column(
                 Modifier.fillMaxWidth().clip(RoundedCornerShape(neRadius()))
-                    .background(Color.White.copy(alpha = 0.04f)).clickable(onClick = onProfile).padding(vertical = NeSpace.xxl),
+                    .clickable(onClick = onProfile).padding(vertical = NeSpace.xxl),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 ProfileAvatar(Modifier.size(64.dp), animated = true)
@@ -205,9 +205,8 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit) {
             Spacer(Modifier.height(NeSpace.lg))
             NeText(s.profileName, size = NeType.title, lineHeight = NeType.titleLine, weight = FontWeight.Bold, maxLines = 2, align = TextAlign.Center)
         } }
-        item { SettingsGroup("ИМЯ") { Column(Modifier.padding(16.dp)) {
-            androidx.compose.material3.OutlinedTextField(name, { name = it.take(24) }, Modifier.fillMaxWidth(), singleLine = true, label = { NeText("Как к тебе обращаться", size = NeType.caption, lineHeight = NeType.captionLine) },
-                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(focusedBorderColor = accent(), cursorColor = accent(), focusedTextColor = Ne.Text, unfocusedTextColor = Ne.Text))
+        item { SettingsGroup("ИМЯ") { Column(Modifier.padding(NeRow.panelInset)) {
+            NeTextField(name, { name = it.take(24) }, "Как к тебе обращаться")
             NeButton("Сохранить имя", { state.edit { it.copy(profileName = name) }; state.message("Имя сохранено") }, Modifier.fillMaxWidth().padding(top = 12.dp), enabled = name.isNotBlank() && name.trim() != s.profileName)
         } } }
         item { SettingsGroup("ФОРМА АВАТАРА") { Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -217,8 +216,8 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit) {
                     val selected = s.avatarShape == shape
                     Column(
                         Modifier.weight(1f).heightIn(min = 104.dp).clip(RoundedCornerShape(16.dp))
-                            .background(if (selected) accent().copy(alpha = 0.12f) else Color.White.copy(alpha = 0.05f))
-                            .border(if (selected) 1.5.dp else 1.dp, if (selected) accent() else Color.Transparent, RoundedCornerShape(16.dp))
+                            .border(if (selected) 1.5.dp else 1.dp,
+                                if (selected) accent() else Color.White.copy(alpha = 0.10f), RoundedCornerShape(16.dp))
                             .clickable { state.edit { it.copy(avatarIndex = shape.ordinal) } }
                             .padding(vertical = NeSpace.md, horizontal = NeSpace.sm),
                         horizontalAlignment = Alignment.CenterHorizontally,

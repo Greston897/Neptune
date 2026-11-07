@@ -13,6 +13,9 @@ Neptune uses the following third-party assets and libraries:
   Glyphs keep the upstream geometry, 2dp stroke and round caps/joins; the tab bar additionally
   uses heavier 2.6dp twins for the selected state, and transport/heart glyphs are filled.
   ISC requires the copyright and permission notice to be reproduced: see `ci/lucide/LICENSE`.
+  The adaptive launcher icon uses Lucide's `orbit` glyph (same ISC licence), scaled onto the
+  108dp adaptive canvas over a pure black tile; reproducible via `python3 ci/make_launcher.py`
+  and verified in CI by `python3 ci/check_launcher.py`.
 - **Manrope** font — SIL Open Font License 1.1. https://github.com/sharanda/manrope
 
 The liquid-glass panel treatment (rounded grouped cells, backdrop blur, top/bottom rim strokes,

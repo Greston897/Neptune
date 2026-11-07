@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -152,7 +151,7 @@ fun ProfileAvatar(modifier: Modifier = Modifier, animated: Boolean = false) {
         AvatarShape.SQUIRCLE -> androidx.compose.foundation.shape.RoundedCornerShape(32.dp)
         AvatarShape.SQUARE -> androidx.compose.foundation.shape.RoundedCornerShape(14.dp)
     }
-    Box(modifier.clip(shape).background(Color(0xFF050507)).border(1.dp, Color.White.copy(alpha = 0.08f * s.glassRim), shape), contentAlignment = Alignment.Center) {
+    Box(modifier.clip(shape).background(Color(0xFF000000)).border(1.dp, Color.White.copy(alpha = 0.08f * s.glassRim), shape), contentAlignment = Alignment.Center) {
         NeptuneMark(Modifier.fillMaxSize(0.62f * s.avatarSize), tone, animated)
     }
 }

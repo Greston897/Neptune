@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
@@ -132,8 +133,8 @@ private fun CollectionLink(title: String, subtitle: String, icon: NeIcon, onClic
     Row(Modifier.fillMaxWidth().heightIn(min = NeRow.compact).clip(RoundedCornerShape(12.dp))
         .clickable(onClick = onClick).padding(vertical = NeSpace.sm, horizontal = NeSpace.xs),
         verticalAlignment = Alignment.CenterVertically) {
-        GlassPanel(Modifier.size(NeRow.thumb), corner = 12.dp) {
-            NeIconView(icon, NeIconSize.lg, accent(), modifier = Modifier.align(Alignment.Center))
+        Box(Modifier.size(NeRow.thumb), contentAlignment = Alignment.Center) {
+            NeIconView(icon, NeIconSize.xxl, accent())
         }
         Spacer(Modifier.width(NeSpace.md))
         Column(Modifier.weight(1f)) {

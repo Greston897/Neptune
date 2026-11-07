@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
@@ -76,6 +77,7 @@ fun GlassPanel(
     corner: Dp = neRadius(),
     haze: HazeState? = LocalBackgroundHaze.current,
     rim: Boolean = true,
+    contentAlignment: Alignment = Alignment.Center,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val s = LocalSettings.current
@@ -88,7 +90,10 @@ fun GlassPanel(
         // RenderEffect blur needs API 31+; older devices get the opaque fallback instead of a crash.
         blurEnabled = Build.VERSION.SDK_INT >= 31
     } else base.background(Color(0xFF121212).copy(alpha = if (s.glassEnabled) 0.94f else 1f))
-    Box(modifier.then(surface)) {
+    // A Box defaults to TopStart. When the panel is taller than its content (a search field with
+    // heightIn(min = 52.dp), a quick tile with heightIn(min = 80.dp)) the row was pinned to the top
+    // and looked "завышено". Centring by default puts icon + label on the panel's centre line.
+    Box(modifier.then(surface), contentAlignment = contentAlignment) {
         content()
         if (rim && s.glassEnabled) Canvas(Modifier.matchParentSize()) {
             val r = corner.toPx().coerceAtMost(size.minDimension / 2f)

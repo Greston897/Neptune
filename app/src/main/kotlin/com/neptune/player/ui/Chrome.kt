@@ -74,14 +74,14 @@ object DockMetrics {
 /**
  * Floating tab bar.
  *
- * Selection reads three ways at once: a heavier glyph, an accent-tinted capsule and an accent
- * label — so the current section is obvious even at a glance or with colour-blind vision.
+ * Selection is expressed by the glyph alone: the active tab paints solid white (and uses the
+ * heavier stroke), inactive tabs stay dim grey. No capsule, no tinted plate behind the icon —
+ * the bar itself is the only surface.
  */
 @Composable
 fun NeptuneNavBar(route: String?, onSelect: (Tab) -> Unit) {
     val animations = LocalSettings.current.animations
     val labels = LocalSettings.current.navLabels
-    val activeTint = accent()
     GlassPanel(
         Modifier.fillMaxWidth().height(DockMetrics.NavHeight), corner = 26.dp,
         haze = LocalContentHaze.current,
@@ -93,11 +93,7 @@ fun NeptuneNavBar(route: String?, onSelect: (Tab) -> Unit) {
             Tab.entries.forEach { tab ->
                 val active = route == tab.route
                 val color by animateColorAsState(
-                    if (active) activeTint else Ne.Faint, tween(if (animations) 180 else 0), label = "tabColor",
-                )
-                val capsule by animateColorAsState(
-                    if (active) activeTint.copy(alpha = 0.14f) else Color.Transparent,
-                    tween(if (animations) 180 else 0), label = "tabCapsule",
+                    if (active) Ne.Text else Ne.Faint, tween(if (animations) 180 else 0), label = "tabColor",
                 )
                 Column(
                     Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(18.dp))
@@ -105,12 +101,9 @@ fun NeptuneNavBar(route: String?, onSelect: (Tab) -> Unit) {
                         .semantics { selected = active; contentDescription = tab.title },
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
                 ) {
-                    Box(
-                        Modifier.height(28.dp).width(52.dp).clip(CircleShape).background(capsule),
-                        contentAlignment = Alignment.Center,
-                    ) { NeIconView(tab.icon, NeIconSize.lg, color, bold = active) }
+                    NeIconView(tab.icon, NeIconSize.lg, color, bold = active)
                     if (labels) {
-                        Spacer(Modifier.height(3.dp))
+                        Spacer(Modifier.height(NeSpace.xs))
                         NeText(
                             tab.title, size = NeType.micro, lineHeight = NeType.microLine, color = color,
                             weight = if (active) FontWeight.Bold else FontWeight.Medium, maxLines = 1,

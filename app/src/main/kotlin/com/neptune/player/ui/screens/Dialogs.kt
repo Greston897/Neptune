@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,12 +25,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.background
-import androidx.compose.ui.unit.sp
 import com.neptune.player.model.PlaybackState
 import com.neptune.player.ui.*
 
@@ -40,8 +36,7 @@ import com.neptune.player.ui.*
 fun NameDialog(title: String, label: String, initial: String, onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
     var name by rememberSaveable { mutableStateOf(initial) }
     AlertDialog(onDismissRequest = onDismiss, containerColor = Ne.Elevated, title = { NeText(title, size = NeType.title, lineHeight = NeType.titleLine, weight = androidx.compose.ui.text.font.FontWeight.Bold, maxLines = 2) },
-        text = { OutlinedTextField(name, { name = it.take(40) }, label = { NeText(label, size = NeType.caption, lineHeight = NeType.captionLine) }, singleLine = true, modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = accent(), cursorColor = accent(), focusedTextColor = Ne.Text, unfocusedTextColor = Ne.Text)) },
+        text = { NeTextField(name, { name = it.take(40) }, label) },
         confirmButton = { TextButton(onClick = { onConfirm(name.trim()) }, enabled = name.isNotBlank()) { NeText("Сохранить", color = accent()) } },
         dismissButton = { TextButton(onClick = onDismiss) { NeText("Отмена", color = Ne.Dim) } })
 }

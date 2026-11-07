@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
@@ -36,7 +38,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -239,10 +244,9 @@ fun EmptyState(
         modifier.fillMaxWidth().padding(horizontal = NeSpace.xxl, vertical = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(
-            Modifier.size(64.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.05f)),
-            contentAlignment = Alignment.Center,
-        ) { NeIconView(icon, NeIconSize.xl, Ne.Dim) }
+        Box(Modifier.size(56.dp), contentAlignment = Alignment.Center) {
+            NeIconView(icon, NeIconSize.xxl, Ne.Dim)
+        }
         Spacer(Modifier.height(NeSpace.lg))
         NeText(title, size = NeType.title, lineHeight = NeType.titleLine, weight = FontWeight.Bold, align = TextAlign.Center, maxLines = 2)
         Spacer(Modifier.height(NeSpace.sm))
@@ -273,10 +277,10 @@ fun SettingRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (icon != null) {
-            Box(
-                Modifier.size(NeRow.leadingBadge).clip(RoundedCornerShape(12.dp)).background(Color.White.copy(alpha = 0.06f)),
-                contentAlignment = Alignment.Center,
-            ) { NeIconView(icon, NeIconSize.md, Ne.Dim) }
+            // Fixed square keeps every label in the group on one start line; no grey plate behind it.
+            Box(Modifier.size(NeRow.leadingIcon), contentAlignment = Alignment.Center) {
+                NeIconView(icon, NeIconSize.lg, Ne.Dim)
+            }
             Spacer(Modifier.width(NeSpace.md))
         }
         Column(Modifier.weight(1f)) {
@@ -309,6 +313,40 @@ fun ToggleRow(title: String, subtitle: String, checked: Boolean, onChange: (Bool
             ),
         )
     })
+}
+
+/** Shared text style for editable fields so typed text matches [NeText] on the same grid. */
+@Composable
+fun neFieldTextStyle(): TextStyle = TextStyle(
+    fontFamily = Manrope, fontSize = NeType.body, lineHeight = NeType.bodyLine,
+    fontWeight = FontWeight.Medium, color = Ne.Text, letterSpacing = (-0.15).sp,
+    platformStyle = PlatformTextStyle(includeFontPadding = false),
+    lineHeightStyle = LineHeightStyle(
+        alignment = LineHeightStyle.Alignment.Center, trim = LineHeightStyle.Trim.None,
+    ),
+)
+
+/**
+ * Outlined input used by the profile name and the playlist dialogs.
+ *
+ * Material3's default text style keeps `includeFontPadding` and an unspecified line height, so the
+ * typed value sat higher than the floating label and higher than neighbouring rows. Passing the
+ * shared style puts the value, the label and the rest of the UI on one grid.
+ */
+@Composable
+fun NeTextField(value: String, onValueChange: (String) -> Unit, label: String, modifier: Modifier = Modifier) {
+    OutlinedTextField(
+        value = value, onValueChange = onValueChange, modifier = modifier.fillMaxWidth(),
+        singleLine = true, textStyle = neFieldTextStyle(),
+        label = { NeText(label, size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim) },
+        shape = RoundedCornerShape(14.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = accent(), cursorColor = accent(),
+            focusedTextColor = Ne.Text, unfocusedTextColor = Ne.Text,
+            unfocusedBorderColor = Color.White.copy(alpha = 0.14f),
+            focusedLabelColor = accent(), unfocusedLabelColor = Ne.Dim,
+        ),
+    )
 }
 
 @Composable
