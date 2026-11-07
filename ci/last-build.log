@@ -14,8 +14,8 @@ Daemon will be stopped at the end of the build
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :app:generateDebugBuildConfig
-> Task :app:checkDebugAarMetadata
 > Task :app:generateDebugResValues
+> Task :app:checkDebugAarMetadata
 > Task :app:mapDebugSourceSetPaths
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
@@ -26,14 +26,14 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:processDebugManifestForPackage
 > Task :app:javaPreCompileDebug
-> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:javaPreCompileDebugUnitTest
+> Task :app:processDebugManifestForPackage
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
 > Task :app:generateReleaseBuildConfig
-> Task :app:generateReleaseResValues FROM-CACHE
 > Task :app:checkReleaseAarMetadata
+> Task :app:generateReleaseResValues FROM-CACHE
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
 > Task :app:processDebugResources
@@ -53,93 +53,48 @@ Daemon will be stopped at the end of the build
 > Task :app:checkReleaseDuplicateClasses
 > Task :app:desugarReleaseFileDependencies
 > Task :app:mergeReleaseStartupProfile
+> Task :app:compileDebugKotlin
+> Task :app:compileReleaseKotlin
+> Task :app:stripReleaseDebugSymbols
+> Task :app:mergeExtDexRelease
+
+> Task :app:compileDebugKotlin
+w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/Media3PlaybackBackend.kt:189:51 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
+
+> Task :app:compileReleaseKotlin
+w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/Media3PlaybackBackend.kt:189:51 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
 
 > Task :app:stripReleaseDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
 
-> Task :app:compileDebugKotlin FAILED
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:87:59 Unresolved reference 'PlaybackSettingsScreen'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:88:46 Unresolved reference 'DataScreen'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:89:47 Unresolved reference 'AboutScreen'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:19:48 'fun plus(other: Job): Job' is deprecated. Operator '+' on two Job objects is meaningless. Job is a coroutine context element and `+` is a set-sum operator for coroutine contexts. The job to the right of `+` just replaces the job the left of `+`.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:19:67 Expression 'immediate' of type 'kotlinx.coroutines.MainCoroutineDispatcher' cannot be invoked as a function. Function 'invoke()' is not found.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/NeptunePlaybackService.kt:23:56 'fun plus(other: Job): Job' is deprecated. Operator '+' on two Job objects is meaningless. Job is a coroutine context element and `+` is a set-sum operator for coroutine contexts. The job to the right of `+` just replaces the job the left of `+`.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/NeptunePlaybackService.kt:23:75 Expression 'immediate' of type 'kotlinx.coroutines.MainCoroutineDispatcher' cannot be invoked as a function. Function 'invoke()' is not found.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/Artwork.kt:193:74 None of the following candidates is applicable:
-fun minus(other: Byte): Float
-fun minus(other: Double): Double
-fun minus(other: Float): Float
-fun minus(other: Int): Float
-fun minus(other: Long): Float
-fun minus(other: Short): Float
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/Artwork.kt:193:80 Cannot access 'constructor(packedValue: Long): Size': it is internal in 'androidx/compose/ui/geometry/Size'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:173:9 'fun item(key: Any? = ..., contentType: Any? = ..., content: @Composable() ComposableFunction1<LazyItemScope, Unit>): Unit' cannot be called in this context with an implicit receiver. Use an explicit receiver if necessary.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:173:16 @Composable invocations can only happen from the context of a @Composable function
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:200:139 None of the following candidates is applicable:
-fun Modifier.padding(paddingValues: PaddingValues): Modifier
-fun Modifier.padding(all: Dp): Modifier
-fun Modifier.padding(horizontal: Dp = ..., vertical: Dp = ...): Modifier
-fun Modifier.padding(start: Dp = ..., top: Dp = ..., end: Dp = ..., bottom: Dp = ...): Modifier
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:243:2 Syntax error: Expecting '}'.
+> Task :app:compileDebugJavaWithJavac
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:processDebugJavaRes
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:compileReleaseJavaWithJavac
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes
 
-> Task :app:compileReleaseKotlin
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:87:59 Unresolved reference 'PlaybackSettingsScreen'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:88:46 Unresolved reference 'DataScreen'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:89:47 Unresolved reference 'AboutScreen'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:19:48 'fun plus(other: Job): Job' is deprecated. Operator '+' on two Job objects is meaningless. Job is a coroutine context element and `+` is a set-sum operator for coroutine contexts. The job to the right of `+` just replaces the job the left of `+`.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:19:67 Expression 'immediate' of type 'kotlinx.coroutines.MainCoroutineDispatcher' cannot be invoked as a function. Function 'invoke()' is not found.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/NeptunePlaybackService.kt:23:56 'fun plus(other: Job): Job' is deprecated. Operator '+' on two Job objects is meaningless. Job is a coroutine context element and `+` is a set-sum operator for coroutine contexts. The job to the right of `+` just replaces the job the left of `+`.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/NeptunePlaybackService.kt:23:75 Expression 'immediate' of type 'kotlinx.coroutines.MainCoroutineDispatcher' cannot be invoked as a function. Function 'invoke()' is not found.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/Artwork.kt:193:74 None of the following candidates is applicable:
-fun minus(other: Byte): Float
-fun minus(other: Double): Double
-fun minus(other: Float): Float
-fun minus(other: Int): Float
-fun minus(other: Long): Float
-fun minus(other: Short): Float
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/Artwork.kt:193:80 Cannot access 'constructor(packedValue: Long): Size': it is internal in 'androidx/compose/ui/geometry/Size'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:173:9 'fun item(key: Any? = ..., contentType: Any? = ..., content: @Composable() ComposableFunction1<LazyItemScope, Unit>): Unit' cannot be called in this context with an implicit receiver. Use an explicit receiver if necessary.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:173:16 @Composable invocations can only happen from the context of a @Composable function
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:200:139 None of the following candidates is applicable:
-fun Modifier.padding(paddingValues: PaddingValues): Modifier
-fun Modifier.padding(all: Dp): Modifier
-fun Modifier.padding(horizontal: Dp = ..., vertical: Dp = ...): Modifier
-fun Modifier.padding(start: Dp = ..., top: Dp = ..., end: Dp = ..., bottom: Dp = ...): Modifier
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SettingsScreen.kt:243:2 Syntax error: Expecting '}'.
+> Task :app:testDebugUnitTest
 
-> Task :app:mergeExtDexRelease
-> Task :app:compileReleaseKotlin FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794009583527.json
+DomainTest > settingsRecoverInvalidStoredValues FAILED
+    java.lang.AssertionError at DomainTest.kt:20
 
-FAILURE: Build completed with 2 failures.
+9 tests completed, 1 failed
 
-1: Task failed with an exception.
------------
+> Task :app:testDebugUnitTest FAILED
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794009780767.json
+
+FAILURE: Build failed with an exception.
+
 * What went wrong:
-Execution failed for task ':app:compileDebugKotlin'.
-> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
-   > Compilation error. See log for more details
+Execution failed for task ':app:testDebugUnitTest'.
+> There were failing tests. See the report at: file:///home/runner/work/Neptune/Neptune/app/build/reports/tests/testDebugUnitTest/index.html
 
 * Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
 > Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-==============================================================================
 
-2: Task failed with an exception.
------------
-* What went wrong:
-Execution failed for task ':app:compileReleaseKotlin'.
-> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
-   > Compilation error. See log for more details
-
-* Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-==============================================================================
-
-BUILD FAILED in 2m 28s
-42 actionable tasks: 37 executed, 5 from cache
+BUILD FAILED in 2m 56s
+51 actionable tasks: 47 executed, 4 from cache
