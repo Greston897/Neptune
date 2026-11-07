@@ -56,8 +56,6 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:mergeDebugAndroidTestShaders UP-TO-DATE
 > Task :app:compileDebugAndroidTestShaders NO-SOURCE
 > Task :app:generateDebugAndroidTestAssets UP-TO-DATE
-> Task :app:mergeDebugJavaResource
-> Task :app:mergeProjectDexDebug
 > Task :app:mergeDebugAndroidTestAssets UP-TO-DATE
 > Task :app:compressDebugAndroidTestAssets UP-TO-DATE
 > Task :app:desugarDebugAndroidTestFileDependencies UP-TO-DATE
@@ -65,6 +63,7 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:mergeDebugAndroidTestGlobalSynthetics UP-TO-DATE
 > Task :app:processDebugAndroidTestJavaRes UP-TO-DATE
 > Task :app:mergeDebugAndroidTestJavaResource UP-TO-DATE
+> Task :app:mergeProjectDexDebug
 > Task :app:checkDebugAndroidTestDuplicateClasses UP-TO-DATE
 > Task :app:mergeExtDexDebugAndroidTest UP-TO-DATE
 > Task :app:mergeLibDexDebugAndroidTest UP-TO-DATE
@@ -76,6 +75,7 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:writeDebugAndroidTestSigningConfigVersions UP-TO-DATE
 > Task :app:packageDebugAndroidTest UP-TO-DATE
 > Task :app:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
+> Task :app:mergeDebugJavaResource
 > Task :app:mergeExtDexDebug
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect
@@ -84,20 +84,24 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 4 tests on emulator-5554 - 14
 
+emulator-5554 - 14 Tests 0/4 completed. (0 skipped) (0 failed)
 emulator-5554 - 14 Tests 1/4 completed. (0 skipped) (0 failed)
 emulator-5554 - 14 Tests 2/4 completed. (0 skipped) (0 failed)
 
 > Task :app:connectedDebugAndroidTest
 
 com.neptune.player.PlayerFlowTest > sleepTimerOpensOnlyFromItsRowAndAlwaysCloses[emulator-5554 - 14] [31mFAILED [0m
-	java.lang.AssertionError: Timed out waiting for 'Таймер сна'. Roots: SemanticsConfiguration@1b5de78{  }
-	at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:39)
-Tests on emulator-5554 - 14 failed: There was 1 failure(s).
+	java.lang.AssertionError: Timed out waiting for 'Таймер сна'. Roots: Printing with useUnmergedTree = 'true'
+	Node #1035 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
 
+emulator-5554 - 14 Tests 3/4 completed. (0 skipped) (1 failed)
 Finished 4 tests on emulator-5554 - 14
 
+> Task :app:connectedDebugAndroidTest
+Tests on emulator-5554 - 14 failed: There was 1 failure(s).
+
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794053808842.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794054871840.json
 
 FAILURE: Build failed with an exception.
 
@@ -111,5 +115,5 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 1m 33s
+BUILD FAILED in 2m 15s
 67 actionable tasks: 15 executed, 3 from cache, 49 up-to-date

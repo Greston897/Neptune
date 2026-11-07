@@ -26,14 +26,14 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:processDebugManifestForPackage
 > Task :app:javaPreCompileDebug
-> Task :app:javaPreCompileDebugUnitTest
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
 > Task :app:generateReleaseBuildConfig
-> Task :app:checkReleaseAarMetadata
 > Task :app:generateReleaseResValues FROM-CACHE
+> Task :app:processDebugManifestForPackage
+> Task :app:checkReleaseAarMetadata
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
 > Task :app:processDebugResources
@@ -56,8 +56,8 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 
 > Task :app:extractReleaseNativeSymbolTables
 > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :app:desugarReleaseFileDependencies
 > Task :app:checkReleaseDuplicateClasses
+> Task :app:desugarReleaseFileDependencies
 > Task :app:mergeReleaseStartupProfile
 > Task :app:compileDebugKotlin
 > Task :app:compileReleaseKotlin
@@ -70,9 +70,9 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/playback/Media3PlaybackBackend.kt:189:51 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
 
 > Task :app:compileDebugJavaWithJavac
-> Task :app:bundleDebugClassesToCompileJar
-> Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:processDebugJavaRes
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:bundleDebugClassesToCompileJar
 > Task :app:compileReleaseJavaWithJavac
 > Task :app:compileDebugUnitTestKotlin
 > Task :app:generateReleaseLintVitalReportModel
@@ -81,19 +81,19 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:testDebugUnitTest
 > Task :app:dexBuilderRelease
 > Task :app:mergeReleaseArtProfile
-> Task :app:mergeReleaseGlobalSynthetics
 > Task :app:mergeReleaseShaders
 > Task :app:compileReleaseShaders NO-SOURCE
 > Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseGlobalSynthetics
 > Task :app:mergeReleaseAssets
 > Task :app:extractReleaseVersionControlInfo
 > Task :app:processReleaseJavaRes
 > Task :app:compressReleaseAssets
 > Task :app:mergeReleaseJavaResource
+> Task :app:optimizeReleaseResources
 > Task :app:collectReleaseDependencies
 > Task :app:sdkReleaseDependencyData
 > Task :app:validateSigningRelease
-> Task :app:optimizeReleaseResources
 > Task :app:writeReleaseAppMetadata
 > Task :app:writeReleaseSigningConfigVersions
 > Task :app:preDebugAndroidTestBuild SKIPPED
@@ -112,9 +112,9 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:desugarDebugAndroidTestFileDependencies
 > Task :app:mergeDebugAndroidTestResources
 > Task :app:checkDebugAndroidTestDuplicateClasses
+> Task :app:processDebugAndroidTestResources
 > Task :app:mergeDexRelease
 > Task :app:lintVitalAnalyzeRelease
-> Task :app:processDebugAndroidTestResources
 > Task :app:mergeExtDexDebugAndroidTest
 > Task :app:lintVitalReportRelease
 > Task :app:lintVitalRelease
@@ -124,28 +124,23 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:mergeDebugNativeLibs
 > Task :app:mergeDebugAndroidTestNativeLibs NO-SOURCE
 > Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
-
-> Task :app:compileDebugAndroidTestKotlin FAILED
-e: file:///home/runner/work/Neptune/Neptune/app/src/androidTest/kotlin/com/neptune/player/PlayerFlowTest.kt:36:27 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Neptune/Neptune/app/src/androidTest/kotlin/com/neptune/player/PlayerFlowTest.kt:36:39 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Neptune/Neptune/app/src/androidTest/kotlin/com/neptune/player/PlayerFlowTest.kt:37:25 Unresolved reference 'onRoot'.
-
 > Task :app:compileReleaseArtProfile
+> Task :app:compileDebugAndroidTestKotlin
 > Task :app:validateSigningDebugAndroidTest
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794054257020.json
+> Task :app:compileDebugAndroidTestJavaWithJavac
+> Task :app:dexBuilderDebugAndroidTest
+> Task :app:mergeDebugAndroidTestGlobalSynthetics
+> Task :app:processDebugAndroidTestJavaRes
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:assembleRelease
+> Task :app:writeDebugAndroidTestSigningConfigVersions
+> Task :app:mergeProjectDexDebugAndroidTest
+> Task :app:mergeDebugAndroidTestJavaResource
+> Task :app:packageDebugAndroidTest
+> Task :app:createDebugAndroidTestApkListingFileRedirect
+> Task :app:assembleDebugAndroidTest
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794054546341.json
 
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-Execution failed for task ':app:compileDebugAndroidTestKotlin'.
-> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
-   > Compilation error. See log for more details
-
-* Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-
-BUILD FAILED in 3m 49s
-93 actionable tasks: 87 executed, 6 from cache
+BUILD SUCCESSFUL in 4m
+104 actionable tasks: 97 executed, 7 from cache

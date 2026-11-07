@@ -1,25 +1,130 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<testsuite name="com.neptune.player.PlayerFlowTest" tests="4" failures="1" errors="0" skipped="0" time="45.033" timestamp="2026-11-07T12:18:16" hostname="localhost">
+<testsuite name="com.neptune.player.PlayerFlowTest" tests="4" failures="1" errors="0" skipped="0" time="64.007" timestamp="2026-11-07T12:36:39" hostname="localhost">
   <properties>
     <property name="device" value="emulator-5554 - 14" />
     <property name="flavor" value="" />
     <property name="project" value=":app" />
   </properties>
-  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="9.773" />
-  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="6.17" />
-  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="25.057">
-    <failure>java.lang.AssertionError: Timed out waiting for 'Таймер сна'. Roots: SemanticsConfiguration&#64;1b5de78{  }
-at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:39)
-at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:30)
-at com.neptune.player.PlayerFlowTest.clickText(PlayerFlowTest.kt:49)
-at com.neptune.player.PlayerFlowTest.sleepTimerOpensOnlyFromItsRowAndAlwaysCloses(PlayerFlowTest.kt:94)
+  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="16.208" />
+  <testcase name="bundledAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="10.697" />
+  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="29.158">
+    <failure>java.lang.AssertionError: Timed out waiting for 'Таймер сна'. Roots: Printing with useUnmergedTree = 'true'
+Node #1035 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #1346 at (l=0.0, t=128.0, r=1080.0, b=2337.0)px
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [ScrollBy, ScrollByOffset]
+|-Node #1348 at (l=63.0, t=139.0, r=189.0, b=265.0)px
+| Role = 'Button'
+| Focused = 'false'
+| ContentDescription = '[Вернуться назад]'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #1351 at (l=423.0, t=160.0, r=658.0, b=192.0)px
+| Text = '[СЕЙЧАС ИГРАЕТ]'
+| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #1353 at (l=436.0, t=203.0, r=645.0, b=244.0)px
+| Text = '[Ночные сессии]'
+| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #1354 at (l=891.0, t=139.0, r=1017.0, b=265.0)px
+| Role = 'Button'
+| Focused = 'false'
+| ContentDescription = '[Действия с треком]'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #1361 at (l=63.0, t=1356.0, r=435.0, b=1454.0)px
+| Text = '[After Hours]'
+| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #1363 at (l=63.0, t=1470.0, r=327.0, b=1536.0)px
+| Text = '[Neptune Studio]'
+| Focused = 'false'
+| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #1364 at (l=891.0, t=1383.0, r=1017.0, b=1509.0)px
+| Role = 'Button'
+| Focused = 'false'
+| ContentDescription = '[В любимое]'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #1367 at (l=37.0, t=1589.0, r=1043.0, b=1673.0)px
+| Focused = 'false'
+| ProgressBarRangeInfo = 'ProgressBarRangeInfo(current=0.08825, range=0.0..1.0, steps=0)'
+| ContentDescription = '[Позиция трека]'
+| Actions = [RequestFocus, SetProgress]
+| MergeDescendants = 'true'
+|-Node #1372 at (l=63.0, t=1673.0, r=1017.0, b=1732.0)px
+| Focused = 'false'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|  |-Node #1373 at (l=63.0, t=1684.0, r=945.0, b=1721.0)px
+|  | Text = '[0:03]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #1374 at (l=945.0, t=1684.0, r=1017.0, b=1721.0)px
+|    Text = '[−0:32]'
+|    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #1377 at (l=63.0, t=1814.0, r=189.0, b=1940.0)px
+| Role = 'Button'
+| Focused = 'false'
+| ContentDescription = '[Перемешать]'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #1379 at (l=250.0, t=1809.0, r=387.0, b=1946.0)px
+| Role = 'Button'
+| Focused = 'false'
+| ContentDescription = '[Предыдущий трек]'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #1381 at (l=451.68, t=1788.68, r=635.68, b=1972.68)px
+| ContentDescription = '[Воспроизвести]'
+| Focused = 'false'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #1385 at (l=693.0, t=1809.0, r=830.0, b=1946.0)px
+| Role = 'Button'
+| Focused = 'false'
+| ContentDescription = '[Следующий трек]'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #1387 at (l=891.0, t=1814.0, r=1017.0, b=1940.0)px
+| Role = 'Button'
+| Focused = 'false'
+| ContentDescription = '[Повторять очередь]'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #1391 at (l=63.0, t=2040.0, r=189.0, b=2166.0)px
+| Role = 'Button'
+| Focused = 'false'
+| ContentDescription = '[Громкость]'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #1393 at (l=336.0, t=2027.0, r=745.0, b=2179.0)px
+| Focused = 'false'
+| Role = 'Button'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|  |-Node #1397 at (l=502.0, t=2078.0, r=687.0, b=2128.0)px
+|    Text = '[Сон · 14:39]'
+|    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #1398 at (l=891.0, t=2040.0, r=1017.0, b=2166.0)px
+| Role = 'Button'
+| Focused = 'false'
+| ContentDescription = '[Очередь воспроизведения]'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #1401 at (l=63.0, t=2221.0, r=1017.0, b=2253.0)px
+Text = '[NEPTUNE STUDIO · ORIGINAL SESSION]'
+Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:41)
+at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:32)
+at com.neptune.player.PlayerFlowTest.clickText(PlayerFlowTest.kt:51)
+at com.neptune.player.PlayerFlowTest.sleepTimerOpensOnlyFromItsRowAndAlwaysCloses(PlayerFlowTest.kt:96)
 ... 54 trimmed
 Caused by: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
 at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
 at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
-at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:32)
+at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:34)
 ... 58 more
 </failure>
   </testcase>
-  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="2.704" />
+  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="5.516" />
 </testsuite>
