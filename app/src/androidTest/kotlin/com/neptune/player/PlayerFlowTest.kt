@@ -11,7 +11,9 @@ import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.isSelectable
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onFirst
+import android.Manifest
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Rule
@@ -20,6 +22,8 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class PlayerFlowTest {
+    @get:Rule val permissions: GrantPermissionRule = GrantPermissionRule.grant(
+        Manifest.permission.READ_MEDIA_AUDIO, Manifest.permission.POST_NOTIFICATIONS)
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
     private fun back() { compose.activityRule.scenario.onActivity { it.onBackPressedDispatcher.onBackPressed() } }
     private fun container(activity: MainActivity) = (activity.application as NeptuneApplication).container
