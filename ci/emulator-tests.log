@@ -46,17 +46,17 @@ Daemon will be stopped at the end of the build
 > Task :app:checkDebugDuplicateClasses
 > Task :app:mergeDebugNativeLibs UP-TO-DATE
 > Task :app:mergeLibDexDebug FROM-CACHE
+> Task :app:mergeDebugJavaResource
 
 > Task :app:stripDebugDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
 
 > Task :app:validateSigningDebug
 > Task :app:writeDebugAppMetadata
-> Task :app:mergeProjectDexDebug
-> Task :app:mergeDebugJavaResource
 > Task :app:writeDebugSigningConfigVersions
 > Task :app:mergeDebugAndroidTestShaders UP-TO-DATE
 > Task :app:compileDebugAndroidTestShaders NO-SOURCE
+> Task :app:mergeProjectDexDebug
 > Task :app:generateDebugAndroidTestAssets UP-TO-DATE
 > Task :app:mergeDebugAndroidTestAssets UP-TO-DATE
 > Task :app:compressDebugAndroidTestAssets UP-TO-DATE
@@ -91,18 +91,17 @@ emulator-5554 - 14 Tests 2/4 completed. (0 skipped) (0 failed)
 > Task :app:connectedDebugAndroidTest
 
 com.neptune.player.PlayerFlowTest > sleepTimerOpensOnlyFromItsRowAndAlwaysCloses[emulator-5554 - 14] [31mFAILED [0m
-	java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
-	at androidx.compose.ui.test.TestContext.getAllSemanticsNodes$ui_test_release(TestOwner.kt:87)
+	androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 8000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
 
-emulator-5554 - 14 Tests 4/4 completed. (0 skipped) (1 failed)
+emulator-5554 - 14 Tests 3/4 completed. (0 skipped) (1 failed)
+Finished 4 tests on emulator-5554 - 14
 
 > Task :app:connectedDebugAndroidTest
 Tests on emulator-5554 - 14 failed: There was 1 failure(s).
 
-Finished 4 tests on emulator-5554 - 14
-
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794016694922.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794017229971.json
 
 FAILURE: Build failed with an exception.
 
@@ -116,5 +115,5 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 1m 54s
+BUILD FAILED in 1m 55s
 67 actionable tasks: 15 executed, 3 from cache, 49 up-to-date
