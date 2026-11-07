@@ -202,7 +202,7 @@ fun PlaybackSettingsScreen(state: NeptuneState, onBack: () -> Unit) {
             ToggleRow("Пропускать тишину", "Умное сокращение пауз внутри трека", s.skipSilence) { v -> state.edit { it.copy(skipSilence = v) } }
         } }
         item { SettingsGroup("КОМФОРТ") {
-            SettingRow("Таймер сна", if (p.sleepRemainingMs > 0) "Остановится через ${formatTime(p.sleepRemainingMs)}" else "Выключен", NeIcon.Timer) { sleep = true }
+            SettingRow("Таймер сна", if (p.sleepRemainingMs > 0) "Остановится через ${formatTime(p.sleepRemainingMs)}" else "Выключен", NeIcon.Timer) { android.util.Log.e("TestRunner", "SLEEP_ROW_OPEN"); sleep = true }
             SettingRow("Повтор очереди", when (p.repeat) { 1 -> "Вся очередь"; 2 -> "Один трек"; else -> "Выключен" }, NeIcon.Repeat, onClick = state::cycleRepeat)
             ToggleRow("Перемешивание", "Случайный порядок воспроизведения", p.shuffle) { state.toggleShuffle() }
             if (Build.VERSION.SDK_INT >= 33) SettingRow("Уведомление плеера", "Управление с экрана блокировки и из шторки", NeIcon.Bell) {

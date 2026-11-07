@@ -111,9 +111,13 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
     }
 }
 
-private fun NavHostController.navigateOnce(route: String) { if (currentDestination?.route != route) navigate(route) { launchSingleTop = true } }
+private fun NavHostController.navigateOnce(route: String) {
+    android.util.Log.e("TestRunner", "NAV_ONCE $route from ${currentDestination?.route}")
+    if (currentDestination?.route != route) navigate(route) { launchSingleTop = true }
+}
 private fun NavHostController.navigateCollection(kind: String, key: String) = navigateOnce("collection/${Uri.encode(kind)}/${Uri.encode(key.ifEmpty { "-" })}")
 private fun NavHostController.navigateTab(tab: Tab) {
+    android.util.Log.e("TestRunner", "NAV_TAB ${tab.route} from ${currentDestination?.route}")
     if (currentDestination?.route == tab.route) return
     // Every section is a real back-stack entry: system Back returns to the actual previous page.
     navigate(tab.route) { launchSingleTop = true }

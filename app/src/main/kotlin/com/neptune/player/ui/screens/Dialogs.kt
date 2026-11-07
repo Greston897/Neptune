@@ -73,7 +73,7 @@ fun SleepDialog(playback: PlaybackState, onDismiss: () -> Unit, onConfirm: (Int)
                         else playback.sleepRemainingMs in ((minutes - 15) * 60_000L + 1)..(minutes * 60_000L)
                     Row(Modifier.fillMaxWidth().heightIn(min = 52.dp).clip(RoundedCornerShape(14.dp))
                         .background(if (active) Color.White.copy(alpha = 0.07f) else Color.Transparent)
-                        .clickable { onConfirm(minutes); onDismiss() }.padding(horizontal = 14.dp, vertical = 10.dp),
+                        .clickable { android.util.Log.e("TestRunner", "SLEEP_CONFIRM $minutes"); onConfirm(minutes); onDismiss() }.padding(horizontal = 14.dp, vertical = 10.dp),
                         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                         NeText(if (minutes == 0) "Выключить таймер" else "$minutes минут", Modifier.weight(1f), size = 14.sp)
                         if (active) NeIconView(NeIcon.Check, 18.dp, accent())
