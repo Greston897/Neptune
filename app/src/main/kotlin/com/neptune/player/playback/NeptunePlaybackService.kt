@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class NeptunePlaybackService : MediaSessionService() {
     private var session: MediaSession? = null
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate())
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     override fun onCreate() {
         super.onCreate()
         val settings = (application as NeptuneApplication).container.settings.state

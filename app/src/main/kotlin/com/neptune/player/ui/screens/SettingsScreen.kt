@@ -169,7 +169,7 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit) {
                     }
                 }
             } }
-        } }
+        } } }
         item { SettingsGroup("ЦВЕТ АВАТАРА") { AccentPicker(s.avatarTone) { i -> state.edit { it.copy(avatarTone = i) } } } }
     }
 }
@@ -197,7 +197,7 @@ fun PlaybackSettingsScreen(state: NeptuneState, onBack: () -> Unit) {
                 else notifications.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         } }
-        item { NeText("При входящем звонке музыка ставится на паузу. При отключении наушников воспроизведение останавливается.", Modifier.padding(top = 22.dp, horizontal = 4.dp), size = 11.sp, color = Ne.Faint, maxLines = 4, lineHeight = 17.sp) }
+        item { NeText("При входящем звонке музыка ставится на паузу. При отключении наушников воспроизведение останавливается.", Modifier.padding(start = 4.dp, end = 4.dp, top = 22.dp), size = 11.sp, color = Ne.Faint, maxLines = 4, lineHeight = 17.sp) }
     }
     if (sleep) SleepDialog(p, { sleep = false }) { state.setSleepTimer(it); sleep = false }
 }

@@ -189,7 +189,7 @@ fun EqualizerBars(playing: Boolean, modifier: Modifier = Modifier, color: Color 
     val phase by transition.animateFloat(0f, 6.28f, infiniteRepeatable(tween(900, easing = LinearEasing), RepeatMode.Restart), label = "bars")
     Canvas(modifier.size(width = 18.dp, height = maxHeight)) {
         for (i in 0..2) {
-            val h = if (animated) size.height * (0.35f + 0.6f * ((sin(phase + i * 1.7) + 1f) / 2f)) else size.height * (0.3f + i * 0.15f)
+            val h = if (animated) size.height * (0.35f + 0.6f * ((sin((phase + i * 1.7).toDouble()).toFloat() + 1f) / 2f)) else size.height * (0.3f + i * 0.15f)
             drawRoundRect(color, Offset(i * size.width / 3f, size.height - h), Size(size.width / 5f, h),
                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(2f))
         }

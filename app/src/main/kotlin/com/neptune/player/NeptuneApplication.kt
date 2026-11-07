@@ -16,7 +16,7 @@ class NeptuneApplication : Application() {
 }
 
 class AppContainer(application: Application) {
-    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate())
+    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     val settings = SettingsStore(application)
     val users = UserStore(application)
     val library = LibraryRepository(application, scope)
