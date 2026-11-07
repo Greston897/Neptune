@@ -58,17 +58,15 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_6
+          # The guest died mid-suite twice (`device 'emulator-5554' not found`, 25 of 29 tests).
+          # Software-GPU blur plus a media session is memory-hungry; the 2 GB default is the
+          # tightest resource here, so give the guest room instead of masking it with retries.
+          ram-size: 4096M
+          heap-size: 512M
           disable-animations: true
-          script: |
-            set -o pipefail
-            mkdir -p ci
-            # Collect diagnostics even when the tests fail. Previously pipefail aborted the script
-            # at the gradle line, so ci/logcat.txt was always empty on exactly the runs that needed it.
-            status=0
-            gradle --no-daemon --console=plain connectedDebugAndroidTest 2>&1 | tee emulator-tests.log || status=$?
-            adb logcat -d -v threadtime | grep -E "TestRunner|AndroidRuntime|com.neptune|permissioncontroller|ActivityTaskManager" > ci/logcat.txt || true
-            python3 -c "import glob,xml.etree.ElementTree as E; files=glob.glob('app/build/outputs/androidTest-results/**/*.xml',recursive=True); assert files, 'No instrumented test results'; suites=[E.parse(f).getroot() for f in files]; assert sum(int(s.get('tests',0)) for s in suites)>=29, 'Missing flow/layout tests'; assert all(int(s.get('failures',0))==0 and int(s.get('errors',0))==0 for s in suites), 'Instrumented test failure'" || status=$?
-            exit $status
+          # ONE line on purpose: this action runs every script line in its own `sh -c`, so an
+          # inline multi-line script cannot share state and silently swallowed test failures.
+          script: bash ci/run_instrumented.sh
       - name: Preserve build diagnostics
         if: failure()
         run: |

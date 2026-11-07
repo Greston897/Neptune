@@ -16,6 +16,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import com.neptune.player.R
 import com.neptune.player.model.AvatarShape
 import androidx.compose.foundation.Image
@@ -41,17 +45,23 @@ import kotlin.math.sin
  *
  * The brand mark is the base layer and the real cover is composited on top of it. Coil draws nothing
  * while a request is in flight and nothing when it fails, so a track with no embedded art — or with
- * an unreadable `content://` URI — shows the app avatar rather than an empty rectangle. No error
- * state to track: the fallback is simply always underneath.
+ * an unreadable `content://` URI — shows the app avatar rather than an empty rectangle. Loading and
+ * error need no separate handling: both leave the base layer visible.
+ *
+ * Once the cover actually decodes, the brand layer is dropped. Leaving it in place would repaint a
+ * gradient and a vector under every thumbnail in every list on every frame — invisible overdraw
+ * that the glass blur then has to sample again.
  */
 @Composable
 fun TrackArtwork(track: Track, modifier: Modifier = Modifier, corner: Dp = 12.dp, animate: Boolean = false) {
     Box(modifier.clip(androidx.compose.foundation.shape.RoundedCornerShape(corner))) {
-        BrandCover(track.artSeed, animate)
+        var covered by remember(track.artworkUri) { mutableStateOf(false) }
+        if (!covered) BrandCover(track.artSeed, animate)
         if (track.artworkUri != null) {
             AsyncImage(
                 model = track.artworkUri, contentDescription = null,
                 modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop,
+                onState = { covered = it is AsyncImagePainter.State.Success },
             )
         }
     }
