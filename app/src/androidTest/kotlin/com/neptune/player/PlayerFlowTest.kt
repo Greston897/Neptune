@@ -28,8 +28,15 @@ class PlayerFlowTest {
     private fun back() { compose.activityRule.scenario.onActivity { it.onBackPressedDispatcher.onBackPressed() } }
     private fun container(activity: MainActivity) = (activity.application as NeptuneApplication).container
     private fun waitText(text: String, timeout: Long = 20000) {
-        compose.waitUntil(timeout) {
-            runCatching { compose.onAllNodes(hasText(text)).fetchSemanticsNodes().isNotEmpty() }.getOrDefault(false)
+        try {
+            compose.waitUntil(timeout) {
+                runCatching { compose.onAllNodes(hasText(text)).fetchSemanticsNodes().isNotEmpty() }.getOrDefault(false)
+            }
+        } catch (e: androidx.compose.ui.test.ComposeTimeoutException) {
+            val visible = runCatching {
+                compose.onAllNodes(androidx.compose.ui.test.isRoot()).fetchSemanticsNodes().joinToString { it.config.toString() }
+            }.getOrDefault("unavailable")
+            throw AssertionError("Timed out waiting for '$text'. Roots: $visible", e)
         }
         compose.onNodeWithText(text).assertIsDisplayed()
     }
