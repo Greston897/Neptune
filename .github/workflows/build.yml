@@ -51,15 +51,20 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: gradle --no-daemon --console=plain connectedDebugAndroidTest
+          script: |
+            set -o pipefail
+            gradle --no-daemon --console=plain connectedDebugAndroidTest 2>&1 | tee emulator-tests.log
+            adb logcat -d -s AndroidRuntime:E TestRunner:I > ci/emulator-tests.log
       - name: Preserve build diagnostics
         if: failure()
         run: |
           mkdir -p ci
           cp build.log ci/last-build.log 2>/dev/null || true
+          cp emulator-tests.log ci/emulator-tests.log 2>/dev/null || true
+          find app/build/outputs/androidTest-results -name '*.xml' -exec cp {} ci/ \; || true
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
-          git add -f ci/last-build.log
+          git add -f ci/last-build.log ci/emulator-tests.log ci/TEST-*.xml
           git commit -m "ci: build diagnostics [skip ci]" || exit 0
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
