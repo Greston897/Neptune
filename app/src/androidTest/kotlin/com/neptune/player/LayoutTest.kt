@@ -155,15 +155,46 @@ class LayoutTest {
         }
     }
 
-    @Test fun miniPlayerKeepsControlsVisibleWithALongTitle() {
+    /**
+     * Contract changed in 2.7: the top pill owns identity, the bottom bar owns transport.
+     *
+     * The old version of this test asserted the title was rendered *inside* the mini-player. That
+     * metadata now lives only in the pill, so the assertion is inverted rather than dropped: the bar
+     * must NOT print the title or artist again, and it must expose the full player's five controls,
+     * each still a square no smaller than the 44dp accessibility floor.
+     */
+    @Test fun miniPlayerIsTransportOnlyAndKeepsEveryControlVisible() {
         val playback = PlaybackState(track = longTrack, isPlaying = true, durationMs = 245000, positionMs = 30000)
         host {
-            Box(Modifier.width(320.dp)) { MiniPlayerContent(playback, {}, {}, {}) }
+            Box(Modifier.width(320.dp)) { MiniPlayerContent(playback, {}, {}, {}, {}, {}, {}) }
         }
-        compose.onNodeWithContentDescription("Пауза").assertIsDisplayed()
-        compose.onNodeWithContentDescription("Следующий трек").assertIsDisplayed()
-        val title = compose.onNodeWithText(longTrack.title, useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
-        assertTrue("mini-player title must not be collapsed", title.width > 0f)
+        val density = compose.density.density
+        listOf("Перемешать", "Предыдущий трек", "Пауза", "Следующий трек", "Повторять очередь").forEach { label ->
+            compose.onNodeWithContentDescription(label).assertIsDisplayed()
+            val b = compose.onNodeWithContentDescription(label).fetchSemanticsNode().boundsInRoot
+            assertTrue("$label below the 44dp floor: ${b.height / density}", b.height / density >= 43.5f)
+            assertEquals("$label hit area must be square", b.width, b.height, 2f)
+        }
+        assertEquals("track title must not be duplicated in the transport bar", 0,
+            compose.onAllNodes(hasText(longTrack.title, substring = true)).fetchSemanticsNodes().size)
+        assertEquals("artist must not be duplicated in the transport bar", 0,
+            compose.onAllNodes(hasText(longTrack.artist, substring = true)).fetchSemanticsNodes().size)
+    }
+
+    /** Five fixed squares must still fit side by side on a narrow phone without overlapping. */
+    @Test fun miniPlayerTransportFitsANarrowScreen() {
+        val playback = PlaybackState(track = longTrack, isPlaying = true, durationMs = 245000, positionMs = 30000)
+        host {
+            Box(Modifier.width(280.dp)) { MiniPlayerContent(playback, {}, {}, {}, {}, {}, {}) }
+        }
+        val cells = listOf("Перемешать", "Предыдущий трек", "Пауза", "Следующий трек", "Повторять очередь").map {
+            compose.onNodeWithContentDescription(it).assertIsDisplayed()
+            compose.onNodeWithContentDescription(it).fetchSemanticsNode().boundsInRoot
+        }
+        cells.zipWithNext().forEach { (a, b) ->
+            assertTrue("transport cells overlap: ${a.right} vs ${b.left}", a.right <= b.left + 1f)
+        }
+        assertTrue("transport must stay on one line", cells.all { kotlin.math.abs(it.top - cells.first().top) <= 1f })
     }
 
     /**
@@ -345,6 +376,8 @@ class LayoutTest {
         assertTrue("pill must be horizontally centred",
             kotlin.math.abs((pill.left + pill.right) / 2 - (holder.left + holder.right) / 2) <= 1.5f)
         assertTrue("pill must be narrower than its holder", pill.width < holder.width)
+        assertTrue("pill exceeds its width cap: ${pill.width}",
+            pill.width <= DockMetrics.PillMaxWidth.value * compose.density.density + 1.5f)
     }
 
     /** The pill announces both the track and the artist, not just "now playing". */

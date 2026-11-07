@@ -60,7 +60,7 @@ jobs:
             gradle --no-daemon --console=plain connectedDebugAndroidTest 2>&1 | tee emulator-tests.log
             mkdir -p ci
             adb logcat -d -v threadtime | grep -E "TestRunner|AndroidRuntime|com.neptune|permissioncontroller|ActivityTaskManager" > ci/logcat.txt
-            python3 -c "import glob,xml.etree.ElementTree as E; files=glob.glob('app/build/outputs/androidTest-results/**/*.xml',recursive=True); assert files, 'No instrumented test results'; suites=[E.parse(f).getroot() for f in files]; assert sum(int(s.get('tests',0)) for s in suites)>=25, 'Missing flow/layout tests'; assert all(int(s.get('failures',0))==0 and int(s.get('errors',0))==0 for s in suites), 'Instrumented test failure'"
+            python3 -c "import glob,xml.etree.ElementTree as E; files=glob.glob('app/build/outputs/androidTest-results/**/*.xml',recursive=True); assert files, 'No instrumented test results'; suites=[E.parse(f).getroot() for f in files]; assert sum(int(s.get('tests',0)) for s in suites)>=26, 'Missing flow/layout tests'; assert all(int(s.get('failures',0))==0 and int(s.get('errors',0))==0 for s in suites), 'Instrumented test failure'"
       - name: Preserve build diagnostics
         if: failure()
         run: |

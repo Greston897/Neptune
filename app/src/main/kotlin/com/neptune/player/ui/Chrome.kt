@@ -56,10 +56,10 @@ object DockMetrics {
     val Gap = 10.dp
     val Bottom = NeSpace.md
     val NavHeight = 68.dp
-    val MiniHeight = 72.dp
+    val MiniHeight = 64.dp
     val Breath = NeSpace.xxl
     val PillTop = NeSpace.sm
-    val PillMaxWidth = 340.dp
+    val PillMaxWidth = 252.dp
 
     fun showsNavbar(route: String?): Boolean =
         route in Tab.entries.map { it.route } || route?.startsWith("collection/") == true
@@ -106,7 +106,8 @@ fun NeptuneNavBar(route: String?, onSelect: (Tab) -> Unit) {
             Tab.entries.forEach { tab ->
                 val active = route == tab.route
                 val color by animateColorAsState(
-                    if (active) Ne.Text else Ne.Faint, tween(if (animations) 180 else 0), label = "tabColor",
+                    if (active) Ne.Text else Ne.Faint,
+                    tween(if (animations) NeMotion.Quick else 0, easing = NeEase), label = "tabColor",
                 )
                 Column(
                     Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(18.dp))
@@ -168,22 +169,45 @@ fun TrackPill(playback: PlaybackState, onOpen: () -> Unit, modifier: Modifier = 
     }
 }
 
-/** Compact now-playing bar wired to the player state. */
+/** Compact transport bar wired to the player state. */
 @Composable
 fun NeptuneMiniPlayer(state: NeptuneState, playback: PlaybackState, onOpen: () -> Unit) {
-    MiniPlayerContent(playback, { state.togglePlayback() }, { state.nextTrack() }, onOpen)
+    MiniPlayerContent(
+        playback = playback,
+        onToggle = { state.togglePlayback() },
+        onNext = { state.nextTrack() },
+        onPrevious = { state.previousTrack() },
+        onShuffle = { state.toggleShuffle() },
+        onRepeat = { state.cycleRepeat() },
+        onOpen = { onOpen() },
+    )
 }
 
 /**
- * Stateless mini-player. Controls keep fixed squares so long titles can only ellipsize, and the
- * bar can be laid out in isolation by the instrumented layout tests.
+ * Stateless bottom transport bar.
+ *
+ * Division of labour with the top pill: the pill owns *identity* (artwork, title, artist), this bar
+ * owns *control*. Artwork and text were removed from here so the same metadata is never printed
+ * twice on one screen, and the freed width carries the full player's transport — shuffle, previous,
+ * play/pause, next, repeat — instead of just two buttons.
+ *
+ * Every cell keeps a fixed square so the row can be measured in isolation by the layout tests, and
+ * `SpaceEvenly` distributes them without any button collapsing on a narrow screen.
  */
 @Composable
-fun MiniPlayerContent(playback: PlaybackState, onToggle: () -> Unit, onNext: () -> Unit, onOpen: () -> Unit) {
-    val track = playback.track ?: return
+fun MiniPlayerContent(
+    playback: PlaybackState,
+    onToggle: () -> Unit,
+    onNext: () -> Unit,
+    onPrevious: () -> Unit,
+    onShuffle: () -> Unit,
+    onRepeat: () -> Unit,
+    onOpen: () -> Unit,
+) {
+    if (playback.track == null) return
     var drag by remember { mutableFloatStateOf(0f) }
     GlassPanel(
-        Modifier.fillMaxWidth().height(DockMetrics.MiniHeight), corner = 20.dp,
+        Modifier.fillMaxWidth().height(DockMetrics.MiniHeight), corner = 22.dp,
         haze = LocalContentHaze.current,
     ) {
         Column(
@@ -197,32 +221,39 @@ fun MiniPlayerContent(playback: PlaybackState, onToggle: () -> Unit, onNext: () 
                 .clickable(onClickLabel = "Открыть плеер", onClick = onOpen),
         ) {
             Row(
-                Modifier.weight(1f).fillMaxWidth().padding(start = NeSpace.sm, end = 6.dp),
+                Modifier.weight(1f).fillMaxWidth().padding(horizontal = NeSpace.sm),
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TrackThumb(track, NeRow.thumbCompact, 10.dp)
-                Spacer(Modifier.width(NeSpace.md))
-                Column(Modifier.weight(1f)) {
-                    NeText(track.title, size = NeType.label, lineHeight = NeType.labelLine, weight = FontWeight.SemiBold, maxLines = 1)
-                    Spacer(Modifier.height(NeSpace.xxs))
-                    NeText(
-                        if (playback.isBuffering) "Загрузка…" else track.artist,
-                        size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 1,
-                    )
-                }
-                Spacer(Modifier.width(6.dp))
+                NeIconButton(
+                    NeIcon.Shuffle,
+                    if (playback.shuffle) "Выключить перемешивание" else "Перемешать", onShuffle,
+                    size = NeTouch.min, iconSize = NeIconSize.sm,
+                    color = if (playback.shuffle) accent() else Ne.Faint,
+                )
+                NeIconButton(
+                    NeIcon.Prev, "Предыдущий трек", onPrevious,
+                    size = NeTouch.min, iconSize = NeIconSize.lg,
+                )
                 NeIconButton(
                     if (playback.isPlaying) NeIcon.Pause else NeIcon.Play,
                     if (playback.isPlaying) "Пауза" else "Воспроизвести", onToggle,
-                    size = NeTouch.min, iconSize = NeIconSize.md, color = Ne.Black, background = accent(),
+                    size = NeTouch.standard, iconSize = NeIconSize.lg,
+                    color = Ne.Black, background = accent(),
                 )
                 NeIconButton(
                     NeIcon.Next, "Следующий трек", onNext,
-                    size = NeTouch.min, iconSize = NeIconSize.md, color = Ne.Dim,
+                    size = NeTouch.min, iconSize = NeIconSize.lg,
+                )
+                NeIconButton(
+                    if (playback.repeat == 2) NeIcon.RepeatOne else NeIcon.Repeat,
+                    when (playback.repeat) { 1 -> "Повторять один трек"; 2 -> "Выключить повтор"; else -> "Повторять очередь" },
+                    onRepeat, size = NeTouch.min, iconSize = NeIconSize.sm,
+                    color = if (playback.repeat != 0) accent() else Ne.Faint,
                 )
             }
             Box(
-                Modifier.fillMaxWidth().padding(horizontal = NeSpace.md).padding(bottom = 6.dp)
+                Modifier.fillMaxWidth().padding(horizontal = NeSpace.lg).padding(bottom = 6.dp)
                     .height(2.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.10f)),
             ) {
                 Box(
@@ -247,7 +278,10 @@ fun PlayerDock(
     ) {
         AnimatedVisibility(
             visible && DockMetrics.showsMiniPlayer(route, hasTrack),
-            enter = fadeIn() + expandVertically(), exit = fadeOut() + shrinkVertically(),
+            enter = fadeIn(tween(NeMotion.Standard, easing = NeEase)) +
+                expandVertically(tween(NeMotion.Standard, easing = NeEase)),
+            exit = fadeOut(tween(NeMotion.Quick, easing = NeEase)) +
+                shrinkVertically(tween(NeMotion.Quick, easing = NeEase)),
         ) {
             Column {
                 NeptuneMiniPlayer(state, playback, onOpen)

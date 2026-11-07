@@ -230,7 +230,7 @@ fun PlayPauseButton(playback: PlaybackState, onClick: () -> Unit, modifier: Modi
         contentAlignment = Alignment.Center,
     ) {
         if (playback.isBuffering) CircularProgressIndicator(Modifier.size(NeIconSize.lg), color = Ne.Black, strokeWidth = 2.5.dp)
-        else Crossfade(playback.isPlaying, animationSpec = tween(if (animated) 160 else 0), label = "transport") { playing ->
+        else Crossfade(playback.isPlaying, animationSpec = tween(if (animated) NeMotion.Quick else 0, easing = NeEase), label = "transport") { playing ->
             NeIconView(if (playing) NeIcon.Pause else NeIcon.Play, NeIconSize.xxl, Ne.Black)
         }
     }

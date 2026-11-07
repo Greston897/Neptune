@@ -114,20 +114,21 @@ fun AppearanceScreen(state: NeptuneState, onBack: () -> Unit) {
     var reset by remember { mutableStateOf(false) }
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Внешний вид", onBack, "Спокойная основа. Акцент — на твоей музыке.") }
-        item { SettingsGroup("ЦВЕТ ОСНОВЫ") { Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Surface.entries.forEach { surface ->
-                val selected = s.surface == surface
-                Row(
-                    Modifier.fillMaxWidth().heightIn(min = 56.dp).clip(RoundedCornerShape(12.dp)).background(Color(surface.hex))
-                        .border(if (selected) 1.5.dp else 1.dp, if (selected) accent() else Color.White.copy(alpha = 0.08f), RoundedCornerShape(12.dp))
-                        .clickable { state.edit { it.copy(surfaceIndex = surface.ordinal) } }.padding(horizontal = NeSpace.md, vertical = NeSpace.sm),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Box(Modifier.size(NeIconSize.xl).clip(CircleShape).background(Color(surface.hex)).border(1.dp, Ne.Faint, CircleShape))
-                    Spacer(Modifier.width(NeSpace.md))
-                    NeText(surface.title, Modifier.weight(1f), size = NeType.label, lineHeight = NeType.labelLine, color = if (selected) accent() else Ne.Text, maxLines = 1)
-                    if (selected) { Spacer(Modifier.width(NeSpace.sm)); NeIconView(NeIcon.Check, NeIconSize.sm, accent()) }
+        // The backdrop is fixed by design, so this group informs rather than offers a choice.
+        item { SettingsGroup("ЦВЕТ ОСНОВЫ") { Column(Modifier.padding(NeRow.panelInset)) {
+            Row(Modifier.fillMaxWidth().heightIn(min = NeRow.setting), verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.size(NeIconSize.xl).clip(CircleShape).background(Color(Surface.FIXED.hex)).border(1.dp, Ne.Faint, CircleShape))
+                Spacer(Modifier.width(NeSpace.md))
+                Column(Modifier.weight(1f)) {
+                    NeText(Surface.FIXED.title, size = NeType.label, lineHeight = NeType.labelLine, maxLines = 1)
+                    Spacer(Modifier.height(NeSpace.xxs))
+                    NeText(
+                        "Фирменный фон приложения. Настраивается только акцент.",
+                        size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 2,
+                    )
                 }
+                Spacer(Modifier.width(NeSpace.sm))
+                NeIconView(NeIcon.Check, NeIconSize.sm, accent())
             }
         } } }
         item { SettingsGroup("АКЦЕНТ") { AccentPicker(s.accentIndex) { i -> state.edit { it.copy(accentIndex = i) } } } }

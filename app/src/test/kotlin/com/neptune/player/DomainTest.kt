@@ -4,6 +4,7 @@ import com.neptune.player.data.LibraryLogic
 import com.neptune.player.data.UserData
 import com.neptune.player.model.PlaybackState
 import com.neptune.player.model.Settings
+import com.neptune.player.model.Surface
 import com.neptune.player.model.Track
 import com.neptune.player.model.formatTime
 import com.neptune.player.model.trackCount
@@ -32,6 +33,26 @@ class DomainTest {
         assertEquals(1f, s.glassRim, 0.0001f)
         assertEquals(1.25f, s.avatarSize, 0.0001f)
     }
+    /**
+     * The backdrop is brand identity, not a preference. Whatever an old preference file or an
+     * injected edit says, validation must fold it back to the fixed OLED base — otherwise the
+     * neutral-black glass guarantee silently breaks for existing installs.
+     */
+    @Test fun backdropIsLockedAndCannotBeChangedByPreferences() {
+        assertEquals(Surface.OLED, Surface.FIXED)
+        assertEquals("fixed base must be neutral: R=G=B", 0L, Surface.FIXED.hex and 0xFFFFFFL)
+        Surface.entries.forEach { attempted ->
+            val s = Settings(surfaceIndex = attempted.ordinal).validated()
+            assertEquals("surfaceIndex ${attempted.ordinal} escaped the lock", Surface.FIXED, s.surface)
+            assertEquals(Surface.FIXED.ordinal, s.surfaceIndex)
+        }
+        // Out-of-range values must not fall through to a tinted base either.
+        listOf(-5, 99).forEach {
+            assertEquals(Surface.FIXED, Settings(surfaceIndex = it).validated().surface)
+        }
+        assertEquals(Surface.FIXED, Settings(surfaceIndex = 2).resetAppearance().surface)
+    }
+
     @Test fun appearanceResetPreservesProfile() {
         val s = Settings(profileName = "Саша", avatarIndex = 2, accentIndex = 2).resetAppearance()
         assertEquals("Саша", s.profileName); assertEquals(2, s.avatarIndex); assertEquals(0, s.accentIndex)

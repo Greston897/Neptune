@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.sp
 import com.neptune.player.ui.DockMetrics
 import com.neptune.player.ui.NeIcon
 import com.neptune.player.ui.NeIconSize
+import com.neptune.player.ui.NeMotion
 import com.neptune.player.ui.NeRow
 import com.neptune.player.ui.NeSpace
 import com.neptune.player.ui.NeTouch
@@ -85,12 +86,30 @@ class DesignSystemTest {
         assertTrue(DockMetrics.showsMiniPlayer("home", true))
     }
 
+    /**
+     * Motion is a scale, not a pile of magic numbers. The sweep must be visibly faster than the
+     * 9000ms it shipped with, yet slow enough to read as a reflection instead of a flicker; screen
+     * transitions must be slower than colour changes so hierarchy stays legible.
+     */
+    @Test fun motionScaleIsOrderedAndTheSheenIsBriskNotFlickery() {
+        assertTrue("colour < layout < screen", NeMotion.Quick < NeMotion.Standard)
+        assertTrue("layout < screen", NeMotion.Standard < NeMotion.Emphasized)
+        assertTrue("screen transitions must stay under half a second", NeMotion.Emphasized <= 500)
+        assertTrue("colour changes must not feel sluggish", NeMotion.Quick in 180..300)
+        assertTrue("sheen must be faster than the original 9000ms", NeMotion.Sheen < 9000)
+        assertTrue("sheen must not strobe", NeMotion.Sheen in 2500..4500)
+    }
+
     @Test fun pillTokensAreOnGridAndLeaveRoomForArtwork() {
         assertEquals("pill height must be whole dp", NeRow.pill.value, kotlin.math.round(NeRow.pill.value), 0.0001f)
         assertTrue("pill must be a touch target", NeRow.pill >= NeTouch.min)
         assertTrue("artwork must fit inside the capsule", NeRow.pillArt < NeRow.pill)
         assertTrue("artwork must stay tappable-sized", NeRow.pillArt >= 32.dp)
         assertTrue(DockMetrics.PillMaxWidth > NeRow.pill * 3)
+        // 2.7: the capsule was too wide; it must stay a compact centre object, not a full-width bar.
+        assertTrue("pill must stay compact", DockMetrics.PillMaxWidth <= 260.dp)
+        assertTrue("transport bar must still hold a 48dp button plus progress",
+            DockMetrics.MiniHeight >= NeTouch.standard + 8.dp)
     }
 
     @Test fun everyIconHasAResourceAndTabsHaveBoldTwins() {

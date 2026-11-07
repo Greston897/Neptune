@@ -36,6 +36,25 @@ object NeIconSize {
     val xxl: Dp = 32.dp
 }
 
+/**
+ * Motion scale.
+ *
+ * The previous timings (160–300ms with the default easing) read as abrupt: state changes snapped
+ * instead of settling. These are Material 3 "emphasized" durations paired with `NeEase`, so screens
+ * glide and controls settle. [Sheen] is the glass sweep period — fast enough to feel alive, slow
+ * enough that the highlight reads as a travelling reflection rather than a flicker.
+ */
+object NeMotion {
+    /** Colour and small state changes. */
+    const val Quick = 240
+    /** Small layout changes: dock, progress, chips. */
+    const val Standard = 340
+    /** Screen transitions and the entrance of floating surfaces. */
+    const val Emphasized = 480
+    /** One full pass of the glass specular sweep. */
+    const val Sheen = 3200
+}
+
 /** Material recommends 48dp; nothing tappable goes below 44dp. */
 object NeTouch {
     val min: Dp = 44.dp

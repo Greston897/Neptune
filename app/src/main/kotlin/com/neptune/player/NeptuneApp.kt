@@ -5,6 +5,7 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -85,10 +86,22 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                     Box(Modifier.fillMaxSize().haze(contentHaze)) {
                         AmbientBackground(Modifier.fillMaxSize(), ambientPhase)
                         NavHost(nav, startDestination = "home", modifier = Modifier.fillMaxSize(),
-                            enterTransition = { if (!settings.animations) fadeIn(tween(0)) else if (targetState.destination.route == "player") slideInVertically(tween(300)) { it / 3 } + fadeIn(tween(220)) else slideInHorizontally(tween(260)) { it / 7 } + fadeIn(tween(220)) },
-                            exitTransition = { if (!settings.animations) fadeOut(tween(0)) else fadeOut(tween(160)) },
-                            popEnterTransition = { if (!settings.animations) fadeIn(tween(0)) else fadeIn(tween(220)) },
-                            popExitTransition = { if (!settings.animations) fadeOut(tween(0)) else if (initialState.destination.route == "player") slideOutVertically(tween(260)) { it / 3 } + fadeOut(tween(200)) else slideOutHorizontally(tween(260)) { it / 7 } + fadeOut(tween(180)) }) {
+                            // One motion character everywhere: the emphasized curve leaves fast and
+                            // settles slowly, so a longer duration reads as calm rather than laggy.
+                            enterTransition = {
+                                if (!settings.animations) fadeIn(tween(0))
+                                else if (targetState.destination.route == "player")
+                                    slideInVertically(tween(NeMotion.Emphasized, easing = NeEase)) { it / 4 } + fadeIn(tween(NeMotion.Standard, easing = NeEase))
+                                else slideInHorizontally(tween(NeMotion.Emphasized, easing = NeEase)) { it / 6 } + fadeIn(tween(NeMotion.Standard, easing = NeEase))
+                            },
+                            exitTransition = { if (!settings.animations) fadeOut(tween(0)) else fadeOut(tween(NeMotion.Standard, easing = NeEase)) },
+                            popEnterTransition = { if (!settings.animations) fadeIn(tween(0)) else fadeIn(tween(NeMotion.Standard, easing = NeEase)) },
+                            popExitTransition = {
+                                if (!settings.animations) fadeOut(tween(0))
+                                else if (initialState.destination.route == "player")
+                                    slideOutVertically(tween(NeMotion.Emphasized, easing = NeEase)) { it / 4 } + fadeOut(tween(NeMotion.Standard, easing = NeEase))
+                                else slideOutHorizontally(tween(NeMotion.Emphasized, easing = NeEase)) { it / 6 } + fadeOut(tween(NeMotion.Standard, easing = NeEase))
+                            }) {
                             composable("home") { HomeScreen(state, { kind, key -> nav.navigateCollection(kind, key) }, { nav.navigateOnce("player") }, { nav.navigateOnce("profile") }, { nav.navigateTab(Tab.SETTINGS) }) }
                             composable("search") { SearchScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
                             composable("library") { LibraryScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
@@ -107,10 +120,17 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                     }
                     // Identity up top, transport down bottom: the pill never covers a header because
                     // every screen reserves LocalTopInset in its content padding.
-                    if (DockMetrics.showsTrackPill(route, hasTrack)) {
+                    AnimatedVisibility(
+                        visible = DockMetrics.showsTrackPill(route, hasTrack),
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        enter = fadeIn(tween(if (settings.animations) NeMotion.Emphasized else 0, easing = NeEase)) +
+                            slideInVertically(tween(if (settings.animations) NeMotion.Emphasized else 0, easing = NeEase)) { -it / 2 },
+                        exit = fadeOut(tween(if (settings.animations) NeMotion.Standard else 0, easing = NeEase)) +
+                            slideOutVertically(tween(if (settings.animations) NeMotion.Standard else 0, easing = NeEase)) { -it / 2 },
+                    ) {
                         TrackPill(
                             playback, { nav.navigateOnce("player") },
-                            Modifier.align(Alignment.TopCenter).statusBarsPadding()
+                            Modifier.statusBarsPadding()
                                 .padding(top = DockMetrics.PillTop, start = NeSpace.xl, end = NeSpace.xl),
                         )
                     }

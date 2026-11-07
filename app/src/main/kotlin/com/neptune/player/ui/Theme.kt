@@ -1,5 +1,7 @@
 package com.neptune.player.ui
 
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.Easing
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
@@ -42,6 +44,15 @@ object Ne {
 }
 val LocalSettings = staticCompositionLocalOf { Settings() }
 val LocalHaptics = staticCompositionLocalOf<() -> Unit> { { } }
+/**
+ * Material 3 "emphasized" curve: leaves quickly, arrives slowly.
+ *
+ * Every transition in the app shares it, so motion has one character instead of each call site
+ * picking its own. The long deceleration tail is what makes a 480ms transition feel calm rather
+ * than slow — the eye follows the object into place instead of watching it snap.
+ */
+val NeEase: Easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
+
 @Composable fun accent() = LocalSettings.current.accent.let { Color(it.hex) }
 @Composable fun neRadius() = LocalSettings.current.radius.dp
 

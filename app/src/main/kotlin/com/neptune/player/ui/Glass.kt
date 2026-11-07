@@ -25,6 +25,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -70,7 +71,7 @@ fun rememberSheenPhase(): () -> Float {
     val s = LocalSettings.current
     return if (s.animations) {
         val phase = rememberInfiniteTransition(label = "sheen").animateFloat(
-            0f, 1f, infiniteRepeatable(tween(9000, easing = LinearEasing), RepeatMode.Restart), label = "sweep",
+            0f, 1f, infiniteRepeatable(tween(NeMotion.Sheen, easing = LinearEasing), RepeatMode.Restart), label = "sweep",
         )
         remember(phase) { { phase.value } }
     } else remember { { 0.35f } }
@@ -209,16 +210,37 @@ fun AmbientBackground(modifier: Modifier = Modifier, phase: Float = rememberAmbi
                 val r = when (i % 5) { 0 -> 2.2.dp.toPx(); 1 -> 1.5.dp.toPx(); else -> 1.dp.toPx() }
                 drawCircle(Color.White.copy(alpha = 0.06f + (i % 4) * 0.035f), radius = r, center = Offset(x, y))
             }
-            // A few soft light streaks give the blur directional smear, like real frosted glass.
+            // Aurora ribbons replace the old straight streaks. Curvature is what sells the depth:
+            // a Gaussian blur turns a straight line back into a straight line, but smears an arc
+            // into a soft directional glow. drawArc is used instead of a cubic Path so no Path is
+            // allocated per frame. Each ribbon is a wide faint pass plus a narrow brighter core.
             for (i in 0 until 3) {
-                val y = h * (0.22f + i * 0.26f)
-                drawLine(
-                    Color.White.copy(alpha = 0.035f),
-                    start = Offset(w * 0.05f, y), end = Offset(w * 0.95f, y + h * 0.03f),
-                    strokeWidth = 2.5.dp.toPx(),
+                val drift = phase * (0.6f + i * 0.25f)
+                val oy = h * (0.14f + i * 0.30f) + sin(drift) * h * 0.03f
+                val hue = if (i == 1) Color.White else tint
+                val tl = Offset(-w * 0.25f, oy - h * 0.42f)
+                val sz = Size(w * 1.5f, h * 0.84f)
+                val start = 196f + i * 8f
+                drawArc(
+                    brush = Brush.horizontalGradient(listOf(Color.Transparent, hue.copy(alpha = 0.05f), Color.Transparent)),
+                    startAngle = start, sweepAngle = 148f, useCenter = false, topLeft = tl, size = sz,
+                    style = Stroke(width = 24.dp.toPx(), cap = StrokeCap.Round),
+                )
+                drawArc(
+                    brush = Brush.horizontalGradient(listOf(Color.Transparent, hue.copy(alpha = 0.10f), Color.Transparent)),
+                    startAngle = start, sweepAngle = 148f, useCenter = false, topLeft = tl, size = sz,
+                    style = Stroke(width = 5.dp.toPx(), cap = StrokeCap.Round),
                 )
             }
-            drawRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.03f), Color.Transparent, Color.Black.copy(alpha = 0.25f))))
+            // Two-stage vignette: a top lift for air, then a radial pull to black at the edges so the
+            // fixed OLED base reads as a deep room rather than a flat rectangle.
+            drawRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.025f), Color.Transparent, Color.Black.copy(alpha = 0.42f))))
+            drawRect(
+                Brush.radialGradient(
+                    listOf(Color.Transparent, Color.Black.copy(alpha = 0.55f)),
+                    center = Offset(w * 0.5f, h * 0.42f), radius = maxOf(w, h) * 0.78f,
+                ),
+            )
         }
     }
 }

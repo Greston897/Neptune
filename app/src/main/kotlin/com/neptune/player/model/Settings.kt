@@ -16,17 +16,27 @@ enum class Accent(val title: String, val hex: Long) {
     companion object { fun of(i: Int) = entries.getOrElse(i) { WHITE } }
 }
 
+/**
+ * The backdrop is part of the identity, not a preference.
+ *
+ * [OLED] is the single fixed base: every channel is equal, so the glass above it stays strictly
+ * neutral black with no blue/graphite cast. The interest comes from the ambient layer (aurora arcs,
+ * orbital rings, starfield, vignette) drawn on top of it, not from tinting the base. [MIDNIGHT] and
+ * [OBSIDIAN] remain only so old stored preferences still deserialise; `validated()` folds every
+ * value back to [OLED], which is why the picker is no longer offered in Appearance.
+ */
 enum class Surface(val title: String, val hex: Long) {
     OLED("Абсолютный чёрный", 0xFF000000),
     MIDNIGHT("Тёмная ночь", 0xFF050507),
-    OBSIDIAN("Обсидиан", 0xFF0A0A0E)
+    OBSIDIAN("Обсидиан", 0xFF0A0A0E);
+    companion object { val FIXED = OLED }
 }
 
 enum class AvatarShape(val title: String) { CIRCLE("Круг"), SQUIRCLE("Скругление"), SQUARE("Панель") }
 
 data class Settings(
     val accentIndex: Int = 0,
-    val surfaceIndex: Int = 1,
+    val surfaceIndex: Int = 0,
     val radius: Float = 22f,
     val fontScale: Float = 1f,
     val animations: Boolean = true,
@@ -49,11 +59,12 @@ data class Settings(
     val accentGlow: Boolean = true,
 ) {
     val accent get() = Accent.of(accentIndex)
-    val surface get() = Surface.entries.getOrElse(surfaceIndex) { Surface.MIDNIGHT }
+    val surface get() = Surface.FIXED
     val avatarShape get() = AvatarShape.entries.getOrElse(avatarIndex) { AvatarShape.SQUIRCLE }
     fun validated() = copy(
         accentIndex = accentIndex.coerceIn(0, Accent.entries.lastIndex),
-        surfaceIndex = surfaceIndex.coerceIn(0, Surface.entries.lastIndex),
+        // Locked: a stored or injected value can never move the app off its fixed backdrop.
+        surfaceIndex = Surface.FIXED.ordinal,
         radius = radius.coerceIn(12f, 32f), fontScale = fontScale.coerceIn(0.9f, 1.2f),
         avatarIndex = avatarIndex.coerceIn(0, AvatarShape.entries.lastIndex),
         avatarTone = avatarTone.coerceIn(0, Accent.entries.lastIndex),
@@ -64,7 +75,7 @@ data class Settings(
         glassTint = glassTint.coerceIn(0.35f, 0.88f),
         glassRim = glassRim.coerceIn(0f, 1f),
     )
-    fun resetAppearance() = copy(accentIndex = 0, surfaceIndex = 1, radius = 22f, fontScale = 1f,
+    fun resetAppearance() = copy(accentIndex = 0, surfaceIndex = Surface.FIXED.ordinal, radius = 22f, fontScale = 1f,
         animations = true, haptics = true, compact = false, navLabels = true,
         artworkMotion = true, showRemaining = true, glassEnabled = true, glassBlur = 40f,
         glassTint = 0.38f, glassRim = 0.85f, ambientGlow = true, accentGlow = true)
