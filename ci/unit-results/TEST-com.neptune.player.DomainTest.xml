@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.neptune.player.DomainTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-11-08T13:19:26" hostname="runnervmwuk1x" time="0.043">
+  <properties/>
+  <testcase name="searchNormalizesCaseAndYo" classname="com.neptune.player.DomainTest" time="0.01"/>
+  <testcase name="blankSearchDoesNotReturnFakeResults" classname="com.neptune.player.DomainTest" time="0.002"/>
+  <testcase name="playlistDoesNotDuplicateTrack" classname="com.neptune.player.DomainTest" time="0.003"/>
+  <testcase name="timeAndPlurals" classname="com.neptune.player.DomainTest" time="0.009"/>
+  <testcase name="searchRequiresAllTerms" classname="com.neptune.player.DomainTest" time="0.0"/>
+  <testcase name="historyIsUniqueAndBounded" classname="com.neptune.player.DomainTest" time="0.005"/>
+  <testcase name="dockClearanceMatchesFloatingChrome" classname="com.neptune.player.DomainTest" time="0.001"/>
+  <testcase name="appearanceResetPreservesProfile" classname="com.neptune.player.DomainTest" time="0.0"/>
+  <testcase name="settingsRecoverInvalidStoredValues" classname="com.neptune.player.DomainTest" time="0.0"/>
+  <testcase name="backdropIsLockedAndCannotBeChangedByPreferences" classname="com.neptune.player.DomainTest" time="0.006"/>
+  <testcase name="glassSettingsClampToSafeRanges" classname="com.neptune.player.DomainTest" time="0.0"/>
+  <testcase name="progressNeverDividesByZero" classname="com.neptune.player.DomainTest" time="0.0"/>
+  <testcase name="likedCountIgnoresIdsThatNoLongerResolve" classname="com.neptune.player.DomainTest" time="0.006"/>
+  <testcase name="visibleGlassRecipeIsTheDefault" classname="com.neptune.player.DomainTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

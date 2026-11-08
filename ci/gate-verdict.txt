@@ -1,1 +1,39 @@
-OK: 33 instrumented tests ran, 0 failures (declared 33)
+FAIL: 2 instrumented test(s) failed
+  avatarShapeChoicePersistsAndBackWorks
+    java.lang.AssertionError: Failed to inject touch input.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (ContentDescription = 'Форма «Круг»' (ignoreCase: false))
+
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
+at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
+at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
+at com.neptune.player.PlayerFlowTest.avatarShapeChoicePersistsAndBackWorks(PlayerFlowTest.kt:140)
+  subscriptionScreenShowsWhatIsFreeAndCanBeOpened
+    java.lang.AssertionError: Timed out waiting for 'Открыть Plus сейчас'. Roots: Printing with useUnmergedTree = 'true'
+Node #3703 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #3973 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@3a6c6b1'
+Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
+|-Node #3976 at (l=53.0, t=160.0, r=179.0, b=286.0)px
+| ContentDescription = '[Закрыть]'
+| Role = 'Button'
+| Focused = 'false'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #3978 at (l=200.0, t=202.0, r=1027.0, b=243.0)px
+| Text = '[ПОДПИСКА]'
+| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #3983 at (l=340.0, t=507.0, r=741.0, b=594.0)px
+| Text = '[Neptune Plus]'
+| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #3985 at (l=201.0, t=605.0, r=879.0, b=648.0)px
+| Text = '[Глубже: тексты, ночной режим, свои акценты.]'
+| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #3988 at (l=95.0, t=764.0, r=427.0, b=805.0)px
+| Text = '[ВСЕГДА БЕСПЛАТНО]'
+| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #3996 at (l=174.0, t=858.0, r=985.0, b=90
