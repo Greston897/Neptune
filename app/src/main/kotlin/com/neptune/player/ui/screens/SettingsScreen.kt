@@ -250,7 +250,10 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit, onSubscription: () ->
                 // exactly what the header, the settings row and this screen will show afterwards.
                 Box(
                     Modifier.size(112.dp).clip(CircleShape)
-                        .clickable { state.gate(PlanFeature.AvatarPhoto) { actions.avatar() } }
+                        // Never blocked on Free: the picker opens, and `setAvatarPhoto` keeps the
+                        // picture and explains that Plus shows it. Stopping the user at the avatar
+                        // with a paywall for a *tap* was the rudest version of this gate.
+                        .clickable { actions.avatar() }
                         .semantics { contentDescription = "Сменить фото профиля" },
                     contentAlignment = Alignment.BottomEnd,
                 ) {
@@ -280,9 +283,9 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit, onSubscription: () ->
         item { SettingsGroup("ФОТО") { Column(Modifier.padding(NeRow.panelInset), verticalArrangement = Arrangement.spacedBy(NeSpace.sm)) {
             NeButton(
                 if (s.avatarPhoto.isBlank()) "Загрузить фото" else "Заменить фото",
-                // Ask the plan *before* opening the picker: launching a file browser and only then
-                // showing a paywall wastes the user's tap and leaves a stack of dialogs behind.
-                { state.gate(PlanFeature.AvatarPhoto) { actions.avatar() } },
+                // The picker always opens; the plan is checked once a picture actually exists, so
+                // browsing for one is never a wasted tap and no file is silently discarded.
+                { actions.avatar() },
                 Modifier.fillMaxWidth(), NeIcon.Plus, primary = s.avatarPhoto.isBlank(),
             )
             if (s.avatarPhoto.isNotBlank()) {

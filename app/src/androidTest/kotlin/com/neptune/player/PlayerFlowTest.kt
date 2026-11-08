@@ -281,6 +281,87 @@ class PlayerFlowTest {
     }
 
     /** The paywall must be reachable from Settings and must state that the player itself is free. */
+    /**
+     * Regression: the plan page could be opened on top of itself.
+     *
+     * Tapping "Neptune Plus" in Settings while the page was already up drew a second copy of it —
+     * two opaque-with-blur pages, one over the other — and the blurred panels mixed into a smear.
+     * The page is now a single overlay: a second entry point changes nothing, and closing it once
+     * leaves the library behind it, not another copy.
+     */
+    @Test fun planPageNeverOpensTwiceAndClosesInOneTap() {
+        compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
+        waitText("Neptune Plus")
+        clickText("Neptune Plus")
+        waitText("ВСЕГДА БЕСПЛАТНО")
+        // The plan manager (no specific feature) must show its prices — a page opened without a
+        // reason used to render nothing at all, because "no reason" was the same value as "closed".
+        compose.onNodeWithTag("subscriptionList").performScrollToNode(hasText("ЦЕНА"))
+        waitText("ЦЕНА")
+        // Ask for the very same page again. Nothing may stack: there is one overlay, not two.
+        compose.activityRule.scenario.onActivity { container(it).openPlanManager() }
+        compose.waitForIdle()
+        assertEquals(
+            "the plan page must be exactly one node tree, not a stack",
+            1,
+            compose.onAllNodes(hasText("ЦЕНА")).fetchSemanticsNodes().size,
+        )
+        compose.activityRule.scenario.onActivity { container(it).openPlanManager() }
+        compose.waitForIdle()
+        assertEquals(
+            "a repeated entry point must still be one page",
+            1,
+            compose.onAllNodes(hasText("ЦЕНА")).fetchSemanticsNodes().size,
+        )
+        back()
+        // One back press closes the overlay; Settings is what remains underneath.
+        waitText("Всё под тебя. Без лишнего.")
+        assertTrue(
+            "the page must be gone, not hiding behind another copy",
+            compose.onAllNodes(hasText("ЦЕНА")).fetchSemanticsNodes().isEmpty(),
+        )
+    }
+
+    /**
+     * Regression: the top pill vanished outside the tab routes.
+     *
+     * Every confirmation borrows the pill, so opening "Внешний вид" and toggling something showed
+     * the setting change but no notice at all — the toast had nowhere to appear. The pill now stays
+     * on every screen that is not the immersive player or the plan page.
+     */
+    @Test fun pillAndItsNoticesFollowTheUserIntoSubScreens() {
+        seedLibrary()
+        clickText("Слушать")
+        compose.waitUntil(20000) {
+            var playing = false
+            compose.activityRule.scenario.onActivity { playing = container(it).playback.state.value.track != null }
+            playing
+        }
+        // The pill announces itself as "Сейчас играет: …"; that is a stable handle for the capsule
+        // without adding a test-only tag to production code.
+        fun pillShown() = compose.onAllNodes(
+            hasContentDescription("Сейчас играет", substring = true),
+        ).fetchSemanticsNodes().isNotEmpty()
+
+        // Leave the player: on Home the pill is the now-playing capsule.
+        back()
+        compose.waitUntil(5000) { pillShown() }
+
+        compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
+        waitText("Внешний вид")
+        compose.waitUntil(5000) { pillShown() }
+
+        clickText("Внешний вид")
+        waitText("ЦВЕТ ОСНОВЫ")
+        // The sub-screen keeps the pill: this is the route that used to lose it.
+        compose.waitUntil(5000) { pillShown() }
+
+        // And a confirmation triggered here actually renders inside it.
+        compose.activityRule.scenario.onActivity { container(it).toast("Проверка", com.neptune.player.ui.NeIcon.Check) }
+        compose.waitUntil(5000) { compose.onAllNodes(hasText("Проверка")).fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithText("Проверка").assertIsDisplayed()
+    }
+
     @Test fun subscriptionScreenShowsWhatIsFreeAndCanBeOpened() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
         compose.waitUntil(5000) { compose.onAllNodes(hasText("Neptune Plus")).fetchSemanticsNodes().isNotEmpty() }

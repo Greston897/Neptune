@@ -43,7 +43,32 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
     var contextPlaylist by mutableStateOf<String?>(null)
 
     /** Paywall destination requested by a gated control; the host opens the subscription screen. */
+    /**
+     * Why the plan page is open, when a specific control asked for it. Null is a legitimate reason:
+     * the user simply pressed "Neptune Plus" to read about the plan.
+     */
     var paywall by mutableStateOf<PlanFeature?>(null)
+        private set
+
+    /**
+     * Whether the plan page is open at all.
+     *
+     * Kept apart from [paywall] because "no particular reason" and "not open" are different states,
+     * and folding them into one nullable field made a tap on "Neptune Plus" open nothing at all.
+     * This is the single source of truth for the overlay; only [gate], [openPaywall], [closePaywall]
+     * and [subscribe] write it.
+     */
+    var paywallOpen by mutableStateOf(false)
+        private set
+
+    /**
+     * What the user asked for and Plus refused, so it can be handed back the moment they subscribe.
+     *
+     * Without this the upgrade ends in a toast and a dead end: the user tapped "Загрузить фото",
+     * bought Plus, and now has to find that button again. The action is *replayed*, never stored —
+     * a pending closure that is never consumed is dropped when the paywall closes.
+     */
+    private var paywallIntent: (() -> Unit)? = null
 
     /** Track whose text is being imported from a file; the host's picker reads and clears it. */
     var pendingLyricsTrack by mutableStateOf<Track?>(null)
@@ -61,6 +86,21 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
 
     /** Opens the text screen: for [track] when given, for the playing track otherwise. */
     fun openLyrics(track: Track? = null) { lyricsTarget = track }
+
+    /**
+     * Text the user typed while Plus said no: shown now, not stored.
+     *
+     * Handed back with the editor's draft, so reopening the screen puts the same words in the field
+     * the way a saved text would. Held per track id and cleared when it is finally saved.
+     */
+    var localLyrics by mutableStateOf<Map<String, String>>(emptyMap())
+        private set
+
+    fun rememberDraft(track: Track, text: String) {
+        localLyrics = localLyrics + (track.id to text)
+    }
+
+    fun draftFor(track: Track): String? = localLyrics[track.id]
 
     fun requestLyrics(track: Track) = container.lyrics.request(track.id, track.uri)
     fun lyricsKnown(track: Track) = container.lyrics.isKnown(track.id)
@@ -81,12 +121,57 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
     /**
      * Runs [action] when the tier allows [feature]; otherwise opens the paywall for it.
      * Returns true when the action actually ran, so callers can skip their own feedback.
+     *
+     * The paywall is *one* overlay, not a stack: asking for a second Plus feature while the plan
+     * screen is already open only swaps the reason shown at the top. Two overlapping copies used to
+     * draw their blurred panels over one another and read as a smeared double exposure.
      */
     fun gate(feature: PlanFeature, action: () -> Unit): Boolean {
         if (allows(feature)) { action(); return true }
         paywall = feature
-        toast("Это в Neptune Plus", NeIcon.Sparkle, ToastTone.INFO)
+        paywallOpen = true
+        paywallIntent = action
+        // Named the feature instead of saying "это в Plus" into the void: the notice now explains
+        // why the tap did nothing at all.
+        toast("«${feature.title}» — в Plus", NeIcon.Sparkle, ToastTone.INFO)
         return false
+    }
+
+    /**
+     * Opens the plan page for a tap that is *not* gated — "Neptune Plus" in Settings or on the
+     * profile card. No intent is recorded: there is nothing to finish later, and subscribing from
+     * here must simply show the plan as active.
+     */
+    fun openPlanManager() = openPaywall()
+
+    /**
+     * Opens the plan screen from a navigation entry point.
+     *
+     * [feature] is the reason; without one the screen simply opens as a plan manager. Opening it
+     * again while it is already open changes nothing — there is exactly one overlay, and a second
+     * copy would draw a second set of blurred panels on top of the first.
+     *
+     * `paywall` is therefore the single source of truth for "is the plan screen open": it is set
+     * only here and in [gate], and cleared only by [closePaywall] or [subscribe]. A `null` here
+     * means "closed", never "some default feature".
+     */
+    fun openPaywall(feature: PlanFeature? = null) {
+        // A fresh entry point replaces whatever the previous visit was about; a second tap while the
+        // page is already up changes nothing at all (no stacking, no reason swapping under the eye).
+        if (paywallOpen) return
+        paywall = feature
+        paywallIntent = null
+        paywallOpen = true
+    }
+
+    /**
+     * Closes the plan screen. Anything the user came here to do but did not buy is forgotten here,
+     * so a later upgrade cannot replay a stale intention minutes after the fact.
+     */
+    fun closePaywall() {
+        paywallOpen = false
+        paywall = null
+        paywallIntent = null
     }
 
     fun setAnnualPlan(annual: Boolean) = container.plan.set(tier, annual)
@@ -94,6 +179,14 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
     fun subscribe(annual: Boolean) {
         container.plan.subscribe(annual)
         toast("Neptune Plus активен", NeIcon.Sparkle, ToastTone.DONE)
+        // The reason the screen opened is now allowed: finish it instead of making the user hunt for
+        // the button they already pressed. The page state is cleared first so the replayed action
+        // (a picker, a dialog, a save) lands on the screen underneath rather than on the paywall.
+        val pending = paywallIntent
+        paywallIntent = null
+        paywallOpen = false
+        paywall = null
+        pending?.let { it() }
     }
 
     fun cancelSubscription() {
@@ -169,20 +262,38 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
     /**
      * Stores a picked picture as the profile avatar.
      *
-     * Gated by the plan, but the *failure* modes are not: an unreadable pick keeps the old avatar and
-     * says why, and the version counter is bumped so the image loader cannot serve the previous file
-     * from its memory cache under the old key.
+     * The plan is checked *after* the pick, never before the picker: the picture is already in the
+     * user's hand by then, so it is copied to private storage and the upgrade offer explains that it
+     * will be shown once Plus is on. Nothing is discarded, and subscribing applies it immediately
+     * instead of asking the user to pick the same photo again.
+     *
+     * The *failure* modes stay outside the gate: an unreadable pick keeps the old avatar and says
+     * why, and the version counter is bumped so the image loader cannot serve the previous file from
+     * its memory cache under the old key.
      */
     fun setAvatarPhoto(uri: Uri) {
-        gate(PlanFeature.AvatarPhoto) {
-            val name = AvatarStore.save(getApplication(), uri)
-            if (name == null) {
-                toast("Не удалось прочитать изображение", NeIcon.Info, ToastTone.WARN)
-            } else {
+        // The picture is already in hand: refusing it after the user navigated a whole file browser
+        // would be the rude version of the gate. It is stored, then the paywall explains that the
+        // photo shows once Plus is on — never a silent no-op and never a discarded pick.
+        val photoIncluded = allows(PlanFeature.AvatarPhoto)
+        val name = AvatarStore.save(getApplication(), uri)
+        if (name == null) {
+            toast("Не удалось прочитать изображение", NeIcon.Info, ToastTone.WARN)
+            return
+        }
+        if (!photoIncluded) {
+            // Keep the file, keep it out of the avatar slot: nothing is lost if Plus arrives later.
+            toast("Фото выбрано — покажем его в Plus", NeIcon.Sparkle, ToastTone.INFO)
+            paywall = PlanFeature.AvatarPhoto
+            paywallOpen = true
+            paywallIntent = {
                 edit { it.copy(avatarPhoto = name, avatarPhotoVersion = it.avatarPhotoVersion + 1) }
                 toast("Фото профиля обновлено", NeIcon.Check)
             }
+            return
         }
+        edit { it.copy(avatarPhoto = name, avatarPhotoVersion = it.avatarPhotoVersion + 1) }
+        toast("Фото профиля обновлено", NeIcon.Check)
     }
 
     fun clearAvatarPhoto() {
@@ -200,8 +311,24 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
 
     /** Saving an edited text is a Plus feature, and the gate is checked here, not in the UI. */
     fun saveLyrics(track: Track, text: String) {
-        gate(PlanFeature.LyricsSave) {
+        // Same rule as the photo: text the user already typed is shown immediately and only its
+        // *saving* waits for Plus. Showing the dialog's promise, swallowing the save and saying
+        // "это в Plus" in a toast would read as a bug, so the words appear and the offer explains
+        // why they are not stored yet.
+        if (allows(PlanFeature.LyricsSave)) {
             container.lyrics.set(track.id, text)
+            localLyrics = localLyrics - track.id
+            toast("Текст сохранён", NeIcon.Check)
+            return
+        }
+        container.lyrics.setLocal(track.id, text)
+        rememberDraft(track, text)
+        toast("Текст показан — сохранение в Plus", NeIcon.Sparkle, ToastTone.INFO)
+        paywall = PlanFeature.LyricsSave
+        paywallOpen = true
+        paywallIntent = {
+            container.lyrics.set(track.id, text)
+            localLyrics = localLyrics - track.id
             toast("Текст сохранён", NeIcon.Check)
         }
     }

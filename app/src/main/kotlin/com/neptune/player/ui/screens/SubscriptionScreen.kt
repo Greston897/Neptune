@@ -15,13 +15,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,19 +68,28 @@ fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
     val tier by state.plan.collectAsStateWithLifecycle()
     val annual by state.annualPlan.collectAsStateWithLifecycle()
     var confirmCancel by remember { mutableStateOf(false) }
-    // Captured once, then cleared. The request is what the screen was opened for, so it has to
-    // outlive the interactive overlay; clearing it here also means the overlay's exit animation is
-    // not cut short by the request disappearing on the same frame.
-    val focused = remember { state.paywall }
+    // Read live, not remembered: a refused save can set the reason while this page is already open,
+    // and the header must show the current one rather than a snapshot from the first composition.
+    val focused = state.paywall
     val isPlus = tier == PlanTier.PLUS
-    DisposableEffect(Unit) { onDispose { state.paywall = null } }
+    // The page closes itself when the plan it was opened for is granted. `state.subscribe` already
+    // clears the request; this covers the other path into Plus (a restored purchase) without
+    // leaving a manager page open on top of the library.
+    LaunchedEffect(isPlus) { if (isPlus) state.closePaywall() }
 
+    // Opaque, not translucent. Everything behind this page is another screen — often itself a
+    // blurred panel — and showing it through a glass sheet produced a smeared double exposure.
+    // The scrim stays for the one frame a fade takes, then the page is simply itself.
+    Box(Modifier.fillMaxSize().background(Ne.Void)) {
     LazyColumn(
         // Tagged so a test can scroll to a control that lives below the fold instead of assuming
         // it fits on the viewport (a LazyColumn does not compose off-screen items at all).
-        Modifier.fillMaxSize().statusBarsPadding().testTag("subscriptionList"),
+        Modifier.fillMaxSize().statusBarsPadding().testTag("subscriptionList").background(Ne.Void),
         contentPadding = PaddingValues(
-            start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm, bottom = LocalBottomInset.current,
+            start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm,
+            // The dock (nav bar + mini player) is hidden while this page is up, so the ambient inset
+            // would leave a dead strip of empty space under the last row. Keep only the system bars.
+            bottom = NeSpace.xxl + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
         ),
     ) {
         item {
@@ -114,7 +125,10 @@ fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
                 )
             }
         }
-        // The reason the paywall opened, when a specific control sent the user here.
+        // The reason the paywall opened, when a specific control sent the user here (null when the
+        // user simply pressed "Neptune Plus", in which case no excuse card is shown). The second line
+        // is the promise that matters after a refused save: the thing the user already did (a typed
+        // text, a picked photo) is kept and applied the moment Plus is on, so nothing is lost.
         if (focused != null && !isPlus) {
             item {
                 GlassPanel(Modifier.fillMaxWidth().padding(bottom = NeSpace.md)) {
@@ -125,6 +139,11 @@ fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
                             NeText("«${focused.title}» — в Plus", size = NeType.label, lineHeight = NeType.labelLine, weight = FontWeight.Bold)
                             Spacer(Modifier.height(NeSpace.xxs))
                             NeText(focused.description, size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 2)
+                            Spacer(Modifier.height(NeSpace.xxs))
+                            NeText(
+                                "Всё, что вы уже сделали, применится сразу после подключения.",
+                                size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Faint, maxLines = 2,
+                            )
                         }
                     }
                 }
@@ -224,6 +243,7 @@ fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
                 )
             }
         }
+    }
     }
     // Not the destructive dialog: cancelling a plan loses no music and no text, only the extras that
     // Plus itself added. Red "this cannot be undone" wording would be a lie here.

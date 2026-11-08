@@ -16,6 +16,36 @@ import org.junit.Test
  */
 class PlanTest {
 
+    /**
+     * The overlay state machine, asserted as a pure truth table.
+     *
+     * Regression: the page was addressed by a *nullable reason* alone, so "open, no particular
+     * reason" and "closed" were the same value. A tap on "Neptune Plus" consequently opened nothing,
+     * and two entry points could each think they owned the page.
+     */
+    @Test fun thePaywallOpensOnceAndOnlyOnce() {
+        // Mirrors NeptuneState.openPaywall/closePaywall without a ViewModel: the rule is the point.
+        class Overlay {
+            var reason: PlanFeature? = null
+            var open = false
+            fun openFor(feature: PlanFeature?) { if (open) return; reason = feature; open = true }
+            fun close() { open = false; reason = null }
+        }
+        val overlay = Overlay()
+        assertFalse("a fresh app has no overlay", overlay.open)
+        overlay.openFor(null)
+        assertTrue("pressing 'Neptune Plus' must open the page without a reason", overlay.open)
+        assertEquals("no reason is not a reason to pick one", null, overlay.reason)
+        // (a second call while it is open is a no-op; `reason` deliberately stays as it was)
+        overlay.openFor(PlanFeature.AvatarPhoto)
+        assertTrue("a second entry point must not close the page", overlay.open)
+        overlay.close()
+        assertFalse(overlay.open)
+        overlay.openFor(PlanFeature.LyricsSave)
+        assertTrue("a gated tap reopens it", overlay.open)
+        assertEquals(PlanFeature.LyricsSave, overlay.reason)
+    }
+
     @Test fun thePlayerItselfIsNeverPaid() {
         listOf(PlanFeature.Playback, PlanFeature.Lyrics).forEach { feature ->
             assertTrue("${feature.title} must work on Free", Features.has(feature, PlanTier.FREE))

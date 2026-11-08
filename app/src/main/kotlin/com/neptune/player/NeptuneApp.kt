@@ -66,8 +66,15 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                     String(bytes.take(80_000).toByteArray(), Charsets.UTF_8)
                 }
             }.getOrNull()
-            if (text.isNullOrBlank()) state.toast("Текст не прочитан", NeIcon.Info, ToastTone.WARN)
-            else state.saveLyrics(track, text)
+            if (text.isNullOrBlank()) {
+                // The words typed before the picker are still in the editor's draft; keep them so an
+                // unreadable file cannot cost the user what they already wrote.
+                state.toast("Текст не прочитан", NeIcon.Info, ToastTone.WARN)
+            } else {
+                // `saveLyrics` decides what Free may keep and opens the plan page itself when the
+                // save is refused; the host only supplies the text.
+                state.saveLyrics(track, text)
+            }
         }
     }
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -152,16 +159,24 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                             }
                             composable("search") { SearchScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
                             composable("library") { LibraryScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
-                            composable("settings") { SettingsScreen(state, { nav.navigateOnce("profile") }, { nav.navigateOnce("appearance") }, { nav.navigateOnce("playback-settings") }, { nav.navigateOnce("data") }, { nav.navigateOnce("about") }, { state.paywall = null; nav.navigateOnce("subscription") }) }
+                            composable("settings") { SettingsScreen(state, { nav.navigateOnce("profile") }, { nav.navigateOnce("appearance") }, { nav.navigateOnce("playback-settings") }, { nav.navigateOnce("data") }, { nav.navigateOnce("about") }, { state.openPlanManager() }) }
                             composable("player") { NowPlayingScreen(state, { nav.popBackStack() }, { nav.navigateOnce("queue") }, { kind, key -> nav.navigateCollection(kind, key) }, { nav.navigateOnce("lyrics") }) }
                             composable("queue") { QueueScreen(state) { nav.popBackStack() } }
-                            composable("profile") { ProfileScreen(state, { nav.popBackStack() }, { nav.navigateOnce("subscription") }) }
+                            composable("profile") { ProfileScreen(state, { nav.popBackStack() }, { state.openPlanManager() }) }
                             composable("appearance") { AppearanceScreen(state) { nav.popBackStack() } }
                             composable("playback-settings") { PlaybackSettingsScreen(state) { nav.popBackStack() } }
                             composable("data") { DataScreen(state, { nav.popBackStack() }) { nav.navigateCollection("recent", "") } }
                             composable("about") { AboutScreen { nav.popBackStack() } }
-                            composable("lyrics") { LyricsScreen(state) { state.lyricsTarget = null; nav.popBackStack() } }
-                            composable("subscription") { SubscriptionScreen(state) { nav.popBackStack() } }
+                            composable("lyrics") {
+                                LyricsScreen(
+                                    state,
+                                    { state.lyricsTarget = null; nav.popBackStack() },
+                                    // A save that Plus refused leaves the screen open behind the plan
+                                    // page, so the text is still there when the user comes back — the
+                                    // notice in the pill says it was not stored.
+                                    { state.openPlanManager() },
+                                )
+                            }
                             composable("collection/{kind}/{key}", arguments = listOf(navArgument("kind") { type = NavType.StringType }, navArgument("key") { type = NavType.StringType })) { backStack ->
                                 CollectionScreen(state, backStack.arguments?.getString("kind") ?: "", (backStack.arguments?.getString("key") ?: "").let { if (it == "-") "" else it }, { nav.popBackStack() }) { nav.popBackStack() }
                             }
@@ -169,8 +184,13 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                     }
                     // Identity up top, transport down bottom: the pill never covers a header because
                     // every screen reserves LocalTopInset in its content padding.
+                    // The pill follows the user everywhere a track is loaded — Home, the Library,
+                    // Settings and every sub-screen inside it (appearance, playback, data, about,
+                    // profile) — and steps aside only for two genuinely full-bleed pages: the
+                    // immersive player (which *is* the track) and the plan screen (which is opaque).
+                    // A notice that only appears on some screens is a notice nobody trusts.
                     AnimatedVisibility(
-                        visible = DockMetrics.showsTrackPill(route, hasTrack),
+                        visible = hasTrack && route != "player" && !state.paywallOpen,
                         modifier = Modifier.align(Alignment.TopCenter),
                         enter = fadeIn(tween(if (settings.animations) NeMotion.Emphasized else 0, easing = NeEase)) +
                             slideInVertically(tween(if (settings.animations) NeMotion.Emphasized else 0, easing = NeEase)) { -it / 2 },
@@ -184,7 +204,7 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                             toast = toast,
                         )
                     }
-                    if (!fullPlayer) PlayerDock(Modifier.align(Alignment.BottomCenter), true, state, playback, { nav.navigateOnce("player") }, route) { tab -> nav.navigateTab(tab) }
+                    if (!fullPlayer && !state.paywallOpen) PlayerDock(Modifier.align(Alignment.BottomCenter), true, state, playback, { nav.navigateOnce("player") }, route) { tab -> nav.navigateTab(tab) }
                     state.contextTrack?.let { track ->
                         TrackActionsSheet(
                             state, track,
@@ -193,9 +213,11 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                             { nav.navigateOnce("lyrics") },
                         )
                     }
-                    // Paywall is a screen, not a dialog: it needs room for the plan comparison and it
-                    // has to survive a rotation while the user reads it.
-                    if (state.paywall != null) SubscriptionScreen(state) { state.paywall = null }
+                    // One paywall, drawn above everything else: it is an opaque page, so a second
+                    // copy underneath it (or a blurred panel showing through) is impossible.
+                    if (state.paywallOpen) {
+                        SubscriptionScreen(state) { state.closePaywall() }
+                    }
                 }
             }
         }

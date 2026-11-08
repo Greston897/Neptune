@@ -77,14 +77,23 @@ class DesignSystemTest {
     @Test fun trackPillClearanceMatchesItsVisibility() {
         assertTrue("no track means no pill", DockMetrics.topHeight("home", false) == 0.dp)
         assertTrue("immersive player hides the pill", DockMetrics.topHeight("player", true) == 0.dp)
-        assertTrue("settings subpage hides the pill", DockMetrics.topHeight("appearance", true) == 0.dp)
-        listOf("home", "search", "library", "settings", "collection/liked/-").forEach { route ->
+        // The plan page is opaque and owns the whole screen, so nothing is drawn over it.
+        assertTrue("paywall hides the pill", DockMetrics.topHeight("subscription", true) == 0.dp)
+        // Every other route keeps the pill, including the settings sub-pages: they used to drop it,
+        // and with it every confirmation the user could trigger from those very screens.
+        listOf(
+            "home", "search", "library", "settings", "collection/liked/-",
+            "appearance", "playback-settings", "data", "about", "profile", "lyrics", "queue",
+        ).forEach { route ->
             val inset = DockMetrics.topHeight(route, true)
             assertTrue("$route must clear the pill", inset > NeRow.pill)
         }
         // Identity up top and transport down bottom are independent surfaces.
         assertTrue(DockMetrics.showsTrackPill("home", true))
         assertTrue(DockMetrics.showsMiniPlayer("home", true))
+        // Deeper screens trade transport for identity rather than stacking two docks.
+        assertTrue("no mini player without a tab bar", !DockMetrics.showsMiniPlayer("appearance", true))
+        assertTrue("but identity stays", DockMetrics.showsTrackPill("appearance", true))
     }
 
     /**

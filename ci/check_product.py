@@ -97,6 +97,67 @@ def check_toasts_live_in_the_pill() -> None:
         fail(f"{ROOT / 'NeptuneApp.kt'}: a snackbar host is rendered again — confirmations must use the pill")
 
 
+def check_paywall_is_one_opaque_page() -> None:
+    """Two overlapping copies of the plan screen smeared their blurred panels together."""
+    app = text(ROOT / "NeptuneApp.kt")
+    renders = app.count("SubscriptionScreen(")
+    if renders != 1:
+        fail(
+            f"{ROOT / 'NeptuneApp.kt'}: the plan screen is composed {renders} time(s). "
+            "It must be one overlay above everything, or two blurred pages stack into a smear."
+        )
+    screen = text(ROOT / "ui/screens/SubscriptionScreen.kt")
+    if "background(Ne.Void)" not in screen:
+        fail(
+            f"{ROOT / 'ui/screens/SubscriptionScreen.kt'}: the plan page must be opaque. "
+            "Showing the screen under it through glass is what produced the double exposure."
+        )
+    state = text(ROOT / "state/NeptuneState.kt")
+    if "var paywallOpen" not in state:
+        fail(
+            f"{ROOT / 'state/NeptuneState.kt'}: the overlay needs its own open flag. With a nullable "
+            "reason only, opening the plan page without a specific feature is indistinguishable from "
+            "it being closed, and the tap does nothing."
+        )
+    if "private set" not in state.split("var paywall")[1][:200]:
+        fail(
+            f"{ROOT / 'state/NeptuneState.kt'}: `paywall` must only be written through openPaywall/gate/"
+            "closePaywall, so a second copy cannot be opened by an ad-hoc assignment."
+        )
+    if "paywallIntent" not in state:
+        fail(
+            f"{ROOT / 'state/NeptuneState.kt'}: a refused action must be handed back after the upgrade, "
+            "otherwise the user pays and then has to find the same button again."
+        )
+    lyrics = text(ROOT / "ui/screens/LyricsScreen.kt")
+    if "container.lyrics" in lyrics or "state.saveLyrics" not in lyrics or "onSubscribe" not in lyrics:
+        fail(
+            f"{ROOT / 'ui/screens/LyricsScreen.kt'}: the screen must hand the text to state.saveLyrics and "
+            "ask the host to open the plan page — not talk to the repository itself."
+        )
+
+
+def check_pill_follows_the_user() -> None:
+    """The pill carries every confirmation, so a screen that hides it hides them all."""
+    chrome = text(ROOT / "ui/Chrome.kt")
+    match = re.search(r"fun showsTrackPill\(route: String\?, hasTrack: Boolean\): Boolean =([^\n]*\n[^\n]*)", chrome)
+    if not match:
+        fail(f"{ROOT / 'ui/Chrome.kt'}: cannot read showsTrackPill — keep it machine-readable")
+        return
+    body = match.group(1)
+    if "showsNavbar" in body:
+        fail(
+            f"{ROOT / 'ui/Chrome.kt'}: the pill is limited to tab routes again — it disappeared in "
+            "Settings sub-screens, and with it every notice the user could trigger there."
+        )
+    for route in ('"player"', '"subscription"'):
+        if route not in body:
+            fail(f"{ROOT / 'ui/Chrome.kt'}: {route} must be the only route that hides the pill")
+    app = text(ROOT / "NeptuneApp.kt")
+    if "!state.paywallOpen" not in app:
+        fail(f"{ROOT / 'NeptuneApp.kt'}: the dock must step aside while the plan page covers the screen")
+
+
 def check_deletion_requires_confirmation() -> None:
     sheet = text(ROOT / "ui/TrackActions.kt")
     if "ConfirmDestructiveDialog" not in sheet:
@@ -151,6 +212,8 @@ def main() -> int:
     check_no_row_fill()
     check_avatar_has_no_colour_setting()
     check_toasts_live_in_the_pill()
+    check_paywall_is_one_opaque_page()
+    check_pill_follows_the_user()
     check_deletion_requires_confirmation()
     check_plan_gating_is_central()
     check_lyrics_are_time_driven()
@@ -159,7 +222,10 @@ def main() -> int:
         for row in FAILS:
             print("  -", row)
         return 1
-    print("OK: product invariants hold (no row plate, no avatar palette, pill notices, confirmed deletion, free player, timed lyrics)")
+    print(
+        "OK: product invariants hold (no row plate, no avatar palette, pill notices everywhere, "
+        "one opaque paywall, confirmed deletion, free player, timed lyrics)"
+    )
     return 0
 
 

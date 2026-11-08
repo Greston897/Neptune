@@ -66,7 +66,7 @@ private const val MaxLyricsChars = 40_000
  * different promises and the user should know which one they are reading.
  */
 @Composable
-fun LyricsScreen(state: NeptuneState, onBack: () -> Unit) {
+fun LyricsScreen(state: NeptuneState, onBack: () -> Unit, onSubscribe: () -> Unit = {}) {
     val playback by state.playback.collectAsStateWithLifecycle()
     val docs by state.lyricsDocs.collectAsStateWithLifecycle()
     // Recomposed on every tier change so a save attempted on Free re-renders the dialog's promise.
@@ -77,7 +77,8 @@ fun LyricsScreen(state: NeptuneState, onBack: () -> Unit) {
     val playing = target == null || target.id == playback.track?.id
     var editing by remember { mutableStateOf(false) }
     val pickFile = LocalLibraryActions.current.lyricsFile
-    var draft by remember(track?.id) { mutableStateOf("") }
+    // A refused save reopens the field with the same words instead of an empty box.
+    var draft by remember(track?.id) { mutableStateOf(track?.let { state.draftFor(it) } ?: "") }
 
     // Reading the tag is I/O; it is kicked off once per track and published through the repository.
     LaunchedEffect(track?.id) {
@@ -229,10 +230,17 @@ fun LyricsScreen(state: NeptuneState, onBack: () -> Unit) {
         onDismiss = { editing = false },
         onSave = { text ->
             editing = false
+            // `saveLyrics` decides what Free may keep; the screen only hands the words over and,
+            // when the save was refused, the plan page opens above this one.
+            val wasAllowed = state.allows(PlanFeature.LyricsSave)
             state.saveLyrics(editable, text.take(MaxLyricsChars))
+            if (!wasAllowed) onSubscribe()
         },
         onPickFile = {
             editing = false
+            // Keep the typed words before the picker steals the screen: a file that turns out
+            // unreadable must not cost the user the text they already wrote.
+            if (draft.isNotBlank()) state.rememberDraft(editable, draft)
             state.requestLyricsFile(editable)
             // Read outside the lambda's composition scope: the picker lives in the activity host.
             pickFile()

@@ -72,10 +72,16 @@ object DockMetrics {
     fun showsMiniPlayer(route: String?, hasTrack: Boolean): Boolean = hasTrack && showsNavbar(route)
 
     /**
-     * The top pill carries *identity* (artwork, title, artist); the bottom mini-player keeps
-     * *transport*. Both are shown on tab/collection routes, neither on the immersive full player.
+     * The top pill carries *identity* (artwork, title, artist) and every confirmation; the bottom
+     * mini-player keeps *transport*.
+     *
+     * The pill is drawn on every route except the immersive player — including Settings and its
+     * sub-screens, which used to lose it, and with it every toast, the moment the user opened
+     * "Внешний вид". The mini player only appears where a tab bar is present, so deeper screens
+     * trade transport for identity rather than stacking two docks.
      */
-    fun showsTrackPill(route: String?, hasTrack: Boolean): Boolean = hasTrack && showsNavbar(route)
+    fun showsTrackPill(route: String?, hasTrack: Boolean): Boolean =
+        hasTrack && route != "player" && route != "subscription"
 
     /** Top clearance a screen must reserve so its header never sits underneath the pill. */
     fun topHeight(route: String?, hasTrack: Boolean): Dp =

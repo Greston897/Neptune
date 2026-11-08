@@ -71,6 +71,22 @@ class LyricsRepository(private val context: Context, private val scope: Coroutin
         persist(next)
     }
 
+    /**
+     * Shows text for this session without storing it.
+     *
+     * Used by the free tier: the words the user just typed belong on screen, only *keeping* them
+     * across restarts is what Plus sells. The memory cache is the same map the UI observes, so the
+     * karaoke lights up immediately — the difference is that nothing is written to preferences.
+     */
+    fun setLocal(trackId: String, text: String) {
+        val doc = LyricsParser.fromText(text, LyricsSource.SAVED)
+        if (doc == null) {
+            cache.update { it - trackId }
+        } else {
+            cache.update { it + (trackId to doc) }
+        }
+    }
+
     fun clear(trackId: String) {
         val next = saved.value - trackId
         saved.value = next
