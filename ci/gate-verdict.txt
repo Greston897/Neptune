@@ -1,8 +1,15 @@
 FAIL: 2 instrumented test(s) failed
-  pillAndItsNoticesFollowTheUserIntoSubScreens
-    androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
-at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
-at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
-at com.neptune.player.PlayerFlowTest.pillAndItsNoticesFollowTheUserIntoSubScreens(PlayerFlowTest.kt:386)
-  sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
-    (no message — suspect device/emulator loss)
+  customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt
+    java.lang.AssertionError: 'ЦВЕТ ОСНОВЫ' belongs to the screen under the overlay and must not render twice expected:<0> but was:<1>
+at org.junit.Assert.fail(Assert.java:89)
+at org.junit.Assert.failNotEquals(Assert.java:835)
+at org.junit.Assert.assertEquals(Assert.java:120)
+at com.neptune.player.PlayerFlowTest.customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt(PlayerFlowTest.kt:345)
+  subscriptionScreenShowsWhatIsFreeAndCanBeOpened
+    java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Neptune Plus активен' (ignoreCase: false))
+at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:359)
+at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:33)
+at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:47)
+at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:36)
+at com.neptune.player.PlayerFlowTest.subscriptionScreenShowsWhatIsFreeAndCanBeOpened(PlayerFlowTest.kt:424)

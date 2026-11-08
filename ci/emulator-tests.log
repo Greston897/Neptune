@@ -84,63 +84,36 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 41 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 3/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 6/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 11/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 15/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 18/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 22/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 25/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 29/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 4/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 9/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 14/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 20/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 28/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 30/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 31/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 33/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 36/41 completed. (0 skipped) (0 failed)
 
 > Task :app:connectedDebugAndroidTest
 
-com.neptune.player.PlayerFlowTest > pillAndItsNoticesFollowTheUserIntoSubScreens[emulator-5554 - 15] [31mFAILED [0m
-	androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
-	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
+com.neptune.player.PlayerFlowTest > customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt[emulator-5554 - 15] [31mFAILED [0m
+	java.lang.AssertionError: 'ЦВЕТ ОСНОВЫ' belongs to the screen under the overlay and must not render twice expected:<0> but was:<1>
+	at org.junit.Assert.fail(Assert.java:89)
 
-emulator-5554 - 15 Tests 33/41 completed. (0 skipped) (1 failed)
-emulator-5554 - 15 Tests 36/41 completed. (0 skipped) (1 failed)
-
-> Task :app:connectedDebugAndroidTest
-
-com.neptune.player.PlayerFlowTest > sleepTimerOpensOnlyFromItsRowAndAlwaysCloses[emulator-5554 - 15] [31mFAILED [0m
-
-
-emulator-5554 - 15 Tests 37/41 completed. (0 skipped) (2 failed)
-Finished 37 tests on emulator-5554 - 15
+emulator-5554 - 15 Tests 39/41 completed. (0 skipped) (1 failed)
+emulator-5554 - 15 Tests 40/41 completed. (0 skipped) (1 failed)
 
 > Task :app:connectedDebugAndroidTest
+
+com.neptune.player.PlayerFlowTest > subscriptionScreenShowsWhatIsFreeAndCanBeOpened[emulator-5554 - 15] [31mFAILED [0m
+	java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Neptune Plus активен' (ignoreCase: false))
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
 Tests on emulator-5554 - 15 failed: There was 2 failure(s).
-Exception thrown during onAfterAll invocation of plugin AndroidTestApkInstallerPlugin: device 'emulator-5554' not found
-device 'emulator-5554' not found
-com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
-	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:981)
-	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:1000)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$18(DeviceImpl.java:785)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:755)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$15(DeviceImpl.java:618)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:615)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeShellCommand$14(DeviceImpl.java:573)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeShellCommand(DeviceImpl.java:570)
-	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDevice.executeShellCommand(DdmlibAndroidDevice.kt)
-	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDeviceController$executeAsync$deferred$1.invokeSuspend(DdmlibAndroidDeviceController.kt:171)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
-	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:570)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:749)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
 
-Test run failed to complete. Expected 41 tests, received 36
+Finished 41 tests on emulator-5554 - 15
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794163866975.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794164488064.json
 
 FAILURE: Build failed with an exception.
 
@@ -154,16 +127,23 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 4m 55s
+BUILD FAILED in 3m
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
 FAIL: 2 instrumented test(s) failed
-  pillAndItsNoticesFollowTheUserIntoSubScreens
-    androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
-at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
-at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
-at com.neptune.player.PlayerFlowTest.pillAndItsNoticesFollowTheUserIntoSubScreens(PlayerFlowTest.kt:386)
-  sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
-    (no message — suspect device/emulator loss)
+  customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt
+    java.lang.AssertionError: 'ЦВЕТ ОСНОВЫ' belongs to the screen under the overlay and must not render twice expected:<0> but was:<1>
+at org.junit.Assert.fail(Assert.java:89)
+at org.junit.Assert.failNotEquals(Assert.java:835)
+at org.junit.Assert.assertEquals(Assert.java:120)
+at com.neptune.player.PlayerFlowTest.customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt(PlayerFlowTest.kt:345)
+  subscriptionScreenShowsWhatIsFreeAndCanBeOpened
+    java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Neptune Plus активен' (ignoreCase: false))
+at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:359)
+at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:33)
+at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:47)
+at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:36)
+at com.neptune.player.PlayerFlowTest.subscriptionScreenShowsWhatIsFreeAndCanBeOpened(PlayerFlowTest.kt:424)
 instrumented suite exit status: 1
