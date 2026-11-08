@@ -1,0 +1,321 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.neptune.player.LayoutTest" tests="41" failures="3" errors="0" skipped="0" time="188.806" timestamp="2026-11-08T18:43:58" hostname="localhost">
+  <properties>
+    <property name="device" value="emulator-5554 - 15" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="longTrackTitleNeverPushesControlsOffScreen" classname="com.neptune.player.LayoutTest" time="4.481" />
+  <testcase name="glyphSitsOnTheCentreOfItsBox" classname="com.neptune.player.LayoutTest" time="1.713" />
+  <testcase name="panelCentresContentShorterThanItself" classname="com.neptune.player.LayoutTest" time="2.733" />
+  <testcase name="sameTokenLabelsHaveIdenticalHeights" classname="com.neptune.player.LayoutTest" time="1.591" />
+  <testcase name="selectedTabIsExposedToAccessibility" classname="com.neptune.player.LayoutTest" time="2.029" />
+  <testcase name="pillArtworkIsInsetFromTheLeftEdge" classname="com.neptune.player.LayoutTest" time="2.42" />
+  <testcase name="iconButtonUsesExactlyTheRequestedSquare" classname="com.neptune.player.LayoutTest" time="3.261" />
+  <testcase name="priceChoiceIsAccessible" classname="com.neptune.player.LayoutTest" time="2.695" />
+  <testcase name="settingsRowsGrowInsteadOfClippingAtLargeFontScale" classname="com.neptune.player.LayoutTest" time="2.386" />
+  <testcase name="iconAndLabelShareACentreLine" classname="com.neptune.player.LayoutTest" time="2.549" />
+  <testcase name="navGlyphsAreIdenticalSquaresWhetherSelectedOrNot" classname="com.neptune.player.LayoutTest" time="2.316" />
+  <testcase name="noPromotionalCopyIsRendered" classname="com.neptune.player.LayoutTest" time="2.919" />
+  <testcase name="leadingIconSharesTheCentreLineOfItsLabelBlock" classname="com.neptune.player.LayoutTest" time="2.692" />
+  <testcase name="pillKeepsItsGeometryWhileAShortNoticeIsShown" classname="com.neptune.player.LayoutTest" time="2.744" />
+  <testcase name="trackWithBrokenArtworkUriStillRenders" classname="com.neptune.player.LayoutTest" time="1.539" />
+  <testcase name="touchTargetsAreNeverSmallerThanFortyFourDp" classname="com.neptune.player.LayoutTest" time="1.901" />
+  <testcase name="iconsStaySquareNextToALongLabel" classname="com.neptune.player.LayoutTest" time="2.223" />
+  <testcase name="trackRowContentStartsAtTheRowEdge" classname="com.neptune.player.LayoutTest" time="2.071" />
+  <testcase name="panelCentresContentOnBothAxes" classname="com.neptune.player.LayoutTest" time="1.734" />
+  <testcase name="circularArtworkPreferenceIsHonoured" classname="com.neptune.player.LayoutTest" time="1.826" />
+  <testcase name="miniPlayerIsTransportOnlyAndKeepsEveryControlVisible" classname="com.neptune.player.LayoutTest" time="1.961" />
+  <testcase name="miniPlayerTransportFitsANarrowScreen" classname="com.neptune.player.LayoutTest" time="2.671" />
+  <testcase name="trackPillIsACentredCapsuleOfTheTokenHeight" classname="com.neptune.player.LayoutTest" time="2.6" />
+  <testcase name="tabLabelsFitInsideTheirCells" classname="com.neptune.player.LayoutTest" time="2.504" />
+  <testcase name="currentTrackRowKeepsTheSameGeometryAsAnyOtherRow" classname="com.neptune.player.LayoutTest" time="2.009" />
+  <testcase name="glassSheenOverlayDoesNotInflateThePanel" classname="com.neptune.player.LayoutTest" time="1.578" />
+  <testcase name="leadingIconCellIsTheBareTokenSize" classname="com.neptune.player.LayoutTest" time="2.808" />
+  <testcase name="trackWithoutArtworkRendersTheBrandFallback" classname="com.neptune.player.LayoutTest" time="1.875" />
+  <testcase name="trackPillAnnouncesTrackAndArtist" classname="com.neptune.player.LayoutTest" time="2.497" />
+  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="12.578" />
+  <testcase name="lyricsScreenOpensAndExplainsWhenThereIsNoText" classname="com.neptune.player.PlayerFlowTest" time="9.272" />
+  <testcase name="pillAndItsNoticesFollowTheUserIntoSubScreens" classname="com.neptune.player.PlayerFlowTest" time="10.476">
+    <failure>java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
+at androidx.compose.ui.test.TestContext.getAllSemanticsNodes$ui_test_release(TestOwner.kt:87)
+at androidx.compose.ui.test.TestContext.getAllSemanticsNodes$ui_test_release$default(TestOwner.kt:81)
+at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:256)
+at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:249)
+at com.neptune.player.PlayerFlowTest.pillAndItsNoticesFollowTheUserIntoSubScreens$pillShown(PlayerFlowTest.kt:380)
+at com.neptune.player.PlayerFlowTest.pillAndItsNoticesFollowTheUserIntoSubScreens$lambda$35(PlayerFlowTest.kt:383)
+at com.neptune.player.PlayerFlowTest.$r8$lambda$GS543dmyplMz2urMYTdhNdqOkHI(Unknown Source:0)
+at com.neptune.player.PlayerFlowTest$$ExternalSyntheticLambda22.invoke(D8$$SyntheticClass:0)
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:434)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
+at com.neptune.player.PlayerFlowTest.pillAndItsNoticesFollowTheUserIntoSubScreens(PlayerFlowTest.kt:383)
+</failure>
+  </testcase>
+  <testcase name="planPageIsOnePageAndClosesInOneTap" classname="com.neptune.player.PlayerFlowTest" time="8.197" />
+  <testcase name="importedAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="6.715" />
+  <testcase name="likedAndRecentCollectionsOpenAndReturn" classname="com.neptune.player.PlayerFlowTest" time="6.678" />
+  <testcase name="albumShelfActionOpensTheLibraryAlbumsTab" classname="com.neptune.player.PlayerFlowTest" time="3.497" />
+  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="17.506" />
+  <testcase name="customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt" classname="com.neptune.player.PlayerFlowTest" time="25.084">
+    <failure>java.lang.AssertionError: Timed out waiting for 'ВСЕГДА БЕСПЛАТНО'. Roots: Printing with useUnmergedTree = 'true'
+Node #3636 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #3906 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px, Tag: 'appearanceList'
+| IsTraversalGroup = 'true'
+| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
+| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo&#64;bfe9b4d'
+| Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
+|  |-Node #3910 at (l=53.0, t=171.0, r=179.0, b=297.0)px
+|  | ContentDescription = '[Назад]'
+|  | Role = 'Button'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #3912 at (l=200.0, t=190.0, r=1027.0, b=277.0)px
+|  | Text = '[Внешний вид]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3914 at (l=53.0, t=318.0, r=738.0, b=361.0)px
+|  | Text = '[Спокойная основа. Акцент — на твоей музыке.]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3917 at (l=95.0, t=477.0, r=330.0, b=518.0)px
+|  | Text = '[ЦВЕТ ОСНОВЫ]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3926 at (l=201.0, t=601.0, r=560.0, b=651.0)px
+|  | Text = '[Абсолютный чёрный]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3928 at (l=201.0, t=656.0, r=917.0, b=741.0)px
+|  | Text = '[Фирменный фон приложения. Настраивается только акцент.]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3934 at (l=95.0, t=865.0, r=223.0, b=906.0)px
+|  | Text = '[АКЦЕНТ]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3940 at (l=95.0, t=959.0, r=501.0, b=1015.0)px
+|  | Text = '[Свой акцентный цвет]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3942 at (l=95.0, t=1020.0, r=816.0, b=1105.0)px
+|  | Text = '[Входит в Neptune Plus · 12 готовых оттенков бесплатны]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3944 at (l=848.0, t=990.0, r=985.0, b=1074.0)px
+|  | Role = 'Switch'
+|  | Focused = 'false'
+|  | ToggleableState = 'Off'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #3949 at (l=94.0, t=1169.0, r=210.0, b=1285.0)px
+|  | ContentDescription = '[Белый]'
+|  | Selected = 'true'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #3953 at (l=107.0, t=1290.0, r=197.0, b=1331.0)px
+|  | Text = '[Белый]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3955 at (l=250.0, t=1169.0, r=366.0, b=1285.0)px
+|  | ContentDescription = '[Лёд]'
+|  | Selected = 'false'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #3958 at (l=281.0, t=1290.0, r=336.0, b=1331.0)px
+|  | Text = '[Лёд]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3960 at (l=406.0, t=1169.0, r=522.0, b=1285.0)px
+|  | ContentDescription = '[Нептун]'
+|  | Selected = 'false'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #3963 at (l=414.0, t=1290.0, r=514.0, b=1331.0)px
+|  | Text = '[Нептун]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3965 at (l=561.0, t=1169.0, r=677.0, b=1285.0)px
+|  | ContentDescription = '[Циан]'
+|  | Selected = 'false'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #3968 at (l=583.0, t=1290.0, r=654.0, b=1331.0)px
+|  | Text = '[Циан]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3970 at (l=716.0, t=1169.0, r=832.0, b=1285.0)px
+|  | ContentDescription = '[Мята]'
+|  | Selected = 'false'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #3973 at (l=738.0, t=1290.0, r=809.0, b=1331.0)px
+|  | Text = '[Мята]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3975 at (l=871.0, t=1169.0, r=987.0, b=1285.0)px
+|  | ContentDescription = '[Лайм]'
+|  | Selected = 'false'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #3978 at (l=892.0, t=1290.0, r=965.0, b=1331.0)px
+|  | Text = '[Лайм]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3981 at (l=94.0, t=1363.0, r=210.0, b=1479.0)px
+|  | ContentDescription = '[Янтарь]'
+|  | Selected = 'false'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #3984 at (l=103.0, t=1484.0, r=201.0, b=1525.0)px
+|  | Text = '[Янтарь]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3986 at (l=250.0, t=1363.0, r=366.0, b=1479.0)px
+|  | ContentDescription = '[Апельсин]'
+|  | Selected = 'false'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #3989 at (l=241.0, t=1484.0, r=375.0, b=1525.0)px
+|  | Text = '[Апельсин]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3991 at (l=406.0, t=1363.0, r=522.0, b=1479.0)px
+|  | ContentDescription = '[Коралл]'
+|  | Selected = 'false'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #3994 at (l=414.0, t=1484.0, r=514.0, b=1525.0)px
+|  | Text = '[Коралл]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #3996 at (l=561.0, t=1363.0, r=677.0, b=1479.0)px
+|  | ContentDescription = '[Роза]'
+|  | Selected = 'false'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #3999 at (l=586.0, t=1484.0, r=651.0, b=1525.0)px
+|  | Text = '[Роза]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4001 at (l=716.0, t=1363.0, r=832.0, b=1479.0)px
+|  | ContentDescription = '[Лаванда]'
+|  | Selected = 'false'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #4004 at (l=716.0, t=1484.0, r=832.0, b=1525.0)px
+|  | Text = '[Лаванда]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4006 at (l=871.0, t=1363.0, r=987.0, b=1479.0)px
+|  | ContentDescription = '[Фиалка]'
+|  | Selected = 'false'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #4009 at (l=878.0, t=1484.0, r=979.0, b=1525.0)px
+|  | Text = '[Фиалка]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4013 at (l=95.0, t=1620.0, r=319.0, b=1661.0)px
+|  | Text = '[LIQUID GLASS]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4019 at (l=95.0, t=1714.0, r=375.0, b=1770.0)px
+|  | Text = '[Чёрное стекло]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4021 at (l=95.0, t=1775.0, r=816.0, b=1860.0)px
+|  | Text = '[Настоящее размытие фона на Android 12+, мягкая панель на старых версиях]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4023 at (l=848.0, t=1745.0, r=985.0, b=1829.0)px
+|  | Role = 'Switch'
+|  | Focused = 'false'
+|  | ToggleableState = 'On'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #4027 at (l=95.0, t=1913.0, r=881.0, b=1963.0)px
+|  | Text = '[Размытие]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4029 at (l=902.0, t=1918.0, r=985.0, b=1961.0)px
+|  | Text = '[40 dp]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4030 at (l=69.0, t=1964.0, r=1011.0, b=2059.0)px
+|  | Focused = 'false'
+|  | ProgressBarRangeInfo = 'ProgressBarRangeInfo(current=40.0, range=8.0..56.0, steps=0)'
+|  | ContentDescription = '[Размытие]'
+|  | Actions = [RequestFocus, SetProgress]
+|  | MergeDescendants = 'true'
+|  |-Node #4037 at (l=95.0, t=2100.0, r=898.0, b=2150.0)px
+|  | Text = '[Плотность стекла]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4039 at (l=919.0, t=2105.0, r=985.0, b=2148.0)px
+|  | Text = '[38%]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4040 at (l=69.0, t=2151.0, r=1011.0, b=2246.0)px
+|  | Focused = 'false'
+|  | ProgressBarRangeInfo = 'ProgressBarRangeInfo(current=0.38, range=0.35..0.88, steps=0)'
+|  | ContentDescription = '[Плотность стекла]'
+|  | Actions = [RequestFocus, SetProgress]
+|  | MergeDescendants = 'true'
+|  |-Node #4047 at (l=95.0, t=2287.0, r=898.0, b=2337.0)px
+|  | Text = '[Световой кант]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4049 at (l=919.0, t=2292.0, r=985.0, b=2335.0)px
+|  | Text = '[85%]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4050 at (l=69.0, t=2338.0, r=1011.0, b=2433.0)px
+|  | Focused = 'false'
+|  | ProgressBarRangeInfo = 'ProgressBarRangeInfo(current=0.85, range=0.0..1.0, steps=0)'
+|  | ContentDescription = '[Световой кант]'
+|  | Actions = [RequestFocus, SetProgress]
+|  | MergeDescendants = 'true'
+|  |-Node #4057 at (l=95.0, t=2496.0, r=450.0, b=2552.0)px
+|  | Text = '[Фоновое свечение]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4059 at (l=95.0, t=2557.0, r=653.0, b=2600.0)px
+|  | Text = '[Едва заметные блики на чёрном фоне]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4061 at (l=848.0, t=2506.0, r=985.0, b=2590.0)px
+|  | Role = 'Switch'
+|  | Focused = 'false'
+|  | ToggleableState = 'On'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #4065 at (l=95.0, t=2686.0, r=489.0, b=2742.0)px
+|  | Text = '[Акцентное свечение]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4067 at (l=95.0, t=2747.0, r=709.0, b=2790.0)px
+|  | Text = '[Подкрашивать фон выбранным акцентом]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #4069 at (l=848.0, t=2696.0, r=985.0, b=2780.0)px
+|    Role = 'Switch'
+|    Focused = 'false'
+|    ToggleableState = 'On'
+|    Actions = [OnClick, RequestFocus]
+|    MergeDescendants = 'true'
+|-Node #3649 at (l=209.0, t=149.0, r=871.0, b=286.0)px
+ContentDescription = '[Сейчас играет: Без названия — Локальный файл]'
+Focused = 'false'
+Actions = [OnClick, RequestFocus]
+MergeDescendants = 'true'
+|-Node #3650 at (l=235.0, t=170.0, r=330.0, b=265.0)px, Tag: 'pillArt'
+|-Node #3660 at (l=362.0, t=170.0, r=598.0, b=220.0)px
+| Text = '[Без названия]'
+| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #3662 at (l=362.0, t=225.0, r=590.0, b=266.0)px
+Text = '[Локальный файл]'
+Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:44)
+at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:35)
+at com.neptune.player.PlayerFlowTest.customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt(PlayerFlowTest.kt:337)
+... 54 trimmed
+Caused by: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
+at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:37)
+... 57 more
+</failure>
+  </testcase>
+  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="4.133" />
+  <testcase name="removeFromPlaylistWorksAndSurvivesASecondTap" classname="com.neptune.player.PlayerFlowTest" time="7.215" />
+  <testcase name="subscriptionScreenShowsWhatIsFreeAndCanBeOpened" classname="com.neptune.player.PlayerFlowTest" time="5.907">
+    <failure>java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Neptune Plus активен' (ignoreCase: false))
+at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:359)
+at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:33)
+at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:46)
+at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:35)
+at com.neptune.player.PlayerFlowTest.subscriptionScreenShowsWhatIsFreeAndCanBeOpened(PlayerFlowTest.kt:416)
+</failure>
+  </testcase>
+</testsuite>
