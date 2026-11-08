@@ -84,55 +84,36 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 41 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 3/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 2/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 6/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 9/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 13/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 17/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 22/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 25/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 12/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 15/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 19/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 23/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 27/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 29/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 30/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 31/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 32/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 33/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 34/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 36/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 37/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 39/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 40/41 completed. (0 skipped) (0 failed)
 
 > Task :app:connectedDebugAndroidTest
 
-com.neptune.player.PlayerFlowTest > planPageIsOnePageAndClosesInOneTap[emulator-5554 - 15] [31mFAILED [0m
-
-
-emulator-5554 - 15 Tests 33/41 completed. (0 skipped) (1 failed)
-Finished 33 tests on emulator-5554 - 15
-
-> Task :app:connectedDebugAndroidTest
+com.neptune.player.PlayerFlowTest > subscriptionScreenShowsWhatIsFreeAndCanBeOpened[emulator-5554 - 15] [31mFAILED [0m
+	java.lang.AssertionError: Timed out waiting for 'Отключить Plus'. Roots: Printing with useUnmergedTree = 'true'
+	Node #5689 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
 Tests on emulator-5554 - 15 failed: There was 1 failure(s).
-Exception thrown during onAfterAll invocation of plugin AndroidTestApkInstallerPlugin: device 'emulator-5554' not found
-device 'emulator-5554' not found
-com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
-	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:981)
-	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:1000)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$18(DeviceImpl.java:785)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:755)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$15(DeviceImpl.java:618)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:615)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeShellCommand$14(DeviceImpl.java:573)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeShellCommand(DeviceImpl.java:570)
-	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDevice.executeShellCommand(DdmlibAndroidDevice.kt)
-	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDeviceController$executeAsync$deferred$1.invokeSuspend(DdmlibAndroidDeviceController.kt:171)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
-	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:570)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:749)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
 
-Test run failed to complete. Expected 41 tests, received 32
+Finished 41 tests on emulator-5554 - 15
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794166443665.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794167399520.json
 
 FAILURE: Build failed with an exception.
 
@@ -146,11 +127,34 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 4m 27s
+BUILD FAILED in 4m 51s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
 FAIL: 1 instrumented test(s) failed
-  planPageIsOnePageAndClosesInOneTap
-    (no message — suspect device/emulator loss)
+  subscriptionScreenShowsWhatIsFreeAndCanBeOpened
+    java.lang.AssertionError: Timed out waiting for 'Отключить Plus'. Roots: Printing with useUnmergedTree = 'true'
+Node #5689 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #5877 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
+| IsTraversalGroup = 'true'
+| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
+| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@1a2296c'
+| Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
+|  |-Node #5881 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
+|  | Text = '[Настройки]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5883 at (l=53.0, t=501.0, r=451.0, b=544.0)px
+|  | Text = '[Всё под тебя. Без лишнего.]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5885 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |  |-Node #5889 at (l=418.0, t=860.0, r=662.0, b=922.0)px
+|  |  | Text = '[Слушатель]'
+|  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |  |-Node #5891 at (l=333.0, t=933.0, r=747.0, b=976.0)px
+|  |    Text = '[Изменить профиль и аватар]'
+|  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5894 at (l=95.0, t=1102.0, r=2
 instrumented suite exit status: 1
