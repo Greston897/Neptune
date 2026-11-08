@@ -57,7 +57,15 @@ fun TrackActionsSheet(state: NeptuneState, track: Track, onDismiss: () -> Unit, 
             SettingRow("В плейлист", icon = NeIcon.Music) { playlistPicker = true }
             SettingRow("Об альбоме", track.album, NeIcon.Disc) { close(); onCollection("album", "${track.artist}\u0000${track.album}") }
             SettingRow("Все треки исполнителя", track.artist, NeIcon.Artist) { close(); onCollection("artist", track.artist) }
-            if (state.contextPlaylist != null) SettingRow("Убрать из этого плейлиста", icon = NeIcon.Trash) { state.removeFromPlaylist(state.contextPlaylist!!, track); close() }
+            // Capture the playlist during composition instead of asserting non-null in the handler.
+            // `if (state.contextPlaylist != null) ... { state.contextPlaylist!! }` checks mutable
+            // state at composition and dereferences it later at click time: close() nulls it, so any
+            // click delivered against the outgoing composition would throw. Every dismiss path does
+            // null it today, which makes this latent rather than reproducible — but the guarantee
+            // should come from the type, not from every caller remembering to clear the field.
+            // A local val smart-casts, so the handler cannot see a value the row was not built for.
+            val ownerPlaylist = state.contextPlaylist
+            if (ownerPlaylist != null) SettingRow("Убрать из этого плейлиста", icon = NeIcon.Trash) { state.removeFromPlaylist(ownerPlaylist, track); close() }
             SettingRow("Поделиться треком", "Название и исполнитель", NeIcon.Share) {
                 val send = Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, "${track.title} — ${track.artist}"), "Поделиться музыкой")
                 context.startActivity(send); close()

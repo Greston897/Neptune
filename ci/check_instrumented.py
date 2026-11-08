@@ -28,6 +28,7 @@ REQUIRED = {
     "bundledAudioActuallyPlaysAndBackReturnsHome": "playback must actually advance",
     "sleepTimerOpensOnlyFromItsRowAndAlwaysCloses": "dock used to swallow the row tap",
     "trackWithoutArtworkRendersTheBrandFallback": "missing cover must show the app avatar",
+    "removeFromPlaylistWorksAndSurvivesASecondTap": "playlist id was dereferenced at click time",
 }
 
 

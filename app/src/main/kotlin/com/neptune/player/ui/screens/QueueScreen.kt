@@ -41,7 +41,7 @@ fun QueueScreen(state: NeptuneState, onBack: () -> Unit) {
             NeIconButton(NeIcon.Trash, "Очистить очередь", { confirm = true }, color = Ne.Dim, enabled = playback.queue.isNotEmpty())
         } }
         item { NeText(if (editing) "Стрелки меняют порядок. Нажмите на трек, чтобы включить его." else "${trackCount(playback.queue.size)} · следующий трек всегда под рукой", Modifier.padding(vertical = NeSpace.md), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 2) }
-        itemsIndexed(playback.queue, key = { index, track -> "${track.id}-$index" }) { index, track ->
+        itemsIndexed(playback.queue, key = { index, track -> ListKeys.queueItem(track.id, index) }) { index, track ->
             TrackRow(track, index == playback.queueIndex, playback.isPlaying, { state.playbackJump(index) },
                 subtitle = if (index == playback.queueIndex) "Сейчас играет · ${track.artist}" else track.artist,
                 trailing = {

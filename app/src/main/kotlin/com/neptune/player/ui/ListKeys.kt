@@ -18,4 +18,11 @@ object ListKeys {
     fun album(artist: String, album: String) = "album:$artist$SEP$album"
     fun artist(name: String) = "artist:$name"
     fun playlist(id: String) = "playlist:$id"
+
+    /**
+     * The queue may hold the same track twice, so identity alone is not a key here — the position is
+     * part of it. NUL-separated so a track id containing "-" or digits cannot alias another slot
+     * (`"a-1" + 2` and `"a" + 12` both read as "a-1-2" when joined with a dash).
+     */
+    fun queueItem(id: String, index: Int) = "queue:$id$SEP$index"
 }

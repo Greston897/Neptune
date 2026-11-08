@@ -100,7 +100,7 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                     }
                 }
             }
-            2 -> items(LibraryLogic.artists(tracks), key = { it.first }) { (artist, list) ->
+            2 -> items(LibraryLogic.artists(tracks), key = { ListKeys.artist(it.first) }) { (artist, list) ->
                 Row(Modifier.fillMaxWidth().heightIn(min = NeRow.compact).clip(RoundedCornerShape(12.dp))
                     .clickable { onCollection("artist", artist) }.padding(vertical = NeSpace.sm, horizontal = NeSpace.xs),
                     verticalAlignment = Alignment.CenterVertically) {

@@ -104,10 +104,18 @@ class DesignSystemTest {
         assertNotEquals(ListKeys.track("x"), ListKeys.artist("x"))
         assertNotEquals(ListKeys.track("x"), ListKeys.playlist("x"))
         assertNotEquals(ListKeys.album("x", "y"), ListKeys.playlist("x"))
+        // The queue repeats tracks, so the slot index is part of the key. Joined with a dash these
+        // two would alias: "a-1" + 2 and "a" + 12 both read as "a-1-2".
+        assertNotEquals(ListKeys.queueItem("a-1", 2), ListKeys.queueItem("a", 12))
+        assertNotEquals("same track in two slots must stay distinct",
+            ListKeys.queueItem("t", 0), ListKeys.queueItem("t", 1))
+        assertNotEquals(ListKeys.queueItem("x", 0), ListKeys.track("x"))
         val keys = listOf(
             ListKeys.track("1"), ListKeys.track("2"),
             ListKeys.album("A", "BC"), ListKeys.album("AB", "C"), ListKeys.album("AB", ""),
             ListKeys.artist("AB"), ListKeys.artist("A"), ListKeys.playlist("1"),
+            ListKeys.queueItem("a-1", 2), ListKeys.queueItem("a", 12),
+            ListKeys.queueItem("1", 0), ListKeys.queueItem("1", 1),
         )
         assertEquals("keys collide: $keys", keys.size, keys.toSet().size)
     }

@@ -150,4 +150,61 @@ class PlayerFlowTest {
             paused
         }
     }
+
+    /**
+     * Regression: "Убрать из этого плейлиста" dereferenced mutable state at click time.
+     *
+     * The row was guarded by `if (state.contextPlaylist != null)` during composition but then called
+     * `state.removeFromPlaylist(state.contextPlaylist!!, track)` in its handler. close() nulls that
+     * field, so any click delivered against the outgoing composition threw NPE. The handler now
+     * closes over a local val captured at composition. This walks the real path — playlist screen,
+     * track menu, remove — and then taps the same row again to prove a second click is harmless.
+     */
+    @Test fun removeFromPlaylistWorksAndSurvivesASecondTap() {
+        val name = "Регрессия"
+        var trackTitle = ""
+        var playlistId = ""
+        compose.waitUntil(20000) {
+            var loaded = false
+            compose.activityRule.scenario.onActivity { loaded = container(it).library.state.value.tracks.isNotEmpty() }
+            loaded
+        }
+        compose.activityRule.scenario.onActivity { activity ->
+            val c = container(activity)
+            val track = c.library.state.value.tracks.first()
+            trackTitle = track.title
+            val p = c.users.createPlaylist(name)
+            playlistId = p.id
+            c.users.addToPlaylist(p.id, track.id)
+        }
+        compose.onNode(hasContentDescription("Медиатека") and isSelectable()).performClick()
+        clickText("Плейлисты")
+        clickText(name)
+        waitText("ПОДБОРКА")
+        compose.onNodeWithContentDescription("Действия с $trackTitle").performClick()
+        clickText("Убрать из этого плейлиста")
+        // Tap the same row again while the sheet is on its way out. The row may already be gone,
+        // which is the correct outcome; what must never happen is a crash from dereferencing the
+        // playlist that close() has just nulled.
+        compose.waitForIdle()
+        if (compose.onAllNodes(hasText("Убрать из этого плейлиста")).fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithText("Убрать из этого плейлиста").performClick()
+        }
+        compose.waitUntil(10000) {
+            var removed = false
+            compose.activityRule.scenario.onActivity {
+                val pl = container(it).users.state.value.playlists.firstOrNull { p -> p.id == playlistId }
+                removed = pl != null && pl.trackIds.isEmpty()
+            }
+            removed
+        }
+        // The empty state proves the removal actually landed, not just that nothing crashed.
+        waitText("Пока пусто")
+        back()
+        // A collection was opened from the Library, so back lands there with the playlists tab still
+        // selected — not on Home, which is the only screen carrying the avatar.
+        compose.onNodeWithText("Плейлисты").assertIsDisplayed()
+        compose.onNodeWithText(name).assertIsDisplayed()
+    }
+
 }

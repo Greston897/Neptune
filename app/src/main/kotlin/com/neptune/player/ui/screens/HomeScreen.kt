@@ -195,7 +195,7 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(NeSpace.md),
                     contentPadding = PaddingValues(vertical = NeSpace.sm),
                 ) {
-                    items(albums, key = { it.first.first + it.first.second }) { (meta, tracks) ->
+                    items(albums, key = { ListKeys.album(it.first.first, it.first.second) }) { (meta, tracks) ->
                         AlbumCard(
                             meta.second, meta.first, tracks.first(),
                             { onCollection("album", meta.first + "\u0000" + meta.second) },

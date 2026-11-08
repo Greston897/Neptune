@@ -36,6 +36,8 @@ jobs:
           fi
       - name: Kotlin structure
         run: python3 ci/check_structure.py
+      - name: Lazy-list key contract
+        run: python3 ci/check_list_keys.py
       - name: Icon optical centring
         run: python3 ci/check_icons.py
       - name: Launcher icon geometry
