@@ -82,21 +82,21 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 [EmulatorConsole]: Failed to start Emulator console for 5554
 
 > Task :app:connectedDebugAndroidTest
-Starting 29 tests on emulator-5554 - 15
+Starting 30 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 4/29 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 8/29 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 13/29 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 17/29 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 23/29 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 25/29 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 27/29 completed. (0 skipped) (0 failed)
-Finished 29 tests on emulator-5554 - 15
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794098050248.json
+emulator-5554 - 15 Tests 5/30 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 11/30 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 18/30 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 24/30 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 25/30 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 27/30 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 28/30 completed. (0 skipped) (0 failed)
+Finished 30 tests on emulator-5554 - 15
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794099945506.json
 
-BUILD SUCCESSFUL in 2m 25s
+BUILD SUCCESSFUL in 2m 18s
 67 actionable tasks: 15 executed, 3 from cache, 49 up-to-date
 
 ================ instrumented gate ================
-OK: 29 instrumented tests ran, 0 failures (declared 29)
+OK: 30 instrumented tests ran, 0 failures (declared 30)
 instrumented suite exit status: 0
