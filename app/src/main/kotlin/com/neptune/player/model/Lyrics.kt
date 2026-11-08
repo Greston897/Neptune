@@ -120,6 +120,9 @@ object LyricsParser {
      * the file may well have a perfectly good text next to it, so every other source is tried
      * before this one.
      */
+    /** Legacy Russian `.lrc` files are routinely saved in cp1251; UTF-8 is tried first. */
+    private val windows1251: Charset = Charset.forName("windows-1251")
+
     private fun parseSidecar(bytes: ByteArray): LyricsDoc? {
         if (bytes.isEmpty() || bytes.size > MaxScanBytes) return null
         val text = decodeLoose(bytes) ?: return null
