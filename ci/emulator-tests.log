@@ -84,22 +84,26 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 41 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 5/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 10/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 17/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 23/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 3/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 7/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 11/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 14/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 19/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 25/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 29/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 31/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 32/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 33/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 35/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 36/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 37/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 39/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 40/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 41/41 completed. (0 skipped) (0 failed)
 Finished 41 tests on emulator-5554 - 15
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794173283862.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794173860883.json
 
-BUILD SUCCESSFUL in 2m 58s
+BUILD SUCCESSFUL in 4m 39s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
