@@ -244,7 +244,10 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                                 LocalBackgroundHaze provides null,
                                 LocalContentHaze provides null,
                             ) {
+                                // The brand backdrop is redrawn inside the window: the page used to
+                                // read as flat black once it stopped sampling the app's own copy.
                                 Box(Modifier.fillMaxSize().background(Ne.Void)) {
+                                    AmbientBackground(Modifier.fillMaxSize(), ambientPhase)
                                     SubscriptionScreen(state) { state.closePaywall() }
                                 }
                             }
