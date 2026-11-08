@@ -24,7 +24,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -73,10 +72,10 @@ fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
     // and the header must show the current one rather than a snapshot from the first composition.
     val focused = state.paywall
     val isPlus = tier == PlanTier.PLUS
-    // The page closes itself when the plan it was opened for is granted. `state.subscribe` already
-    // clears the request; this covers the other path into Plus (a restored purchase) without
-    // leaving a manager page open on top of the library.
-    LaunchedEffect(isPlus) { if (isPlus) state.closePaywall() }
+    // There is deliberately no "close when Plus is active" effect here: closing is the purchase's
+    // job (`state.subscribe`), not the tier's. An effect keyed on the tier also fired on the *next*
+    // open of this page — tapping "Neptune Plus активен" in Settings to manage or cancel the plan
+    // opened the manager and shut it again in the same frame.
 
     // Opaque, not translucent. Everything behind this page is another screen — often itself a
     // blurred panel — and showing it through a glass sheet produced a smeared double exposure.
