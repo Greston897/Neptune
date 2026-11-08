@@ -84,34 +84,59 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 38 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 5/38 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 12/38 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 19/38 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 26/38 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 30/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 3/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 7/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 11/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 15/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 20/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 23/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 28/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 29/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 31/38 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 32/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 33/38 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 34/38 completed. (0 skipped) (0 failed)
-
-> Task :app:connectedDebugAndroidTest
-
-com.neptune.player.PlayerFlowTest > avatarShapeChoicePersistsAndBackWorks[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Failed to inject touch input.
-	Reason: Expected exactly '1' node but could not find any node that satisfies: (ContentDescription = 'Форма «Круг»' (ignoreCase: false))
-
-emulator-5554 - 15 Tests 36/38 completed. (0 skipped) (1 failed)
-emulator-5554 - 15 Tests 37/38 completed. (0 skipped) (1 failed)
+emulator-5554 - 15 Tests 35/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 36/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 37/38 completed. (0 skipped) (0 failed)
 
 > Task :app:connectedDebugAndroidTest
 
 com.neptune.player.PlayerFlowTest > subscriptionScreenShowsWhatIsFreeAndCanBeOpened[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Timed out waiting for 'Открыть Plus сейчас'. Roots: Printing with useUnmergedTree = 'true'
-	Node #3703 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
-Tests on emulator-5554 - 15 failed: There was 2 failure(s).
 
+
+emulator-5554 - 15 Tests 38/38 completed. (0 skipped) (1 failed)
 Finished 38 tests on emulator-5554 - 15
 
+> Task :app:connectedDebugAndroidTest
+Tests on emulator-5554 - 15 failed: There was 1 failure(s).
+Exception thrown during onAfterAll invocation of plugin AndroidTestApkInstallerPlugin: device 'emulator-5554' not found
+device 'emulator-5554' not found
+com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
+	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:981)
+	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:1000)
+	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$18(DeviceImpl.java:785)
+	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
+	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:755)
+	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$15(DeviceImpl.java:618)
+	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
+	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:615)
+	at com.android.ddmlib.internal.DeviceImpl.lambda$executeShellCommand$14(DeviceImpl.java:573)
+	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
+	at com.android.ddmlib.internal.DeviceImpl.executeShellCommand(DeviceImpl.java:570)
+	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDevice.executeShellCommand(DdmlibAndroidDevice.kt)
+	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDeviceController$executeAsync$deferred$1.invokeSuspend(DdmlibAndroidDeviceController.kt:171)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:570)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:749)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
+
+Test run failed to complete. Expected 38 tests, received 37
+
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794144100129.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794144734885.json
 
 FAILURE: Build failed with an exception.
 
@@ -125,47 +150,11 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 2m 40s
+BUILD FAILED in 4m 29s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
-FAIL: 2 instrumented test(s) failed
-  avatarShapeChoicePersistsAndBackWorks
-    java.lang.AssertionError: Failed to inject touch input.
-Reason: Expected exactly '1' node but could not find any node that satisfies: (ContentDescription = 'Форма «Круг»' (ignoreCase: false))
-
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
-at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
-at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
-at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
-at com.neptune.player.PlayerFlowTest.avatarShapeChoicePersistsAndBackWorks(PlayerFlowTest.kt:140)
+FAIL: 1 instrumented test(s) failed
   subscriptionScreenShowsWhatIsFreeAndCanBeOpened
-    java.lang.AssertionError: Timed out waiting for 'Открыть Plus сейчас'. Roots: Printing with useUnmergedTree = 'true'
-Node #3703 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
-|-Node #3973 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
-IsTraversalGroup = 'true'
-VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
-CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@3a6c6b1'
-Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
-|-Node #3976 at (l=53.0, t=160.0, r=179.0, b=286.0)px
-| ContentDescription = '[Закрыть]'
-| Role = 'Button'
-| Focused = 'false'
-| Actions = [OnClick, RequestFocus]
-| MergeDescendants = 'true'
-|-Node #3978 at (l=200.0, t=202.0, r=1027.0, b=243.0)px
-| Text = '[ПОДПИСКА]'
-| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|-Node #3983 at (l=340.0, t=507.0, r=741.0, b=594.0)px
-| Text = '[Neptune Plus]'
-| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|-Node #3985 at (l=201.0, t=605.0, r=879.0, b=648.0)px
-| Text = '[Глубже: тексты, ночной режим, свои акценты.]'
-| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|-Node #3988 at (l=95.0, t=764.0, r=427.0, b=805.0)px
-| Text = '[ВСЕГДА БЕСПЛАТНО]'
-| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|-Node #3996 at (l=174.0, t=858.0, r=985.0, b=90
+    (no message — suspect device/emulator loss)
 instrumented suite exit status: 1
