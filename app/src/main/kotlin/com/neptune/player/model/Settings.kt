@@ -61,11 +61,29 @@ data class Settings(
     val thumbScale: Float = 1f,
     val showAlbumRow: Boolean = true,
     val showRecentPanel: Boolean = true,
-    val avatarTone: Int = 0,
+    /**
+     * Custom avatar picture.
+     *
+     * The file lives in the app's private directory and is referenced by name only, so the value
+     * survives a restart, a cache wipe and a revoked picker grant. An empty [avatarPhoto] means the
+     * brand mark is drawn instead. [avatarPhotoVersion] is bumped on every successful import: Coil
+     * caches by key, and a stateless path would keep showing the previous picture after a change.
+     */
+    val avatarPhoto: String = "",
+    val avatarPhotoVersion: Int = 0,
+    /**
+     * Zoom of the chosen picture inside its frame (1f = fills, larger crops in).
+     *
+     * Kept in the model rather than in the composition so the crop survives navigation, and
+     * validated so a wild stored value cannot zoom the face out of its own circle.
+     */
+    val avatarZoom: Float = 1f,
     val avatarSize: Float = 1f,
     val profileName: String = "Слушатель",
     val speed: Float = 1f,
     val skipSilence: Boolean = false,
+    /** Night timer: ramp the volume down before pausing instead of stopping dead. Plus feature. */
+    val sleepFade: Boolean = true,
     val glassEnabled: Boolean = true,
     val glassBlur: Float = 40f,
     val glassTint: Float = 0.38f,
@@ -88,18 +106,35 @@ data class Settings(
         surfaceIndex = Surface.FIXED.ordinal,
         radius = radius.coerceIn(12f, 32f), fontScale = fontScale.coerceIn(0.9f, 1.2f),
         avatarIndex = avatarIndex.coerceIn(0, AvatarShape.entries.lastIndex),
-        avatarTone = avatarTone.coerceIn(0, Accent.entries.lastIndex),
         avatarSize = avatarSize.coerceIn(0.8f, 1.25f),
+        avatarPhoto = avatarPhoto.trim().take(64),
+        avatarPhotoVersion = avatarPhotoVersion.coerceAtLeast(0),
+        avatarZoom = avatarZoom.coerceIn(1f, 2.5f),
         profileName = profileName.trim().take(24).ifBlank { "Слушатель" },
         speed = speed.coerceIn(0.75f, 1.5f),
         glassBlur = glassBlur.coerceIn(8f, 56f),
         glassTint = glassTint.coerceIn(0.35f, 0.88f),
         glassRim = glassRim.coerceIn(0f, 1f),
     )
+    /**
+     * Drops everything the subscription can unlock.
+     *
+     * Called when a plan ends: a personal accent and a custom photo must not survive as ghost
+     * entitlements, otherwise "Plus is over" would be untrue on screen. Playback, playlists and
+     * likes are untouched — they were never paid.
+     */
+    fun withoutPaidExtras() = copy(
+        customAccent = false,
+        accentArgb = 0xFF6FA8FF.toInt(),
+        avatarPhoto = "",
+        avatarPhotoVersion = 0,
+        avatarZoom = 1f,
+    )
+
     fun resetAppearance() = copy(accentIndex = 0, surfaceIndex = Surface.FIXED.ordinal, radius = 22f, fontScale = 1f,
         animations = true, haptics = true, compact = false, navLabels = true,
         artworkMotion = true, showRemaining = true, glassEnabled = true, glassBlur = 40f,
         glassTint = 0.38f, glassRim = 0.85f, ambientGlow = true, accentGlow = true,
         customAccent = false, accentArgb = 0xFF6FA8FF.toInt(), artShapeIndex = 0, thumbScale = 1f,
-        showAlbumRow = true, showRecentPanel = true)
+        showAlbumRow = true, showRecentPanel = true, avatarZoom = 1f)
 }

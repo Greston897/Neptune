@@ -30,6 +30,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.input.pointer.pointerInput
@@ -52,7 +54,10 @@ import com.neptune.player.state.NeptuneState
 import com.neptune.player.ui.*
 
 @Composable
-fun NowPlayingScreen(state: NeptuneState, onBack: () -> Unit, onQueue: () -> Unit, onCollection: (String, String) -> Unit) {
+fun NowPlayingScreen(
+    state: NeptuneState, onBack: () -> Unit, onQueue: () -> Unit, onCollection: (String, String) -> Unit,
+    onLyrics: () -> Unit = {},
+) {
     val playback by state.playback.collectAsStateWithLifecycle()
     val users by state.users.collectAsStateWithLifecycle()
     val settings = LocalSettings.current
@@ -78,6 +83,9 @@ fun NowPlayingScreen(state: NeptuneState, onBack: () -> Unit, onQueue: () -> Uni
                     weight = FontWeight.Bold, maxLines = 1,
                 )
             }
+            // Text sits next to the overflow button: it is the second thing people reach for while a
+            // song plays, and burying it in a sheet would cost a tap on every listen.
+            NeIconButton(NeIcon.Mic, "Текст трека", onLyrics, enabled = track != null, color = Ne.Dim)
             NeIconButton(NeIcon.More, "Действия с треком", { state.contextTrack = track }, enabled = track != null)
         }
         if (track == null) {
@@ -119,6 +127,37 @@ fun NowPlayingScreen(state: NeptuneState, onBack: () -> Unit, onQueue: () -> Uni
                 if (track.id in users.liked) "Убрать из любимого" else "В любимое", { state.like(track) },
                 color = if (track.id in users.liked) accent() else Ne.Dim, iconSize = NeIconSize.lg,
             )
+        }
+        // A single live lyric line, tappable to open the full text. Only when the file actually
+        // carries timings — an unsynchronised text would show a line that does not follow the song,
+        // which reads as a bug rather than a feature.
+        val lyricsDocs by state.lyricsDocs.collectAsStateWithLifecycle()
+        val lyricsDoc = track?.let { lyricsDocs[it.id] ?: state.lyricsFor(it) }
+        if (track != null) {
+            LaunchedEffect(track.id) { state.requestLyrics(track) }
+            val doc = lyricsDoc
+            if (doc != null && doc.synced && !doc.isEmpty) {
+                val index = doc.activeIndex(playback.positionMs)
+                val line = doc.lines.getOrNull(index)?.text
+                    ?: doc.lines.firstOrNull { it.timeMs > playback.positionMs }?.text
+                if (line != null) {
+                    Spacer(Modifier.height(NeSpace.sm))
+                    Row(
+                        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp))
+                            .clickable(onClick = onLyrics)
+                            .padding(horizontal = NeSpace.xs, vertical = NeSpace.xs),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        NeIconView(NeIcon.Mic, NeIconSize.xs, accent())
+                        Spacer(Modifier.width(NeSpace.sm))
+                        NeText(
+                            line, Modifier.weight(1f), size = NeType.caption, lineHeight = NeType.captionLine,
+                            color = Ne.Dim, maxLines = 1,
+                        )
+                        NeIconView(NeIcon.ChevronRight, NeIconSize.xs, Ne.Whisper)
+                    }
+                }
+            }
         }
         Spacer(Modifier.height(NeSpace.lg))
         val fraction = scrub ?: playback.progress

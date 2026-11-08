@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.neptune.player.model.Track
 import com.neptune.player.model.formatTime
 import com.neptune.player.model.trackCount
 import com.neptune.player.state.NeptuneState

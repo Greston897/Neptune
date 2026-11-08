@@ -16,13 +16,16 @@ class SettingsStore(context: Context) {
             animations = prefs.getBoolean("animations", true), haptics = prefs.getBoolean("haptics", true),
             compact = prefs.getBoolean("compact", false), navLabels = prefs.getBoolean("navLabels", true),
             artworkMotion = prefs.getBoolean("artworkMotion", true), showRemaining = prefs.getBoolean("showRemaining", true),
-            avatarIndex = prefs.getInt("avatar", 0), avatarTone = prefs.getInt("avatarTone", 0),
+            avatarIndex = prefs.getInt("avatar", 0),
+            avatarPhoto = prefs.getString("avatarPhoto", "") ?: "", avatarPhotoVersion = prefs.getInt("avatarPhotoVersion", 0),
+            avatarZoom = prefs.getFloat("avatarZoom", 1f),
             artShapeIndex = prefs.getInt("artShape", 0), thumbScale = prefs.getFloat("thumbScale", 1f),
             showAlbumRow = prefs.getBoolean("showAlbumRow", true),
             showRecentPanel = prefs.getBoolean("showRecentPanel", true),
             avatarSize = prefs.getFloat("avatarSize", 1f),
             profileName = prefs.getString("profileName", "Слушатель") ?: "Слушатель",
             speed = prefs.getFloat("speed", 1f), skipSilence = prefs.getBoolean("skipSilence", false),
+            sleepFade = prefs.getBoolean("sleepFade", true),
             glassEnabled = prefs.getBoolean("glassEnabled", true), glassBlur = prefs.getFloat("glassBlur", 40f),
             glassTint = prefs.getFloat("glassTint", 0.38f), glassRim = prefs.getFloat("glassRim", 0.85f),
             ambientGlow = prefs.getBoolean("ambientGlow", true), accentGlow = prefs.getBoolean("accentGlow", true),
@@ -66,9 +69,11 @@ class SettingsStore(context: Context) {
                 .putBoolean("customAccent", s.customAccent).putInt("accentArgb", s.accentArgb)
                 .putInt("artShape", s.artShapeIndex).putFloat("thumbScale", s.thumbScale)
                 .putBoolean("showAlbumRow", s.showAlbumRow).putBoolean("showRecentPanel", s.showRecentPanel)
-                .putInt("avatar", s.avatarIndex).putInt("avatarTone", s.avatarTone).putFloat("avatarSize", s.avatarSize)
+                .putInt("avatar", s.avatarIndex).putFloat("avatarSize", s.avatarSize)
+                .putString("avatarPhoto", s.avatarPhoto).putInt("avatarPhotoVersion", s.avatarPhotoVersion)
+                .putFloat("avatarZoom", s.avatarZoom)
                 .putString("profileName", s.profileName).putFloat("speed", s.speed)
-                .putBoolean("skipSilence", s.skipSilence)
+                .putBoolean("skipSilence", s.skipSilence).putBoolean("sleepFade", s.sleepFade)
                 .putBoolean("glassEnabled", s.glassEnabled).putFloat("glassBlur", s.glassBlur)
                 .putFloat("glassTint", s.glassTint).putFloat("glassRim", s.glassRim)
                 .putBoolean("ambientGlow", s.ambientGlow).putBoolean("accentGlow", s.accentGlow).apply()

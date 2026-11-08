@@ -9,12 +9,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,21 +23,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.neptune.player.model.Track
 import com.neptune.player.model.trackCount
 import com.neptune.player.state.NeptuneState
+import com.neptune.player.ui.screens.ConfirmDestructiveDialog
 import com.neptune.player.ui.screens.NameDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TrackActionsSheet(state: NeptuneState, track: Track, onDismiss: () -> Unit, onCollection: (String, String) -> Unit) {
+fun TrackActionsSheet(
+    state: NeptuneState, track: Track, onDismiss: () -> Unit, onCollection: (String, String) -> Unit,
+    onLyrics: () -> Unit = {},
+) {
     val users by state.users.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var playlistPicker by remember { mutableStateOf(false) }
     var createPlaylist by remember { mutableStateOf(false) }
+    var removeTrack by remember { mutableStateOf(false) }
     val close: () -> Unit = { state.contextPlaylist = null; onDismiss() }
+    val onLyrics: () -> Unit = {}
     ModalBottomSheet(onDismissRequest = close, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = Ne.Ink, dragHandle = null) {
         Column(Modifier.fillMaxWidth().navigationBarsPadding().padding(bottom = 16.dp)) {
             Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 22.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -55,6 +57,9 @@ fun TrackActionsSheet(state: NeptuneState, track: Track, onDismiss: () -> Unit, 
             SettingRow("Играть следующим", icon = NeIcon.Next) { state.playNext(track); close() }
             SettingRow("В очередь", icon = NeIcon.Queue) { state.enqueue(track); close() }
             SettingRow("В плейлист", icon = NeIcon.Music) { playlistPicker = true }
+            SettingRow("Текст трека", "Лирика из файла или свой LRC", NeIcon.Mic) {
+                close(); state.openLyrics(track); onLyrics()
+            }
             SettingRow("Об альбоме", track.album, NeIcon.Disc) { close(); onCollection("album", "${track.artist}\u0000${track.album}") }
             SettingRow("Все треки исполнителя", track.artist, NeIcon.Artist) { close(); onCollection("artist", track.artist) }
             // Capture the playlist during composition instead of asserting non-null in the handler.
@@ -70,7 +75,38 @@ fun TrackActionsSheet(state: NeptuneState, track: Track, onDismiss: () -> Unit, 
                 val send = Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, "${track.title} — ${track.artist}"), "Поделиться музыкой")
                 context.startActivity(send); close()
             }
+            // Destructive actions live at the bottom of the sheet, below everything that adds, and
+            // both open a confirmation that names the consequence.
+            if (track.source == Track.Source.IMPORTED) {
+                SettingRow(
+                    "Убрать из приложения", "Файл останется на устройстве", NeIcon.Trash,
+                ) { removeTrack = true }
+            } else {
+                SettingRow(
+                    "Удалить с устройства", "Откроется системное удаление файла", NeIcon.Device,
+                ) {
+                    val uri = runCatching { android.net.Uri.parse(track.uri) }.getOrNull()
+                    if (uri != null) {
+                        runCatching {
+                            context.startActivity(
+                                Intent(Intent.ACTION_DELETE, uri).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION),
+                            )
+                        }.onFailure { state.toast("Удаление недоступно для этого файла", NeIcon.Info, ToastTone.WARN) }
+                    }
+                    close()
+                }
+            }
         }
+    }
+    if (removeTrack) ConfirmDestructiveDialog(
+        title = "Убрать трек из приложения?",
+        text = "«${track.title}» исчезнет из медиатеки, плейлистов и очереди. Файл на устройстве останется на месте.",
+        action = "Убрать",
+        onDismiss = { removeTrack = false },
+    ) {
+        removeTrack = false
+        state.removeTrack(track)
+        close()
     }
     if (playlistPicker) AlertDialog(onDismissRequest = { playlistPicker = false }, containerColor = Ne.Elevated,
         title = { NeText("В плейлист", size = NeType.title, lineHeight = NeType.titleLine, weight = FontWeight.Bold) },

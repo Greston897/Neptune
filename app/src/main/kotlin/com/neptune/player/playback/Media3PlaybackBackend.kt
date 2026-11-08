@@ -22,13 +22,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.json.JSONArray
-import org.json.JSONObject
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+
+/** Length of the night fade-in-seconds. Five is enough to be imperceptible, short enough to keep. */
+private const val SleepFadeSeconds = 20
 
 class Media3PlaybackBackend(
     context: Context,
@@ -46,6 +45,8 @@ class Media3PlaybackBackend(
     private var controller: MediaController? = null
     private var timerJob: Job? = null
     private var timerDeadline = 0L
+    /** Volume to restore after the night fade; null when no fade is running. */
+    private var volumeBeforeFade: Float? = null
     private var lastRemembered: String? = null
     private var restoring = false
     private val listener = object : Player.Listener {
@@ -193,18 +194,72 @@ class Media3PlaybackBackend(
         if (from in 0 until it.mediaItemCount && to in 0 until it.mediaItemCount) it.moveMediaItem(from, to)
     }
     override fun remove(index: Int) = command { if (index in 0 until it.mediaItemCount) it.removeMediaItem(index) }
+    /**
+     * Removes by walking backwards so the shifting indices cannot skip an entry. Removing the
+     * *current* item is what stops a deleted track from being resurrected by "next".
+     */
+    override fun dropTrack(id: String) = command { c ->
+        var i = c.mediaItemCount - 1
+        while (i >= 0) {
+            if (c.getMediaItemAt(i).mediaId == id) c.removeMediaItem(i)
+            i -= 1
+        }
+        if (c.mediaItemCount == 0) c.stop()
+    }
     override fun clear() = command { it.stop(); it.clearMediaItems() }
-    override fun setSleepTimer(minutes: Int) {
+    /**
+     * Sleep timer, optionally with a fade.
+     *
+     * The previous version called `pause()` at the deadline. A track stopped dead at 00:00 is the
+     * single most jarring thing a sleep timer can do while someone is falling asleep, so with
+     * [fade] the volume is stepped down over the last [SleepFadeSeconds] and returned to the user's
+     * level afterwards — a muted player the next morning would look like a broken volume slider.
+     *
+     * The ramp is a coroutine that reads the *current* controller volume each step and re-checks the
+     * deadline, so cancelling or shortening the timer mid-fade takes effect immediately instead of
+     * being overwritten by a stale local value.
+     */
+    override fun setSleepTimer(minutes: Int, fade: Boolean) {
         timerJob?.cancel()
+        restoreVolumeAfterFade()
         timerDeadline = if (minutes > 0) SystemClock.elapsedRealtime() + minutes * 60_000L else 0
         _state.value = _state.value.copy(sleepRemainingMs = minutes * 60_000L)
-        if (minutes > 0) timerJob = scope.launch {
-            delay(minutes * 60_000L)
-            controller?.pause(); timerDeadline = 0
+        if (minutes <= 0) return
+        val total = minutes * 60_000L
+        val fadeMs = if (fade) minOf(SleepFadeSeconds * 1000L, total / 2) else 0L
+        timerJob = scope.launch {
+            val target = total - fadeMs
+            delay(target)
+            if (fadeMs > 0) {
+                val startVolume = controller?.volume ?: _state.value.volume
+                volumeBeforeFade = startVolume
+                val steps = (fadeMs / 250).coerceAtLeast(1)
+                for (step in 1..steps) {
+                    if (timerDeadline == 0L) return@launch
+                    val c = controller ?: break
+                    c.volume = (startVolume * (1f - step.toFloat() / steps)).coerceIn(0f, 1f)
+                    _state.value = _state.value.copy(volume = c.volume)
+                    delay(250)
+                }
+            }
+            controller?.pause()
+            timerDeadline = 0
+            restoreVolumeAfterFade()
             _state.value = _state.value.copy(sleepRemainingMs = 0)
             publish()
         }
     }
+
+    /** Puts the user's volume back after a fade so the next listen is not silent. */
+    private fun restoreVolumeAfterFade() {
+        val previous = volumeBeforeFade ?: return
+        volumeBeforeFade = null
+        controller?.let { c ->
+            c.volume = previous
+            _state.value = _state.value.copy(volume = previous)
+        }
+    }
+
     override fun retry() {
         if (!connection.isCompleted || connection.getCompleted() == null) {
             _state.value = _state.value.copy(error = "Перезапустите приложение, чтобы переподключить аудиосервис.")

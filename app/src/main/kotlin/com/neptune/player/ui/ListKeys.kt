@@ -25,4 +25,11 @@ object ListKeys {
      * (`"a-1" + 2` and `"a" + 12` both read as "a-1-2" when joined with a dash).
      */
     fun queueItem(id: String, index: Int) = "queue:$id$SEP$index"
+
+    /**
+     * A lyric line. Two identical lines legitimately appear in one text (a repeated chorus), so the
+     * *index* is part of the key, never the text; the timestamp alone is not unique either, because
+     * an unsynchronised text gives every line -1.
+     */
+    fun lyric(index: Int, timeMs: Long) = "lyric:$index$SEP$timeMs"
 }

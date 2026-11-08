@@ -84,3 +84,43 @@ fun SleepDialog(playback: PlaybackState, onDismiss: () -> Unit, onConfirm: (Int)
         }
     }
 }
+
+/**
+ * Confirmation for an action that cannot be undone from inside the app.
+ *
+ * Same shape as [ConfirmDialog] but with two deliberate differences, both learned from the deleted
+ * track flow: the action button carries the destructive tint *and* the concrete verb ("Убрать",
+ * "Удалить"), and the explanation states exactly what is and is not touched. A generic "ОК" makes
+ * people tap through; naming the consequence makes them read.
+ */
+@Composable
+fun ConfirmDestructiveDialog(
+    title: String, text: String, action: String,
+    onDismiss: () -> Unit, onConfirm: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss, containerColor = Ne.Elevated,
+        title = {
+            NeText(
+                title, size = NeType.title, lineHeight = NeType.titleLine,
+                weight = androidx.compose.ui.text.font.FontWeight.Bold, maxLines = 2,
+            )
+        },
+        text = {
+            Column {
+                NeText(text, size = NeType.label, lineHeight = NeType.bodyLine, color = Ne.Dim, maxLines = 5)
+                Spacer(Modifier.height(NeSpace.md))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    NeIconView(NeIcon.Info, NeIconSize.xs, Ne.Dim)
+                    Spacer(Modifier.width(NeSpace.sm))
+                    NeText(
+                        "Действие нельзя отменить",
+                        size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Faint, maxLines = 1,
+                    )
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onConfirm) { NeText(action, color = Ne.Error) } },
+        dismissButton = { TextButton(onClick = onDismiss) { NeText("Отмена", color = Ne.Dim) } },
+    )
+}

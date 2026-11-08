@@ -20,20 +20,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -54,18 +50,60 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
     val playback by state.playback.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val view = LocalView.current
-    val snackbar = remember { SnackbarHostState() }
+    val toast by state.toast.current.collectAsStateWithLifecycle()
+    val avatarPicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) state.setAvatarPhoto(uri)
+    }
+    val lyricsImporter = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        val track = state.pendingLyricsTrack
+        state.pendingLyricsTrack = null
+        if (uri != null && track != null) {
+            // The picked file is plain text or LRC; anything else is rejected by the plan gate's
+            // caller rather than stored as mojibake.
+            val text = runCatching {
+                context.contentResolver.openInputStream(uri)?.use {
+                    val bytes = it.readBytes()
+                    String(bytes.take(80_000).toByteArray(), Charsets.UTF_8)
+                }
+            }.getOrNull()
+            if (text.isNullOrBlank()) state.toast("Текст не прочитан", NeIcon.Info, ToastTone.WARN)
+            else state.saveLyrics(track, text)
+        }
+    }
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-        state.refreshLibrary(); state.message(if (it) "Доступ открыт. Собираем твою музыку." else "Можно выбрать файлы вручную через импорт.")
+        state.refreshLibrary()
+        state.toast(if (it) "Доступ открыт" else "Можно выбрать файлы вручную", NeIcon.Info, if (it) ToastTone.DONE else ToastTone.INFO)
     }
     val importer = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
-        if (uris.isNotEmpty()) (context.applicationContext as NeptuneApplication).container.library.importUris(uris) { state.message(if (it > 0) "Добавлено файлов: $it" else "Эти файлы уже в медиатеке") }
+        if (uris.isNotEmpty()) (context.applicationContext as NeptuneApplication).container.library.importUris(uris) { added ->
+            // Every confirmation in 3.0 goes to the pill, including the import result that used to be
+            // a snackbar at the opposite end of the screen from the button that caused it.
+            state.toast(
+                if (added > 0) "Добавлено: $added" else "Уже в медиатеке",
+                if (added > 0) NeIcon.Plus else NeIcon.Info,
+                if (added > 0) ToastTone.DONE else ToastTone.INFO,
+            )
+        }
     }
-    val actions = LibraryActions(permission = { permission.launch((context.applicationContext as NeptuneApplication).container.library.audioPermission) },
-        import = { importer.launch(arrayOf("audio/*")) }, appSettings = { context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))) })
-    LaunchedEffect(state) { state.messages.collect { snackbar.showSnackbar(it) } }
+    val actions = LibraryActions(
+        permission = { permission.launch((context.applicationContext as NeptuneApplication).container.library.audioPermission) },
+        import = { importer.launch(arrayOf("audio/*")) },
+        appSettings = { context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))) },
+        avatar = { avatarPicker.launch("image/*") },
+        lyricsFile = { lyricsImporter.launch(arrayOf("text/*", "application/octet-stream")) },
+    )
+    // One timer for the pill notice. Keyed on the notice id so a second confirmation restarts the
+    // two seconds instead of being cut short by the first one's deadline.
+    LaunchedEffect(toast?.id) {
+        val id = toast?.id ?: return@LaunchedEffect
+        kotlinx.coroutines.delay(ToastDurationMs)
+        state.toast.clear(id)
+    }
     NeptuneTheme(settings) {
-        CompositionLocalProvider(LocalLibraryActions provides actions, LocalHaptics provides { if (settings.haptics) view.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP) }) {
+        CompositionLocalProvider(
+            LocalLibraryActions provides actions,
+            LocalHaptics provides { if (settings.haptics) view.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP) },
+        ) {
             val entry by nav.currentBackStackEntryAsState()
             val route = entry?.destination?.route
             val fullPlayer = route == "player"
@@ -114,14 +152,16 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                             }
                             composable("search") { SearchScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
                             composable("library") { LibraryScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
-                            composable("settings") { SettingsScreen(state, { nav.navigateOnce("profile") }, { nav.navigateOnce("appearance") }, { nav.navigateOnce("playback-settings") }, { nav.navigateOnce("data") }, { nav.navigateOnce("about") }) }
-                            composable("player") { NowPlayingScreen(state, { nav.popBackStack() }, { nav.navigateOnce("queue") }) { kind, key -> nav.navigateCollection(kind, key) } }
+                            composable("settings") { SettingsScreen(state, { nav.navigateOnce("profile") }, { nav.navigateOnce("appearance") }, { nav.navigateOnce("playback-settings") }, { nav.navigateOnce("data") }, { nav.navigateOnce("about") }, { state.paywall = null; nav.navigateOnce("subscription") }) }
+                            composable("player") { NowPlayingScreen(state, { nav.popBackStack() }, { nav.navigateOnce("queue") }, { kind, key -> nav.navigateCollection(kind, key) }, { nav.navigateOnce("lyrics") }) }
                             composable("queue") { QueueScreen(state) { nav.popBackStack() } }
-                            composable("profile") { ProfileScreen(state) { nav.popBackStack() } }
+                            composable("profile") { ProfileScreen(state, { nav.popBackStack() }, { nav.navigateOnce("subscription") }) }
                             composable("appearance") { AppearanceScreen(state) { nav.popBackStack() } }
                             composable("playback-settings") { PlaybackSettingsScreen(state) { nav.popBackStack() } }
                             composable("data") { DataScreen(state, { nav.popBackStack() }) { nav.navigateCollection("recent", "") } }
                             composable("about") { AboutScreen { nav.popBackStack() } }
+                            composable("lyrics") { LyricsScreen(state) { state.lyricsTarget = null; nav.popBackStack() } }
+                            composable("subscription") { SubscriptionScreen(state) { nav.popBackStack() } }
                             composable("collection/{kind}/{key}", arguments = listOf(navArgument("kind") { type = NavType.StringType }, navArgument("key") { type = NavType.StringType })) { backStack ->
                                 CollectionScreen(state, backStack.arguments?.getString("kind") ?: "", (backStack.arguments?.getString("key") ?: "").let { if (it == "-") "" else it }, { nav.popBackStack() }) { nav.popBackStack() }
                             }
@@ -141,13 +181,21 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                             playback, { nav.navigateOnce("player") },
                             Modifier.statusBarsPadding()
                                 .padding(top = DockMetrics.PillTop, start = NeSpace.xl, end = NeSpace.xl),
+                            toast = toast,
                         )
                     }
                     if (!fullPlayer) PlayerDock(Modifier.align(Alignment.BottomCenter), true, state, playback, { nav.navigateOnce("player") }, route) { tab -> nav.navigateTab(tab) }
-                    SnackbarHost(snackbar, Modifier.align(Alignment.BottomCenter).padding(bottom = bottomInset + 8.dp, start = 16.dp, end = 16.dp)) {
-                        Snackbar(containerColor = Ne.Text, contentColor = Ne.Black) { NeText(it.visuals.message, size = 12.sp, color = Ne.Black, maxLines = 3) }
+                    state.contextTrack?.let { track ->
+                        TrackActionsSheet(
+                            state, track,
+                            { state.contextTrack = null; state.contextPlaylist = null },
+                            { kind, key -> nav.navigateCollection(kind, key) },
+                            { nav.navigateOnce("lyrics") },
+                        )
                     }
-                    state.contextTrack?.let { track -> TrackActionsSheet(state, track, { state.contextTrack = null; state.contextPlaylist = null }) { kind, key -> nav.navigateCollection(kind, key) } }
+                    // Paywall is a screen, not a dialog: it needs room for the plan comparison and it
+                    // has to survive a rotation while the user reads it.
+                    if (state.paywall != null) SubscriptionScreen(state) { state.paywall = null }
                 }
             }
         }

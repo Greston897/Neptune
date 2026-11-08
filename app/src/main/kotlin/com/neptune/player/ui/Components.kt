@@ -50,7 +50,20 @@ import androidx.compose.ui.unit.sp
 import com.neptune.player.model.Track
 import com.neptune.player.model.formatTime
 
-data class LibraryActions(val permission: () -> Unit = {}, val import: () -> Unit = {}, val appSettings: () -> Unit = {})
+/**
+ * Host-provided pickers, injected once at the top of the tree.
+ *
+ * `avatar` and `lyricsFile` live here rather than in each screen because only the activity can own
+ * an `ActivityResultLauncher`, and a launcher registered inside a screen that leaves the composition
+ * mid-pick would drop its result.
+ */
+data class LibraryActions(
+    val permission: () -> Unit = {},
+    val import: () -> Unit = {},
+    val appSettings: () -> Unit = {},
+    val avatar: () -> Unit = {},
+    val lyricsFile: () -> Unit = {},
+)
 val LocalLibraryActions = staticCompositionLocalOf { LibraryActions() }
 
 /**
@@ -174,8 +187,17 @@ fun Panel(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
 }
 
 /**
- * List row for a track. Title and subtitle get the flexible column, while thumb, duration and
- * overflow keep fixed widths — long titles ellipsize instead of pushing controls off-screen.
+ * List row for a track.
+ *
+ * Title and subtitle get the flexible column, while thumb, duration and overflow keep fixed widths —
+ * long titles ellipsize instead of pushing controls off-screen.
+ *
+ * **Selection is colour, not a plate.** The current track used to sit on a 10%-accent rounded
+ * rectangle that stopped short of the panel's edges, so a row inside a glass panel showed a *third*
+ * radius between the title and the panel curve and read as a compressed, misaligned block. The tinted
+ * fill is gone: the artwork keeps its own shape, the title turns accent-coloured, the equalizer marks
+ * playback, and the row keeps exactly the panel's rhythm. That reads as accent highlighting without
+ * introducing another surface.
  */
 @Composable
 fun TrackRow(
@@ -187,8 +209,9 @@ fun TrackRow(
     val tint = accent()
     Row(
         modifier.fillMaxWidth().heightIn(min = if (compact) NeRow.compact else NeRow.track)
+            // The ripple is clipped to the row, but nothing is painted behind it: selection is a
+            // colour change on the text, never a plate. See the note above.
             .clip(RoundedCornerShape(12.dp))
-            .background(if (current) tint.copy(alpha = 0.10f) else Color.Transparent)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -199,7 +222,8 @@ fun TrackRow(
         Spacer(Modifier.width(NeSpace.md))
         Column(Modifier.weight(1f)) {
             NeText(
-                track.title, size = NeType.body, lineHeight = NeType.bodyLine, weight = FontWeight.SemiBold,
+                track.title, size = NeType.body, lineHeight = NeType.bodyLine,
+                weight = if (current) FontWeight.Bold else FontWeight.SemiBold,
                 color = if (current) tint else Ne.Text, maxLines = 1,
             )
             Spacer(Modifier.height(NeSpace.xxs))
@@ -210,7 +234,8 @@ fun TrackRow(
                 }
                 NeText(
                     subtitle ?: track.artist, size = NeType.caption, lineHeight = NeType.captionLine,
-                    color = Ne.Dim, maxLines = 1, modifier = Modifier.weight(1f, fill = false),
+                    color = if (current) tint.copy(alpha = 0.62f) else Ne.Dim, maxLines = 1,
+                    modifier = Modifier.weight(1f, fill = false),
                 )
             }
         }

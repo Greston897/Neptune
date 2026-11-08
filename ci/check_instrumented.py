@@ -31,6 +31,9 @@ REQUIRED = {
     "sleepTimerOpensOnlyFromItsRowAndAlwaysCloses": "dock used to swallow the row tap",
     "trackWithoutArtworkRendersTheBrandFallback": "missing cover must show the app avatar",
     "removeFromPlaylistWorksAndSurvivesASecondTap": "playlist id was dereferenced at click time",
+    "removingATrackAsksFirstAndThenForgetsIt": "destructive removal must be confirmed before it acts",
+    "currentTrackRowKeepsTheSameGeometryAsAnyOtherRow": "the current row regained a tinted plate and shifted",
+    "pillKeepsItsGeometryWhileAShortNoticeIsShown": "a pill notice resized or moved the now-playing capsule",
 }
 
 

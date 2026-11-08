@@ -470,6 +470,75 @@ class LayoutTest {
             kotlin.math.abs(b.width - expected) <= 1.5f && kotlin.math.abs(b.height - expected) <= 1.5f)
     }
 
+
+    /**
+     * The current track used to sit on a 10%-accent rounded rectangle that stopped short of the
+     * panel's own edges, so a row inside a glass panel showed a third radius between the title and
+     * the panel curve — the "сжат и не закруглён" complaint. Selection must be colour only, and the
+     * row must keep exactly the geometry it has when it is not playing.
+     */
+    @Test fun currentTrackRowKeepsTheSameGeometryAsAnyOtherRow() {
+        val highlighted = androidx.compose.runtime.mutableStateOf(false)
+        compose.setContent {
+            NeptuneTheme(Settings(animations = false, artworkMotion = false, ambientGlow = false, thumbScale = 1f, compact = false)) {
+                Box(Modifier.width(320.dp)) {
+                    TrackRow(longTrack, current = highlighted.value, playing = highlighted.value, onClick = {}, modifier = Modifier.testTag("row"))
+                }
+            }
+        }
+        fun bounds() = compose.onNodeWithTag("row", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val idle = bounds()
+        compose.runOnIdle { highlighted.value = true }
+        compose.waitForIdle()
+        val current = bounds()
+        assertEquals("a highlighted row must not change width", idle.width, current.width, 0.5f)
+        assertEquals("a highlighted row must not change height", idle.height, current.height, 0.5f)
+        assertEquals("a highlighted row must not shift horizontally", idle.left, current.left, 0.5f)
+    }
+
+    /**
+     * The pill is the confirmation surface: a notice takes the middle column for two seconds and
+     * then the track comes back. Neither swap may resize or shift the capsule, or the bar above every
+     * screen would twitch each time a track is queued.
+     */
+    @Test fun pillKeepsItsGeometryWhileAShortNoticeIsShown() {
+        val playback = PlaybackState(track = longTrack, isPlaying = true, durationMs = 245000, positionMs = 30000)
+        val notice = com.neptune.player.ui.ToastNotice(1, "Добавлено в очередь", NeIcon.Check, com.neptune.player.ui.ToastTone.DONE)
+        val showing = androidx.compose.runtime.mutableStateOf<com.neptune.player.ui.ToastNotice?>(null)
+        compose.setContent {
+            NeptuneTheme(Settings(animations = false, artworkMotion = false, ambientGlow = false)) {
+                Box(Modifier.width(360.dp)) {
+                    TrackPill(playback, {}, Modifier.testTag("pill"), showing.value)
+                }
+            }
+        }
+        val before = compose.onNodeWithTag("pill", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        compose.runOnIdle { showing.value = notice }
+        compose.waitForIdle()
+        compose.onNodeWithText("Добавлено в очередь", useUnmergedTree = true).assertIsDisplayed()
+        val during = compose.onNodeWithTag("pill", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        assertEquals("notice must not resize the pill", before.width, during.width, 0.5f)
+        assertEquals("notice must not resize the pill", before.height, during.height, 0.5f)
+        assertEquals("notice must not move the pill", before.left, during.left, 0.5f)
+        // Accessibility: the announcement becomes the notice, not the stale track.
+        compose.onNodeWithContentDescription("Добавлено в очередь").assertIsDisplayed()
+        compose.runOnIdle { showing.value = null }
+        compose.waitForIdle()
+        compose.onNodeWithText(longTrack.title, useUnmergedTree = true).assertIsDisplayed()
+    }
+
+    /** A gated price row must expose its selection state to TalkBack, not only through a rim. */
+    @Test fun priceChoiceIsAccessible() {
+        host {
+            Column {
+                com.neptune.player.ui.screens.PriceChoice("1490 ₽ в год", "выгодно", selected = true, onClick = {})
+                com.neptune.player.ui.screens.PriceChoice("149 ₽ в месяц", "гибко", selected = false, onClick = {})
+            }
+        }
+        compose.onNodeWithContentDescription("1490 ₽ в год").assertIsSelected()
+        compose.onNodeWithContentDescription("149 ₽ в месяц").assertIsNotSelected()
+    }
+
     @Test fun noPromotionalCopyIsRendered() {
         host {
             Column {

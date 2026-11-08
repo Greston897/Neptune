@@ -20,8 +20,14 @@ interface PlaybackBackend {
     fun jumpTo(index: Int)
     fun move(from: Int, to: Int)
     fun remove(index: Int)
+    /** Drops every queue entry for a track id — used when the track leaves the library. */
+    fun dropTrack(id: String)
     fun clear()
-    fun setSleepTimer(minutes: Int)
+    /**
+     * Sleep timer. With [fade] the volume ramps down over the last [SleepFadeSeconds] instead of
+     * stopping the track mid-sentence.
+     */
+    fun setSleepTimer(minutes: Int, fade: Boolean = false)
     fun retry()
     fun persist()
 }

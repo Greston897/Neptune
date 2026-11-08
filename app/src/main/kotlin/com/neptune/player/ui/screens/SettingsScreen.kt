@@ -48,6 +48,8 @@ import com.neptune.player.BuildConfig
 import com.neptune.player.model.Accent
 import com.neptune.player.model.ArtShape
 import com.neptune.player.model.AvatarShape
+import com.neptune.player.model.PlanFeature
+import com.neptune.player.model.PlanTier
 import com.neptune.player.model.Surface
 import com.neptune.player.model.formatTime
 import com.neptune.player.state.NeptuneState
@@ -71,8 +73,12 @@ fun ScreenTitle(title: String, onBack: (() -> Unit)? = null, subtitle: String? =
 }
 
 @Composable
-fun SettingsScreen(state: NeptuneState, onProfile: () -> Unit, onAppearance: () -> Unit, onPlayback: () -> Unit, onData: () -> Unit, onAbout: () -> Unit) {
+fun SettingsScreen(
+    state: NeptuneState, onProfile: () -> Unit, onAppearance: () -> Unit, onPlayback: () -> Unit,
+    onData: () -> Unit, onAbout: () -> Unit, onSubscription: () -> Unit = {},
+) {
     val settings = LocalSettings.current
+    val tier by state.plan.collectAsStateWithLifecycle()
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Настройки", subtitle = "Всё под тебя. Без лишнего.") }
         item {
@@ -88,6 +94,13 @@ fun SettingsScreen(state: NeptuneState, onProfile: () -> Unit, onAppearance: () 
                 NeText("Изменить профиль и аватар", size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim)
             }
         }
+        item { SettingsGroup("ПОДПИСКА") {
+            SettingRow(
+                if (tier == PlanTier.PLUS) "Neptune Plus активен" else "Neptune Plus",
+                if (tier == PlanTier.PLUS) state.planPrice() else "Тексты, ночной таймер и свой акцент",
+                NeIcon.Sparkle, onClick = onSubscription,
+            )
+        } }
         item { SettingsGroup("ПРИЛОЖЕНИЕ") {
             SettingRow("Внешний вид", "Цвета, форма, движение и размер текста", NeIcon.Palette, onClick = onAppearance)
             SettingRow("Воспроизведение", "Скорость, громкость и таймер сна", NeIcon.Wave, onClick = onPlayback)
@@ -133,10 +146,19 @@ fun AppearanceScreen(state: NeptuneState, onBack: () -> Unit) {
             }
         } } }
         item { SettingsGroup("АКЦЕНТ") {
-            ToggleRow("Свой акцентный цвет", "Любой оттенок вместо готовой палитры", s.customAccent) { v ->
-                // Seed the custom colour from the current preset so enabling the toggle never
-                // jumps the whole app to an unrelated hue.
-                state.edit { it.copy(customAccent = v, accentArgb = if (v) it.accent.hex.toInt() else it.accentArgb) }
+            ToggleRow(
+                "Свой акцентный цвет",
+                if (state.allows(PlanFeature.AccentPersonal)) "Любой оттенок вместо готовой палитры"
+                else "Входит в Neptune Plus · 12 готовых оттенков бесплатны",
+                s.customAccent,
+            ) { v ->
+                // Turning it off is never gated: nobody may be trapped in a paid look. Turning it
+                // on asks the plan first, and the toggle stays off when the tier says no.
+                if (!v) state.edit { it.copy(customAccent = false) }
+                else state.gate(PlanFeature.AccentPersonal) {
+                    // Seed from the current preset so enabling never jumps the app to a random hue.
+                    state.edit { it.copy(customAccent = true, accentArgb = it.accent.hex.toInt()) }
+                }
             }
             if (s.customAccent) {
                 CustomAccentPicker(s.accentArgb) { colour -> state.edit { it.copy(accentArgb = colour) } }
@@ -214,20 +236,75 @@ fun AccentPicker(selected: Int, onSelect: (Int) -> Unit) {
 }
 
 @Composable
-fun ProfileScreen(state: NeptuneState, onBack: () -> Unit) {
+fun ProfileScreen(state: NeptuneState, onBack: () -> Unit, onSubscription: () -> Unit = {}) {
     val s = LocalSettings.current
+    val actions = LocalLibraryActions.current
     var name by remember { mutableStateOf(s.profileName) }
+    var zoomPreview by remember { mutableStateOf(s.avatarZoom) }
+    var confirmRemovePhoto by remember { mutableStateOf(false) }
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Твой профиль", onBack) }
-        item { Column(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            ProfileAvatar(Modifier.size(112.dp), animated = true)
-            Spacer(Modifier.height(NeSpace.lg))
-            NeText(s.profileName, size = NeType.title, lineHeight = NeType.titleLine, weight = FontWeight.Bold, maxLines = 2, align = TextAlign.Center)
-        } }
+        item {
+            Column(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                // The preview is the real component, so the shape, the crop and the zoom below are
+                // exactly what the header, the settings row and this screen will show afterwards.
+                Box(
+                    Modifier.size(112.dp).clip(CircleShape)
+                        .clickable { state.gate(PlanFeature.AvatarPhoto) { actions.avatar() } }
+                        .semantics { contentDescription = "Сменить фото профиля" },
+                    contentAlignment = Alignment.BottomEnd,
+                ) {
+                    ProfileAvatar(Modifier.size(112.dp), animated = true, zoomOverride = zoomPreview)
+                }
+                Spacer(Modifier.height(NeSpace.sm))
+                NeText(
+                    if (s.avatarPhoto.isBlank()) "Поставь своё фото" else "Нажми на фото, чтобы заменить",
+                    size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 1,
+                )
+                Spacer(Modifier.height(NeSpace.lg))
+                NeText(s.profileName, size = NeType.title, lineHeight = NeType.titleLine, weight = FontWeight.Bold, maxLines = 2, align = TextAlign.Center)
+                if (state.allows(PlanFeature.ProfileBadge)) {
+                    Spacer(Modifier.height(NeSpace.sm))
+                    Row(
+                        Modifier.clip(CircleShape).background(accent().copy(alpha = 0.14f))
+                            .padding(horizontal = NeSpace.sm, vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        NeIconView(NeIcon.Sparkle, NeIconSize.xs, accent())
+                        Spacer(Modifier.width(NeSpace.xs))
+                        NeText("Plus", size = NeType.micro, lineHeight = NeType.microLine, weight = FontWeight.Bold, color = accent())
+                    }
+                }
+            }
+        }
+        item { SettingsGroup("ФОТО") { Column(Modifier.padding(NeRow.panelInset), verticalArrangement = Arrangement.spacedBy(NeSpace.sm)) {
+            NeButton(
+                if (s.avatarPhoto.isBlank()) "Загрузить фото" else "Заменить фото",
+                // Ask the plan *before* opening the picker: launching a file browser and only then
+                // showing a paywall wastes the user's tap and leaves a stack of dialogs behind.
+                { state.gate(PlanFeature.AvatarPhoto) { actions.avatar() } },
+                Modifier.fillMaxWidth(), NeIcon.Plus, primary = s.avatarPhoto.isBlank(),
+            )
+            if (s.avatarPhoto.isNotBlank()) {
+                SettingSlider(
+                    "Кадрирование", zoomPreview, 1f..2.5f, if (zoomPreview <= 1.02f) "Вписать" else "×${"%.1f".format(zoomPreview)}",
+                    { v -> zoomPreview = v },
+                    onFinished = { state.edit { it.copy(avatarZoom = zoomPreview) } },
+                )
+                SettingRow("Убрать фото", "Вернуть фирменный знак", NeIcon.Trash) { confirmRemovePhoto = true }
+            }
+            NeText(
+                "Любой формат и любой размер: JPEG, PNG, WebP, HEIC и GIF — кадрирование и поворот " +
+                    "фото берёт на себя система, картинка не пережимается.",
+                size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint, maxLines = 4,
+            )
+        } } }
         item { SettingsGroup("ИМЯ") { Column(Modifier.padding(NeRow.panelInset)) {
             NeTextField(name, { name = it.take(24) }, "Как к тебе обращаться")
-            NeButton("Сохранить имя", { state.edit { it.copy(profileName = name) }; state.message("Имя сохранено") }, Modifier.fillMaxWidth().padding(top = 12.dp), enabled = name.isNotBlank() && name.trim() != s.profileName)
+            NeButton("Сохранить имя", { state.edit { it.copy(profileName = name) }; state.toast("Имя сохранено", NeIcon.Edit) }, Modifier.fillMaxWidth().padding(top = 12.dp), enabled = name.isNotBlank() && name.trim() != s.profileName)
         } } }
+        // Shape only. There is no colour control: the mark already paints with the accent, so a
+        // separate avatar palette could only disagree with it (or be silently ignored).
         item { SettingsGroup("ФОРМА АВАТАРА") { Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(NeSpace.sm),
                 verticalAlignment = Alignment.Top) {
@@ -238,39 +315,43 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit) {
                             .border(if (selected) 1.5.dp else 1.dp,
                                 if (selected) accent() else Color.White.copy(alpha = 0.10f), RoundedCornerShape(16.dp))
                             .clickable { state.edit { it.copy(avatarIndex = shape.ordinal) } }
+                            .semantics { this.selected = selected; contentDescription = "Форма ${shape.title}" }
                             .padding(vertical = NeSpace.md, horizontal = NeSpace.sm),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         ProfileAvatar(Modifier.size(44.dp))
                         Spacer(Modifier.height(NeSpace.sm))
                         NeText(
-                            shape.title, size = NeType.micro, lineHeight = NeType.microLine,
+                            "Форма «${shape.title}»", size = NeType.micro, lineHeight = NeType.microLine,
                             color = if (selected) accent() else Ne.Dim, maxLines = 1,
                             weight = if (selected) FontWeight.Bold else FontWeight.Medium,
                         )
                     }
                 }
             }
-            SettingSlider("Размер планеты", s.avatarSize, 0.8f..1.25f, "${(s.avatarSize * 100).toInt()}%", { v -> state.edit { it.copy(avatarSize = v) } })
-        } } }
-        item { SettingsGroup("ЦВЕТ АВАТАРА") {
-            // With a personal accent the avatar follows it, so the preset grid would be a dead
-            // control. Say so instead of letting taps silently do nothing.
-            if (s.customAccent) {
-                Column(Modifier.padding(NeRow.panelInset)) {
-                    Row(Modifier.fillMaxWidth().heightIn(min = NeRow.setting), verticalAlignment = Alignment.CenterVertically) {
-                        ProfileAvatar(Modifier.size(40.dp))
-                        Spacer(Modifier.width(NeSpace.md))
-                        NeText(
-                            "Аватар использует твой акцентный цвет. Выключи «Свой акцентный цвет» во внешнем виде, чтобы выбрать отдельный оттенок.",
-                            size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 3,
-                        )
-                    }
-                }
-            } else {
-                AccentPicker(s.avatarTone) { i -> state.edit { it.copy(avatarTone = i) } }
+            if (s.avatarPhoto.isBlank()) {
+                SettingSlider("Размер планеты", s.avatarSize, 0.8f..1.25f, "${(s.avatarSize * 100).toInt()}%", { v -> state.edit { it.copy(avatarSize = v) } })
             }
-        } }
+            Row(Modifier.fillMaxWidth().heightIn(min = NeRow.setting), verticalAlignment = Alignment.CenterVertically) {
+                NeIconView(NeIcon.Palette, NeIconSize.lg, Ne.Dim)
+                Spacer(Modifier.width(NeSpace.md))
+                NeText(
+                    "Цвет аватара — твой акцентный, он меняется во внешнем виде вместе со всем интерфейсом.",
+                    Modifier.weight(1f), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 3,
+                )
+            }
+        } } }
+        item { PlanCard(state, onSubscription) }
+    }
+    if (confirmRemovePhoto) ConfirmDestructiveDialog(
+        title = "Убрать фото профиля?",
+        text = "Вернётся фирменный знак Neptune. Сама фотография на устройстве не удаляется.",
+        action = "Убрать",
+        onDismiss = { confirmRemovePhoto = false },
+    ) {
+        confirmRemovePhoto = false
+        zoomPreview = 1f
+        state.clearAvatarPhoto()
     }
 }
 
@@ -280,7 +361,7 @@ fun PlaybackSettingsScreen(state: NeptuneState, onBack: () -> Unit) {
     val p by state.playback.collectAsStateWithLifecycle()
     var sleep by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val notifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted -> state.message(if (granted) "Уведомление плеера включено" else "Плеер работает и без уведомления") }
+    val notifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted -> state.toast(if (granted) "Уведомление плеера включено" else "Плеер работает и без уведомления", NeIcon.Bell, if (granted) ToastTone.DONE else ToastTone.INFO) }
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Воспроизведение", onBack, "Настоящий звук. Полный контроль.") }
         item { SettingsGroup("ЗВУК") {
@@ -290,10 +371,19 @@ fun PlaybackSettingsScreen(state: NeptuneState, onBack: () -> Unit) {
         } }
         item { SettingsGroup("КОМФОРТ") {
             SettingRow("Таймер сна", if (p.sleepRemainingMs > 0) "Остановится через ${formatTime(p.sleepRemainingMs)}" else "Выключен", NeIcon.Timer) { sleep = true }
+            ToggleRow(
+                "Плавное затухание",
+                if (state.allows(PlanFeature.SleepFade)) "Музыка затихает за 20 секунд вместо резкой остановки"
+                else "Входит в Neptune Plus · сейчас музыка просто остановится",
+                s.sleepFade && state.allows(PlanFeature.SleepFade),
+            ) { v ->
+                if (!v) state.edit { it.copy(sleepFade = false) }
+                else state.gate(PlanFeature.SleepFade) { state.edit { it.copy(sleepFade = true) } }
+            }
             SettingRow("Повтор очереди", when (p.repeat) { 1 -> "Вся очередь"; 2 -> "Один трек"; else -> "Выключен" }, NeIcon.Repeat, onClick = state::cycleRepeat)
             ToggleRow("Перемешивание", "Случайный порядок воспроизведения", p.shuffle) { state.toggleShuffle() }
             if (Build.VERSION.SDK_INT >= 33) SettingRow("Уведомление плеера", "Управление с экрана блокировки и из шторки", NeIcon.Bell) {
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) state.message("Уведомления уже разрешены")
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) state.toast("Уведомления уже разрешены", NeIcon.Check)
                 else notifications.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         } }
@@ -319,7 +409,16 @@ fun DataScreen(state: NeptuneState, onBack: () -> Unit, onRecent: () -> Unit) {
             SettingRow("Недавно прослушанные", "${users.recent.size} треков в истории", NeIcon.Clock, onClick = onRecent)
             SettingRow("Очистить историю", "Не затрагивает любимое и плейлисты", NeIcon.Trash) { clear = true }
         } }
-        item { NeText("Neptune не содержит встроенной музыки. Добавляй файлы по одному или выбирай сразу несколько — встроенные обложки читаются автоматически, а доступ к медиатеке устройства нужен только для автоматического поиска.", Modifier.padding(top = NeSpace.xl), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint, maxLines = 5) }
+        item {
+            NeText(
+                "Доступ к медиатеке нужен только для автоматического поиска музыки на устройстве: он " +
+                    "ничего не копирует и не превращает папки в альбомы. Файлы, выбранные через импорт, " +
+                    "приложение читает по одному разрешению на файл — можно добавить один трек или сразу " +
+                    "несколько. Встроенной музыки нет.",
+                Modifier.padding(top = NeSpace.xl),
+                size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint, maxLines = 6,
+            )
+        }
     }
     if (clear) ConfirmDialog("Очистить историю?", "Любимые треки и плейлисты сохранятся.", "Очистить", { clear = false }) { state.clearHistory(); clear = false }
 }

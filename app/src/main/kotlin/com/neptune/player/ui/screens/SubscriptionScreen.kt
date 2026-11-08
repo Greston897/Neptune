@@ -1,0 +1,311 @@
+package com.neptune.player.ui.screens
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.neptune.player.model.Features
+import com.neptune.player.model.PlanFeature
+import com.neptune.player.model.PlanTier
+import com.neptune.player.model.Pricing
+import com.neptune.player.state.NeptuneState
+import com.neptune.player.ui.*
+
+/**
+ * Neptune Plus — the paywall and the plan manager in one screen.
+ *
+ * Design rules this screen follows, because a paywall is where apps usually lose their manners:
+ *
+ *  * **It states what is already free, first.** Playback, import, playlists and karaoke are not
+ *    trials, and the copy says so before anything is offered for sale. Nobody should have to pay to
+ *    reach their own files.
+ *  * **One honest promise per row.** Every line maps to a [PlanFeature] that the code actually
+ *    gates through `Features.has`, so nothing can be advertised and then not enforced (or vice versa).
+ *  * **No urgency theatre.** No countdown, no crossed-out fake price, no pre-ticked checkbox. Two
+ *    real prices, one tap, and a cancel path that is one row further down.
+ *  * **No backend, said plainly.** The purchase is stored on the device; there is no receipt server
+ *    yet. Pretending otherwise would be the one dishonest thing on the screen.
+ */
+@Composable
+fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
+    val tier by state.plan.collectAsStateWithLifecycle()
+    val annual by state.annualPlan.collectAsStateWithLifecycle()
+    var confirmCancel by remember { mutableStateOf(false) }
+    // Captured once, then cleared. The request is what the screen was opened for, so it has to
+    // outlive the interactive overlay; clearing it here also means the overlay's exit animation is
+    // not cut short by the request disappearing on the same frame.
+    val focused = remember { state.paywall }
+    val isPlus = tier == PlanTier.PLUS
+    DisposableEffect(Unit) { onDispose { state.paywall = null } }
+
+    LazyColumn(
+        Modifier.fillMaxSize().statusBarsPadding(),
+        contentPadding = PaddingValues(
+            start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm, bottom = LocalBottomInset.current,
+        ),
+    ) {
+        item {
+            Row(Modifier.fillMaxWidth().heightIn(min = NeRow.header), verticalAlignment = Alignment.CenterVertically) {
+                NeIconButton(NeIcon.Close, "Закрыть", onClose)
+                NeText(
+                    "ПОДПИСКА", Modifier.weight(1f).padding(start = NeSpace.sm),
+                    size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Faint,
+                    tracking = 1.2.sp, weight = FontWeight.Bold,
+                )
+            }
+        }
+        item {
+            Column(
+                Modifier.fillMaxWidth().padding(top = NeSpace.md, bottom = NeSpace.xl),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                NeptuneMark(Modifier.size(56.dp), accent(), animated = true)
+                Spacer(Modifier.height(NeSpace.md))
+                NeText(
+                    if (isPlus) "Neptune Plus активен" else "Neptune Plus",
+                    size = NeType.headline, lineHeight = NeType.headlineLine, weight = FontWeight.ExtraBold,
+                    tracking = (-0.5).sp, align = TextAlign.Center,
+                )
+                Spacer(Modifier.height(NeSpace.xs))
+                NeText(
+                    if (isPlus) state.planPrice() else PlanTier.PLUS.tagline,
+                    size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim,
+                    align = TextAlign.Center, maxLines = 2,
+                )
+            }
+        }
+        // The reason the paywall opened, when a specific control sent the user here.
+        if (focused != null && !isPlus) {
+            item {
+                GlassPanel(Modifier.fillMaxWidth().padding(bottom = NeSpace.md)) {
+                    Row(Modifier.fillMaxWidth().padding(NeSpace.md), verticalAlignment = Alignment.CenterVertically) {
+                        NeIconView(NeIcon.Sparkle, NeIconSize.lg, accent())
+                        Spacer(Modifier.width(NeSpace.md))
+                        Column(Modifier.weight(1f)) {
+                            NeText("«${focused.title}» — в Plus", size = NeType.label, lineHeight = NeType.labelLine, weight = FontWeight.Bold)
+                            Spacer(Modifier.height(NeSpace.xxs))
+                            NeText(focused.description, size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 2)
+                        }
+                    }
+                }
+            }
+        }
+        item { SettingsGroup("ВСЕГДА БЕСПЛАТНО") {
+            Column(Modifier.fillMaxWidth().padding(vertical = NeSpace.xs)) {
+                Features.available(PlanTier.FREE).forEach { feature ->
+                    Row(
+                        Modifier.fillMaxWidth().padding(horizontal = NeRow.panelInset, vertical = NeSpace.sm),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        NeIconView(NeIcon.Check, NeIconSize.sm, Ne.Dim)
+                        Spacer(Modifier.width(NeSpace.md))
+                        NeText(feature.title, Modifier.weight(1f), size = NeType.label, lineHeight = NeType.labelLine, color = Ne.Text)
+                    }
+                }
+            }
+        } }
+        if (Features.locked(PlanTier.FREE).isNotEmpty()) item { SettingsGroup("В NEPTUNE PLUS") {
+            Column(Modifier.fillMaxWidth().padding(vertical = NeSpace.xs)) {
+                Features.locked(PlanTier.FREE).forEach { feature ->
+                    Row(
+                        Modifier.fillMaxWidth().padding(horizontal = NeRow.panelInset, vertical = NeSpace.sm),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        NeIconView(NeIcon.Check, NeIconSize.sm, accent())
+                        Spacer(Modifier.width(NeSpace.md))
+                        Column(Modifier.weight(1f)) {
+                            NeText(feature.title, size = NeType.label, lineHeight = NeType.labelLine, weight = FontWeight.SemiBold)
+                            Spacer(Modifier.height(NeSpace.xxs))
+                            NeText(feature.description, size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 2)
+                        }
+                    }
+                }
+            }
+        } }
+        if (!isPlus) {
+            item {
+                SettingsGroup("ЦЕНА") {
+                    Column(Modifier.fillMaxWidth().padding(NeSpace.md), verticalArrangement = Arrangement.spacedBy(NeSpace.sm)) {
+                        PriceChoice(
+                            title = Pricing.monthlyLabel(), note = "Отмена в любой момент",
+                            selected = !annual, onClick = { state.setAnnualPlan(false) },
+                        )
+                        PriceChoice(
+                            title = Pricing.yearlyLabel(),
+                            note = "Два месяца в подарок · ${Pricing.yearlyNote()}",
+                            selected = annual, onClick = { state.setAnnualPlan(true) },
+                            badge = "−${Pricing.yearlySavingPercent}%",
+                        )
+                    }
+                }
+            }
+            item {
+                NeButton(
+                    if (annual) "Подключить за ${Pricing.yearlyLabel()}" else "Подключить за ${Pricing.monthlyLabel()}",
+                    { state.subscribe(annual) },
+                    Modifier.fillMaxWidth().padding(top = NeSpace.lg), NeIcon.Sparkle,
+                )
+            }
+            item {
+                NeText(
+                    "Оплата пока не подключена: Neptune работает без сервера, поэтому подписка включается " +
+                        "на этом устройстве и ни рубля не списывается. Когда появится оплата, здесь будет " +
+                        "тот же экран с подтверждением у магазина.",
+                    Modifier.fillMaxWidth().padding(top = NeSpace.lg),
+                    size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint,
+                    align = TextAlign.Center, maxLines = 5,
+                )
+            }
+            // The way in must exist even while nothing is charged, otherwise the feature list on this
+            // screen describes a state no tap can reach.
+            item {
+                NeButton(
+                    "Открыть Plus сейчас", { state.subscribe(annual) },
+                    Modifier.fillMaxWidth().padding(top = NeSpace.sm), NeIcon.Sparkle, primary = false,
+                )
+            }
+        } else {
+            item {
+                SettingsGroup("ПОДПИСКА") {
+                    SettingRow(
+                        "Тариф", if (annual) "Год · ${Pricing.yearlyLabel()}" else "Месяц · ${Pricing.monthlyLabel()}",
+                        NeIcon.Sparkle,
+                    )
+                    SettingRow("Отключить Plus", "Свой акцент и фото вернутся к базовым", NeIcon.Close) { confirmCancel = true }
+                }
+            }
+            item {
+                NeText(
+                    "Подписка хранится на устройстве. После отключения музыка, плейлисты и любимое остаются — " +
+                        "пропадает только то, что было в Plus.",
+                    Modifier.fillMaxWidth().padding(top = NeSpace.lg),
+                    size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint,
+                    align = TextAlign.Center, maxLines = 5,
+                )
+            }
+        }
+    }
+    if (confirmCancel) ConfirmDestructiveDialog(
+        title = "Отключить Neptune Plus?",
+        text = "Свой акцентный цвет и фото профиля вернутся к базовым настройкам. Сохранённые тексты останутся в приложении.",
+        action = "Отключить",
+        onDismiss = { confirmCancel = false },
+    ) {
+        confirmCancel = false
+        state.cancelSubscription()
+    }
+}
+
+/**
+ * A price option.
+ *
+ * Selection is a rim plus a check, not a filled accent block: the annual option is already louder
+ * than the monthly one through its badge, and two competing emphasis devices on a two-row list read
+ * as a sale banner.
+ */
+@Composable
+fun PriceChoice(
+    title: String, note: String, selected: Boolean, onClick: () -> Unit, badge: String? = null,
+) {
+    val haptic = LocalHaptics.current
+    Column(
+        Modifier.fillMaxWidth().heightIn(min = NeTouch.standard)
+            .clip(RoundedCornerShape(16.dp))
+            .background(if (selected) accent().copy(alpha = 0.10f) else Color.White.copy(alpha = 0.04f))
+            .border(
+                if (selected) 1.5.dp else 1.dp,
+                if (selected) accent() else Color.White.copy(alpha = 0.10f),
+                RoundedCornerShape(16.dp),
+            )
+            .clickable { haptic(); onClick() }
+            .semantics { this.selected = selected; contentDescription = title }
+            .padding(horizontal = NeSpace.lg, vertical = NeSpace.md),
+    ) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            NeText(title, Modifier.weight(1f), size = NeType.body, lineHeight = NeType.bodyLine, weight = FontWeight.Bold)
+            if (badge != null) {
+                Box(
+                    Modifier.clip(CircleShape).background(accent()).padding(horizontal = NeSpace.sm, vertical = 2.dp),
+                ) { NeText(badge, size = NeType.micro, lineHeight = NeType.microLine, weight = FontWeight.Bold, color = Ne.Black) }
+                Spacer(Modifier.width(NeSpace.sm))
+            }
+            if (selected) NeIconView(NeIcon.Check, NeIconSize.sm, accent())
+                else Box(Modifier.size(NeIconSize.sm).clip(CircleShape).border(1.dp, Ne.Faint, CircleShape))
+        }
+        Spacer(Modifier.height(NeSpace.xxs))
+        NeText(note, size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 2)
+    }
+}
+
+/**
+ * The compact plan card for Settings: current tier, what it means, and the way in (or out).
+ *
+ * Deliberately one row, not a second paywall: the profile already shows who you are, and the plan is
+ * part of that identity, so it belongs next to the name rather than hidden two levels down.
+ */
+@Composable
+fun PlanCard(state: NeptuneState, onOpen: () -> Unit) {
+    val tier by state.plan.collectAsStateWithLifecycle()
+    val isPlus = tier == PlanTier.PLUS
+    GlassPanel(Modifier.fillMaxWidth().clickable(onClick = onOpen)) {
+        Row(
+            Modifier.fillMaxWidth().padding(NeRow.panelInset, NeSpace.md),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(Modifier.size(NeRow.leadingIcon), contentAlignment = Alignment.Center) {
+                NeIconView(if (isPlus) NeIcon.Sparkle else NeIcon.Orbit, NeIconSize.lg, if (isPlus) accent() else Ne.Dim)
+            }
+            Spacer(Modifier.width(NeSpace.md))
+            Column(Modifier.weight(1f)) {
+                NeText(
+                    if (isPlus) "Neptune Plus" else "Neptune Free",
+                    size = NeType.body, lineHeight = NeType.bodyLine, weight = FontWeight.Bold,
+                    color = if (isPlus) accent() else Ne.Text,
+                )
+                Spacer(Modifier.height(NeSpace.xxs))
+                NeText(
+                    if (isPlus) state.planPrice() else "Всё для прослушивания бесплатно",
+                    size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 1,
+                )
+            }
+            NeText(
+                if (isPlus) "Управлять" else "Открыть",
+                size = NeType.caption, lineHeight = NeType.captionLine, color = accent(), weight = FontWeight.Bold,
+            )
+        }
+    }
+}

@@ -132,6 +132,26 @@ class LibraryRepository(private val context: Context, private val scope: Corouti
         }.getOrNull()
     }
 
+    /**
+     * Removes a track from the app *without touching the file*.
+     *
+     * An imported track exists only as a stored `content://` URI, so forgetting it means dropping
+     * that URI and releasing the persistable grant — the user's file stays where it is. A device
+     * track cannot be hidden from a MediaStore scan, so it is left alone; the UI explains that
+     * instead of pretending the deletion worked.
+     */
+    fun forget(track: Track): Boolean {
+        if (track.source != Track.Source.IMPORTED) return false
+        val existing = importedUris().toMutableSet()
+        if (!existing.remove(track.uri)) return false
+        prefs.edit().putString("imports", JSONArray(existing.toList())).apply()
+        runCatching {
+            context.contentResolver.releasePersistableUriPermission(Uri.parse(track.uri), Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        refresh()
+        return true
+    }
+
     fun importUris(uris: List<Uri>, onResult: (Int) -> Unit) {
         val existing = importedUris().toMutableSet()
         var added = 0

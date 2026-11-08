@@ -44,6 +44,8 @@ jobs:
         run: python3 ci/check_launcher.py
       - name: Media session artwork
         run: python3 ci/check_media_art.py
+      - name: Product invariants
+        run: python3 ci/check_product.py
       - name: Unit tests and release APK
         run: |
           set -o pipefail

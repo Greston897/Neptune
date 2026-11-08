@@ -2,6 +2,8 @@ package com.neptune.player
 
 import android.app.Application
 import com.neptune.player.data.LibraryRepository
+import com.neptune.player.data.LyricsRepository
+import com.neptune.player.data.PlanStore
 import com.neptune.player.data.SettingsStore
 import com.neptune.player.data.UserStore
 import com.neptune.player.playback.Media3PlaybackBackend
@@ -19,6 +21,8 @@ class AppContainer(application: Application) {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     val settings = SettingsStore(application)
     val users = UserStore(application)
+    val plan = PlanStore(application)
+    val lyrics = LyricsRepository(application, scope)
     val library = LibraryRepository(application, scope)
     val playback: PlaybackBackend = Media3PlaybackBackend(application, library, settings, users, scope)
     init { library.refresh() }

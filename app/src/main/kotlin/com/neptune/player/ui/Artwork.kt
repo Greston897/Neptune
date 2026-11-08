@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +29,9 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import coil.request.ImageRequest
+import coil.size.Precision
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -142,19 +146,65 @@ fun NeptuneMark(modifier: Modifier = Modifier, tone: Color = Ne.Text, animated: 
     )
 }
 
+/**
+ * The profile picture: the user's own photo when there is one, the brand mark otherwise.
+ *
+ * Rounding is done by *clipping the frame*, never by pre-processing the image: the picker can hand
+ * over any format, any aspect ratio and any pixel count, and cropping it ourselves would mean
+ * decoding a full-resolution bitmap on the main thread. The loader decodes at the exact pixel size
+ * the frame needs (it is told the size through `size(Size.ORIGINAL)`-free constraints below), so a
+ * 50 MP photo costs the same as a 200 px one, and EXIF rotation is applied by the decoder.
+ *
+ * `zoom` crops further in, so an off-centre face can be framed without re-picking the picture.
+ */
 @Composable
-fun ProfileAvatar(modifier: Modifier = Modifier, animated: Boolean = false) {
+fun ProfileAvatar(
+    modifier: Modifier = Modifier,
+    animated: Boolean = false,
+    /**
+     * Transient zoom for the crop slider. Dragging writes here every frame; the value is persisted
+     * once, on release. Persisting on every frame would be 60 preference writes per second for a
+     * change the user is still making.
+     */
+    zoomOverride: Float? = null,
+) {
     val s = LocalSettings.current
-    // A personal accent should carry into the avatar too, otherwise the profile keeps a colour the
-    // user explicitly moved away from.
-    val tone = if (s.customAccent) accent() else Color(com.neptune.player.model.Accent.of(s.avatarTone).hex)
+    val context = LocalContext.current
     val shape = when (s.avatarShape) {
         AvatarShape.CIRCLE -> CircleShape
         AvatarShape.SQUIRCLE -> RoundedCornerShape(32.dp)
         AvatarShape.SQUARE -> RoundedCornerShape(14.dp)
     }
-    Box(modifier.clip(shape).background(Color(0xFF000000)).border(1.dp, Color.White.copy(alpha = 0.08f * s.glassRim), shape), contentAlignment = Alignment.Center) {
-        NeptuneMark(Modifier.fillMaxSize(0.62f * s.avatarSize), tone, animated)
+    val photo = remember(s.avatarPhoto) { com.neptune.player.data.AvatarStore.file(context, s.avatarPhoto) }
+    val zoom = zoomOverride ?: s.avatarZoom
+    val tint = accent()
+    Box(
+        modifier.clip(shape).background(Color(0xFF000000))
+            .border(1.dp, Color.White.copy(alpha = 0.08f * s.glassRim), shape),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (photo != null) {
+            // Key includes the version: Coil caches by the request's key, and a re-picked picture
+            // must not be served from the previous file's cache entry.
+            val model = ImageRequest.Builder(context)
+                .data(photo)
+                .memoryCacheKey("avatar:${s.avatarPhoto}:${s.avatarPhotoVersion}")
+                .diskCacheKey("avatar:${s.avatarPhoto}:${s.avatarPhotoVersion}")
+                .precision(Precision.INEXACT)
+                .crossfade(false)
+                .build()
+            AsyncImage(
+                model = model,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize().graphicsLayer {
+                    scaleX = zoom
+                    scaleY = zoom
+                },
+                contentScale = ContentScale.Crop,
+            )
+        } else {
+            NeptuneMark(Modifier.fillMaxSize(0.62f * s.avatarSize), tint, animated)
+        }
     }
 }
 

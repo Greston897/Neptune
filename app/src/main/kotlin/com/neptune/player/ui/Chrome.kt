@@ -1,7 +1,11 @@
 package com.neptune.player.ui
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -136,10 +140,23 @@ fun NeptuneNavBar(route: String?, onSelect: (Tab) -> Unit) {
  * Reads as a single rounded object: artwork on the left, title over artist, live equalizer on the
  * right. Tapping it opens the full player. The pill deliberately carries no transport buttons —
  * those stay in the mini-player, so the two surfaces do not duplicate each other's controls.
+ *
+ * **It is also the confirmation surface.** A short notice ("Добавлено в очередь") takes over the
+ * middle column for [ToastDurationMs] and then gives the slot back to the track, instead of raising a
+ * snackbar at the bottom of the screen, far from the object the message is about and on top of the
+ * transport controls. The artwork and the tap target never move during the swap: only the two text
+ * lines cross-fade, so the pill does not flicker or change width mid-animation.
  */
+@OptIn(androidx.compose.animation.ExperimentalAnimationApi::class)
 @Composable
-fun TrackPill(playback: PlaybackState, onOpen: () -> Unit, modifier: Modifier = Modifier) {
+fun TrackPill(
+    playback: PlaybackState,
+    onOpen: () -> Unit,
+    modifier: Modifier = Modifier,
+    toast: ToastNotice? = null,
+) {
     val track = playback.track ?: return
+    val animations = LocalSettings.current.animations
     GlassPanel(
         modifier.widthIn(max = DockMetrics.PillMaxWidth).fillMaxWidth().height(NeRow.pill),
         corner = NeRow.pill / 2, haze = LocalContentHaze.current,
@@ -147,25 +164,75 @@ fun TrackPill(playback: PlaybackState, onOpen: () -> Unit, modifier: Modifier = 
         Row(
             Modifier.fillMaxSize()
                 .clickable(onClickLabel = "Открыть плеер", onClick = onOpen)
-                .semantics { contentDescription = "Сейчас играет: ${track.title} — ${track.artist}" }
+                .semantics {
+                    contentDescription = if (toast != null) toast.text
+                    else "Сейчас играет: ${track.title} — ${track.artist}"
+                }
                 .padding(start = NeRow.pillArtInset, end = NeSpace.md),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(Modifier.testTag("pillArt")) { TrackThumb(track, NeRow.pillArt, 12.dp) }
             Spacer(Modifier.width(NeSpace.md))
-            Column(Modifier.weight(1f)) {
-                NeText(
-                    track.title, size = NeType.label, lineHeight = NeType.labelLine,
-                    weight = FontWeight.Bold, maxLines = 1,
-                )
-                Spacer(Modifier.height(NeSpace.xxs))
-                NeText(
-                    if (playback.isBuffering) "Загрузка…" else track.artist,
-                    size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Dim, maxLines = 1,
-                )
+            Box(Modifier.weight(1f)) {
+                // Keyed on the *kind* of content, not on the text: two confirmations in a row must
+                // not replay the track's own entrance animation between them.
+                AnimatedContent(
+                    targetState = toast != null,
+                    transitionSpec = {
+                        if (toast != null) {
+                            (slideInVertically(tween(if (animations) NeMotion.Quick else 0, easing = NeEase)) { it / 2 } +
+                                fadeIn(tween(if (animations) NeMotion.Quick else 0, easing = NeEase))) togetherWith
+                                (slideOutVertically(tween(if (animations) NeMotion.Quick else 0, easing = NeEase)) { -it / 2 } +
+                                    fadeOut(tween(if (animations) NeMotion.Quick else 0, easing = NeEase)))
+                        } else {
+                            (slideInVertically(tween(if (animations) NeMotion.Standard else 0, easing = NeEase)) { -it / 2 } +
+                                fadeIn(tween(if (animations) NeMotion.Standard else 0, easing = NeEase))) togetherWith
+                                (slideOutVertically(tween(if (animations) NeMotion.Standard else 0, easing = NeEase)) { it / 2 } +
+                                    fadeOut(tween(if (animations) NeMotion.Standard else 0, easing = NeEase)))
+                        }
+                    },
+                    label = "pillContent",
+                ) { showingNotice ->
+                    val notice = toast
+                    if (showingNotice && notice != null) {
+                        NeText(
+                            notice.text, size = NeType.label, lineHeight = NeType.labelLine,
+                            weight = FontWeight.Bold, maxLines = 1,
+                            color = when (notice.tone) {
+                                ToastTone.WARN -> Ne.Error
+                                ToastTone.INFO -> accent()
+                                ToastTone.DONE -> Ne.Text
+                            },
+                        )
+                    } else {
+                        Column(Modifier.fillMaxWidth()) {
+                            NeText(
+                                track.title, size = NeType.label, lineHeight = NeType.labelLine,
+                                weight = FontWeight.Bold, maxLines = 1,
+                            )
+                            Spacer(Modifier.height(NeSpace.xxs))
+                            NeText(
+                                if (playback.isBuffering) "Загрузка…" else track.artist,
+                                size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Dim, maxLines = 1,
+                            )
+                        }
+                    }
+                }
             }
             Spacer(Modifier.width(NeSpace.sm))
-            EqualizerBars(playback.isPlaying, color = accent(), maxHeight = 14.dp)
+            // The equalizer yields to the notice's own glyph: two small animated marks fighting for
+            // the same 18dp would read as noise.
+            if (toast != null) {
+                NeIconView(
+                    toast.icon, NeIconSize.sm,
+                    when (toast.tone) {
+                        ToastTone.WARN -> Ne.Error
+                        else -> accent()
+                    },
+                )
+            } else {
+                EqualizerBars(playback.isPlaying, color = accent(), maxHeight = 14.dp)
+            }
         }
     }
 }
