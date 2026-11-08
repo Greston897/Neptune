@@ -70,8 +70,9 @@ jobs:
           grep -E '^e: ' build.log | head -n 20 | while IFS= read -r line; do
             echo "::error::$line"
           done || true
-          grep -E '^(> Task .*FAILED|.*AssertionError|.*Failed tests:)' build.log | head -n 20 | while IFS= read -r line; do
-            echo "::error::$line"
+          # Unknown failure shapes are covered by publishing the tail verbatim.
+          tail -n 15 build.log 2>/dev/null | while IFS= read -r line; do
+            [ -n "$line" ] && echo "::error::${line:0:400}"
           done || true
       - name: Upload build log
         if: failure()
@@ -126,7 +127,11 @@ jobs:
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
           cp -r app/build/test-results/testDebugUnitTest ci/unit-results 2>/dev/null || true
-          git add -f ci/last-build.log ci/last-errors.txt ci/emulator-tests.log ci/logcat.txt ci/host-health.txt ci/gate-verdict.txt ci/TEST-*.xml ci/unit-results
+          # `git add` with one missing path stages nothing at all, which is how an earlier version of
+          # this step silently preserved no diagnostics. Create the files first, tolerate leftovers.
+          touch ci/last-build.log ci/last-errors.txt ci/emulator-tests.log ci/logcat.txt ci/host-health.txt ci/gate-verdict.txt
+          git add -f ci/last-build.log ci/last-errors.txt ci/emulator-tests.log ci/logcat.txt ci/host-health.txt ci/gate-verdict.txt || true
+          git add -f ci/TEST-*.xml ci/unit-results 2>/dev/null || true
           git commit -m "ci: build diagnostics [skip ci]" || exit 0
           for i in 1 2 3; do
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
@@ -149,7 +154,8 @@ jobs:
           git config user.email "ci@neptune.local"
           # Refresh the guest diagnostics on success too. Committing them only on failure left the
           # repo showing a dead API-34 guest long after the suite went green.
-          git add -f ci/last-build.log ci/emulator-tests.log ci/gate-verdict.txt ci/logcat.txt ci/host-health.txt ci/TEST-*.xml apk/Neptune.apk app/neptune.jks
+          git add -f ci/last-build.log ci/emulator-tests.log ci/gate-verdict.txt ci/logcat.txt ci/host-health.txt apk/Neptune.apk app/neptune.jks || true
+          git add -f ci/TEST-*.xml 2>/dev/null || true
           git commit -m "ci: verified apk [skip ci]" || echo "nothing to commit"
           for i in 1 2 3; do
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
