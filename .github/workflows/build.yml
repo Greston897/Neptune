@@ -107,8 +107,8 @@ jobs:
           # The guest died mid-suite twice (`device 'emulator-5554' not found`, 25 of 29 tests).
           # Software-GPU blur plus a media session is memory-hungry; the 2 GB default is the
           # tightest resource here, so give the guest room instead of masking it with retries.
-          ram-size: 3072M
-          heap-size: 512M
+          ram-size: 4096M
+          heap-size: 768M
           disable-animations: true
           # ONE line on purpose: this action runs every script line in its own `sh -c`, so an
           # inline multi-line script cannot share state and silently swallowed test failures.
