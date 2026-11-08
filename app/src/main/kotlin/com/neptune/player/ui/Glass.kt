@@ -118,7 +118,10 @@ fun GlassPanel(
     val surface = if (s.glassEnabled && haze != null) base.hazeChild(haze, style) {
         // RenderEffect blur needs API 31+; older devices get the opaque fallback instead of a crash.
         blurEnabled = Build.VERSION.SDK_INT >= 31
-    } else base.background(Color(0xFF121212).copy(alpha = if (s.glassEnabled) 0.94f else 1f))
+    } else base.background(Color(0xFF121212))
+    // No `haze` means there is deliberately nothing to sample — a full-screen overlay provides
+    // `null` on purpose (see NeptuneApp). The panel is then painted solid, because 94% black over a
+    // blurred *other screen* is exactly the smear this was reported as.
     // A Box defaults to TopStart. When the panel is taller than its content (a search field with
     // heightIn(min = 52.dp), a quick tile with heightIn(min = 80.dp)) the row was pinned to the top
     // and looked "завышено". Centring by default puts icon + label on the panel's centre line.

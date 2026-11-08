@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -126,7 +127,9 @@ fun SettingsGroup(title: String, content: @Composable () -> Unit) {
 fun AppearanceScreen(state: NeptuneState, onBack: () -> Unit) {
     val s = LocalSettings.current
     var reset by remember { mutableStateOf(false) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
+    // Tagged for the same reason as the plan page: a LazyColumn does not compose off-screen items,
+    // so a test (and a reader of this file) needs a handle to scroll the list itself.
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding().testTag("appearanceList"), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Внешний вид", onBack, "Спокойная основа. Акцент — на твоей музыке.") }
         // The backdrop is fixed by design, so this group informs rather than offers a choice.
         item { SettingsGroup("ЦВЕТ ОСНОВЫ") { Column(Modifier.padding(NeRow.panelInset)) {

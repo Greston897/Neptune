@@ -34,7 +34,8 @@ REQUIRED = {
     "currentTrackRowKeepsTheSameGeometryAsAnyOtherRow": "the current row regained a tinted plate and shifted",
     "pillKeepsItsGeometryWhileAShortNoticeIsShown": "a pill notice resized or moved the now-playing capsule",
     "subscriptionScreenShowsWhatIsFreeAndCanBeOpened": "the free tier and the way into Plus must both be reachable",
-    "planPageNeverOpensTwiceAndClosesInOneTap": "the plan page stacked copies of itself into a blurred smear",
+    "planPageIsOnePageAndClosesInOneTap": "the plan page stacked copies of itself into a blurred smear",
+    "customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt": "the plan page showed the appearance screen through itself",
     "pillAndItsNoticesFollowTheUserIntoSubScreens": "the pill (and every toast) vanished in Settings sub-screens",
 }
 

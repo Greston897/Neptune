@@ -106,6 +106,21 @@ def check_paywall_is_one_opaque_page() -> None:
             f"{ROOT / 'NeptuneApp.kt'}: the plan screen is composed {renders} time(s). "
             "It must be one overlay above everything, or two blurred pages stack into a smear."
         )
+    # Haze samples the layer *behind* the node, so an overlay that keeps the shared states visible
+    # blurs the screen it covers — that is exactly how "Внешний вид" bled through "Подписка".
+    if "LocalBackgroundHaze provides null" not in app or "LocalContentHaze provides null" not in app:
+        fail(
+            f"{ROOT / 'NeptuneApp.kt'}: the plan overlay must isolate the haze locals. "
+            "Panels that sample the backdrop blur the screen underneath, which merges the two screens."
+        )
+    if "BackHandler" not in app:
+        fail(f"{ROOT / 'NeptuneApp.kt'}: back must close the plan overlay instead of popping the page under it")
+    glass = text(ROOT / "ui/Glass.kt")
+    if ".background(Color(0xFF121212).copy(alpha" in glass:
+        fail(
+            f"{ROOT / 'ui/Glass.kt'}: a panel with no backdrop to sample must be opaque, "
+            "not 94% black over another screen's blur."
+        )
     screen = text(ROOT / "ui/screens/SubscriptionScreen.kt")
     if "background(Ne.Void)" not in screen:
         fail(

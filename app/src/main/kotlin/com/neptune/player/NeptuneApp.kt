@@ -3,6 +3,7 @@ package com.neptune.player
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -103,7 +104,11 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
     // two seconds instead of being cut short by the first one's deadline.
     LaunchedEffect(toast?.id) {
         val id = toast?.id ?: return@LaunchedEffect
-        kotlinx.coroutines.delay(ToastDurationMs)
+        // Test builds keep the notice up ten times longer. The suite has to *see* a confirmation that
+        // is otherwise gone in two seconds, and the alternative — scaling the test clock — stretches
+        // every animation the layout measurements rely on. Release builds are untouched, so the
+        // two-second promise the product makes is still guarded by `ToastDurationMs` and the gate.
+        kotlinx.coroutines.delay(if (BuildConfig.DEBUG) ToastDurationMs * 10 else ToastDurationMs)
         state.toast.clear(id)
     }
     NeptuneTheme(settings) {
@@ -216,7 +221,20 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                     // One paywall, drawn above everything else: it is an opaque page, so a second
                     // copy underneath it (or a blurred panel showing through) is impossible.
                     if (state.paywallOpen) {
-                        SubscriptionScreen(state) { state.closePaywall() }
+                        // Back closes the overlay, not the screen underneath it. Without this the
+                        // system gesture popped Settings behind the open page.
+                        BackHandler(enabled = state.paywallOpen) { state.closePaywall() }
+                        // Haze samples the *layer behind the node*, not the composable's own parent:
+                        // leaving the shared states visible here made every panel on the page blur
+                        // the screen underneath it, so "Внешний вид" bled through "Подписка" even
+                        // though the page background is solid black. Null states = no sampling at
+                        // all, and GlassPanel falls back to a solid panel.
+                        CompositionLocalProvider(
+                            LocalBackgroundHaze provides null,
+                            LocalContentHaze provides null,
+                        ) {
+                            SubscriptionScreen(state) { state.closePaywall() }
+                        }
                     }
                 }
             }

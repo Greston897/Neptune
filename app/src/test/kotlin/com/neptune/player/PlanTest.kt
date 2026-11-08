@@ -24,26 +24,20 @@ class PlanTest {
      * and two entry points could each think they owned the page.
      */
     @Test fun thePaywallOpensOnceAndOnlyOnce() {
-        // Mirrors NeptuneState.openPaywall/closePaywall without a ViewModel: the rule is the point.
-        class Overlay {
-            var reason: PlanFeature? = null
-            var open = false
-            fun openFor(feature: PlanFeature?) { if (open) return; reason = feature; open = true }
-            fun close() { open = false; reason = null }
-        }
-        val overlay = Overlay()
+        val overlay = com.neptune.player.AppContainer.Paywall
+        overlay.close()
         assertFalse("a fresh app has no overlay", overlay.open)
-        overlay.openFor(null)
-        assertTrue("pressing 'Neptune Plus' must open the page without a reason", overlay.open)
+        assertTrue("pressing 'Neptune Plus' must open the page", overlay.openFor())
+        assertTrue(overlay.open)
         assertEquals("no reason is not a reason to pick one", null, overlay.reason)
-        // (a second call while it is open is a no-op; `reason` deliberately stays as it was)
-        overlay.openFor(PlanFeature.AvatarPhoto)
-        assertTrue("a second entry point must not close the page", overlay.open)
+        assertFalse("a second entry point must not open a second copy", overlay.openFor(PlanFeature.AvatarPhoto))
+        assertTrue("and must not close the page either", overlay.open)
+        assertEquals("nor swap the reason under the user's eyes", null, overlay.reason)
         overlay.close()
         assertFalse(overlay.open)
-        overlay.openFor(PlanFeature.LyricsSave)
-        assertTrue("a gated tap reopens it", overlay.open)
+        assertTrue("a gated tap reopens it", overlay.openFor(PlanFeature.LyricsSave))
         assertEquals(PlanFeature.LyricsSave, overlay.reason)
+        overlay.close()
     }
 
     @Test fun thePlayerItselfIsNeverPaid() {

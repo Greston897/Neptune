@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import com.neptune.player.AppContainer
 import com.neptune.player.NeptuneApplication
 import com.neptune.player.data.AvatarStore
 import com.neptune.player.data.LibraryLogic
@@ -58,7 +59,7 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
      * This is the single source of truth for the overlay; only [gate], [openPaywall], [closePaywall]
      * and [subscribe] write it.
      */
-    var paywallOpen by mutableStateOf(false)
+    var paywallOpen: Boolean by mutableStateOf(false)
         private set
 
     /**
@@ -128,6 +129,8 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
      */
     fun gate(feature: PlanFeature, action: () -> Unit): Boolean {
         if (allows(feature)) { action(); return true }
+        // A gate always states *its* reason, even over an already open manager page: that is the
+        // only case where swapping the reason is correct rather than surprising.
         paywall = feature
         paywallOpen = true
         paywallIntent = action
@@ -156,12 +159,13 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
      * means "closed", never "some default feature".
      */
     fun openPaywall(feature: PlanFeature? = null) {
-        // A fresh entry point replaces whatever the previous visit was about; a second tap while the
-        // page is already up changes nothing at all (no stacking, no reason swapping under the eye).
-        if (paywallOpen) return
-        paywall = feature
-        paywallIntent = null
-        paywallOpen = true
+        // One rule, tested off-device: a second entry point while the page is up changes nothing, so
+        // no copy can ever be composed underneath another.
+        if (AppContainer.Paywall.openFor(feature)) {
+            paywall = feature
+            paywallIntent = null
+            paywallOpen = true
+        }
     }
 
     /**
@@ -169,6 +173,7 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
      * so a later upgrade cannot replay a stale intention minutes after the fact.
      */
     fun closePaywall() {
+        AppContainer.Paywall.close()
         paywallOpen = false
         paywall = null
         paywallIntent = null
@@ -183,6 +188,7 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
         // the button they already pressed. The page state is cleared first so the replayed action
         // (a picker, a dialog, a save) lands on the screen underneath rather than on the paywall.
         val pending = paywallIntent
+        AppContainer.Paywall.close()
         paywallIntent = null
         paywallOpen = false
         paywall = null
@@ -196,7 +202,15 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
 
     /** Price string for the plan, used by the profile card and the paywall header. */
     fun planPrice(): String = if (annualPlan.value) Pricing.yearlyLabel() else Pricing.monthlyLabel()
-    fun resetAppearance() { edit { it.resetAppearance() }; toast("Внешний вид восстановлен", NeIcon.Reset) }
+    /**
+     * Resets the look. The confirmation lands in the top pill, which is why this is one of the flows
+     * that broke when the pill was limited to tab routes: it was triggered from "Внешний вид" and the
+     * notice had nowhere to appear.
+     */
+    fun resetAppearance() {
+        edit { it.resetAppearance() }
+        toast("Внешний вид восстановлен", NeIcon.Reset)
+    }
     fun refreshLibrary() = container.library.refresh()
     fun hasAudioPermission() = container.library.hasPermission()
     /** Transient confirmation in the top pill. See [ToastHostState]. */

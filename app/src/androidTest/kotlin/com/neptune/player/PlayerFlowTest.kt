@@ -284,50 +284,86 @@ class PlayerFlowTest {
     /**
      * Regression: the plan page could be opened on top of itself.
      *
-     * Tapping "Neptune Plus" in Settings while the page was already up drew a second copy of it —
-     * two opaque-with-blur pages, one over the other — and the blurred panels mixed into a smear.
-     * The page is now a single overlay: a second entry point changes nothing, and closing it once
-     * leaves the library behind it, not another copy.
+     * Tapping "Neptune Plus" while the page was already up drew a second copy — two translucent
+     * pages whose blurred panels mixed into a smear — and the page opened from Settings with no
+     * particular reason rendered nothing at all, because "no reason" and "closed" were the same
+     * value. This walks one page, its prices, its single close, and the screen left underneath.
      */
-    @Test fun planPageNeverOpensTwiceAndClosesInOneTap() {
+    @Test fun planPageIsOnePageAndClosesInOneTap() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
         waitText("Neptune Plus")
         clickText("Neptune Plus")
         waitText("ВСЕГДА БЕСПЛАТНО")
-        // The plan manager (no specific feature) must show its prices — a page opened without a
-        // reason used to render nothing at all, because "no reason" was the same value as "closed".
+        // Opened as a manager, not for one feature: the prices must be there.
         compose.onNodeWithTag("subscriptionList").performScrollToNode(hasText("ЦЕНА"))
         waitText("ЦЕНА")
-        // Ask for the very same page again. Nothing may stack: there is one overlay, not two.
-        compose.activityRule.scenario.onActivity { container(it).openPlanManager() }
-        compose.waitForIdle()
+        // Exactly one copy of the page is composed, not a stack of them.
         assertEquals(
-            "the plan page must be exactly one node tree, not a stack",
+            "the plan page must be one node tree, not a stack",
             1,
-            compose.onAllNodes(hasText("ЦЕНА")).fetchSemanticsNodes().size,
+            compose.onAllNodes(hasTestTag("subscriptionList")).fetchSemanticsNodes().size,
         )
-        compose.activityRule.scenario.onActivity { container(it).openPlanManager() }
-        compose.waitForIdle()
-        assertEquals(
-            "a repeated entry point must still be one page",
-            1,
-            compose.onAllNodes(hasText("ЦЕНА")).fetchSemanticsNodes().size,
-        )
-        back()
-        // One back press closes the overlay; Settings is what remains underneath.
+        compose.activityRule.scenario.onActivity {
+            assertTrue("the overlay must report itself open", AppContainer.Paywall.open)
+        }
+        // One close returns to Settings, which is the screen that was underneath.
+        compose.onNodeWithContentDescription("Закрыть").performClick()
         waitText("Всё под тебя. Без лишнего.")
         assertTrue(
             "the page must be gone, not hiding behind another copy",
             compose.onAllNodes(hasText("ЦЕНА")).fetchSemanticsNodes().isEmpty(),
         )
+        compose.activityRule.scenario.onActivity {
+            assertTrue("the overlay must report itself closed", !AppContainer.Paywall.open)
+        }
+    }
+
+    /**
+     * Regression: the plan page opened from "Внешний вид" showed that screen through itself.
+     *
+     * The page background was already solid black, but its glass panels sampled the shared haze
+     * state, which captures the layer *behind* the overlay — so the appearance screen's blurred
+     * panels and its long copy were visible inside every card of the plan page. Two screens, one
+     * picture. This walks the exact reported path: custom accent → plan page → back.
+     */
+    @Test fun customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt() {
+        compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
+        clickText("Внешний вид")
+        waitText("ЦВЕТ ОСНОВЫ")
+        // The gated control itself: turning on a custom accent is a Plus feature, so this is the tap
+        // that used to open the paywall on top of this very screen.
+        compose.onNodeWithTag("appearanceList").performScrollToNode(hasText("Свой акцентный цвет"))
+        clickText("Свой акцентный цвет")
+        waitText("ВСЕГДА БЕСПЛАТНО")
+        // The reason card names the feature that was refused — proof this page belongs to that tap.
+        waitText("«Свой акцент» — в Plus")
+        // None of the screen underneath may be composed inside the overlay: the appearance page's
+        // own group headers are the cheapest, most specific evidence.
+        listOf("ЦВЕТ ОСНОВЫ", "ФОРМА И ТИПОГРАФИКА", "LIQUID GLASS").forEach { label ->
+            assertEquals(
+                "'$label' belongs to the screen under the overlay and must not render twice",
+                0,
+                compose.onAllNodes(hasText(label)).fetchSemanticsNodes().size,
+            )
+        }
+        // Back closes the overlay and returns to the appearance screen, intact.
+        back()
+        waitText("ЦВЕТ ОСНОВЫ")
+        assertTrue(
+            "the plan page must be gone after back",
+            compose.onAllNodes(hasText("ВСЕГДА БЕСПЛАТНО")).fetchSemanticsNodes().isEmpty(),
+        )
+        compose.activityRule.scenario.onActivity {
+            assertTrue("the overlay must report itself closed", !AppContainer.Paywall.open)
+        }
     }
 
     /**
      * Regression: the top pill vanished outside the tab routes.
      *
-     * Every confirmation borrows the pill, so opening "Внешний вид" and toggling something showed
-     * the setting change but no notice at all — the toast had nowhere to appear. The pill now stays
-     * on every screen that is not the immersive player or the plan page.
+     * Every confirmation borrows the pill, so opening "Внешний вид" and resetting the look changed
+     * the theme but showed no notice at all — the toast had nowhere to appear. The pill now stays on
+     * every screen that is not the immersive player or the plan page.
      */
     @Test fun pillAndItsNoticesFollowTheUserIntoSubScreens() {
         seedLibrary()
@@ -343,7 +379,6 @@ class PlayerFlowTest {
             hasContentDescription("Сейчас играет", substring = true),
         ).fetchSemanticsNodes().isNotEmpty()
 
-        // Leave the player: on Home the pill is the now-playing capsule.
         back()
         compose.waitUntil(5000) { pillShown() }
 
@@ -356,10 +391,14 @@ class PlayerFlowTest {
         // The sub-screen keeps the pill: this is the route that used to lose it.
         compose.waitUntil(5000) { pillShown() }
 
-        // And a confirmation triggered here actually renders inside it.
-        compose.activityRule.scenario.onActivity { container(it).toast("Проверка", com.neptune.player.ui.NeIcon.Check) }
-        compose.waitUntil(5000) { compose.onAllNodes(hasText("Проверка")).fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithText("Проверка").assertIsDisplayed()
+        // A real control on this very sub-screen produces a confirmation, and it must be visible —
+        // which is only possible if the pill is composed here.
+        compose.onNodeWithTag("appearanceList").performScrollToNode(hasText("Сбросить внешний вид"))
+        clickText("Сбросить внешний вид")
+        clickText("Сбросить")
+        compose.waitUntil(10000) {
+            compose.onAllNodes(hasText("Внешний вид восстановлен")).fetchSemanticsNodes().isNotEmpty()
+        }
     }
 
     @Test fun subscriptionScreenShowsWhatIsFreeAndCanBeOpened() {
