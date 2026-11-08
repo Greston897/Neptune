@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.neptune.player.LayoutTest" tests="33" failures="0" errors="0" skipped="0" time="104.083" timestamp="2026-11-08T02:41:26" hostname="localhost">
+  <properties>
+    <property name="device" value="emulator-5554 - 15" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="longTrackTitleNeverPushesControlsOffScreen" classname="com.neptune.player.LayoutTest" time="2.367" />
+  <testcase name="glyphSitsOnTheCentreOfItsBox" classname="com.neptune.player.LayoutTest" time="2.467" />
+  <testcase name="panelCentresContentShorterThanItself" classname="com.neptune.player.LayoutTest" time="2.124" />
+  <testcase name="sameTokenLabelsHaveIdenticalHeights" classname="com.neptune.player.LayoutTest" time="1.728" />
+  <testcase name="selectedTabIsExposedToAccessibility" classname="com.neptune.player.LayoutTest" time="2.473" />
+  <testcase name="pillArtworkIsInsetFromTheLeftEdge" classname="com.neptune.player.LayoutTest" time="1.624" />
+  <testcase name="iconButtonUsesExactlyTheRequestedSquare" classname="com.neptune.player.LayoutTest" time="1.837" />
+  <testcase name="settingsRowsGrowInsteadOfClippingAtLargeFontScale" classname="com.neptune.player.LayoutTest" time="1.42" />
+  <testcase name="iconAndLabelShareACentreLine" classname="com.neptune.player.LayoutTest" time="1.748" />
+  <testcase name="navGlyphsAreIdenticalSquaresWhetherSelectedOrNot" classname="com.neptune.player.LayoutTest" time="1.67" />
+  <testcase name="noPromotionalCopyIsRendered" classname="com.neptune.player.LayoutTest" time="2.247" />
+  <testcase name="leadingIconSharesTheCentreLineOfItsLabelBlock" classname="com.neptune.player.LayoutTest" time="1.42" />
+  <testcase name="trackWithBrokenArtworkUriStillRenders" classname="com.neptune.player.LayoutTest" time="2.672" />
+  <testcase name="touchTargetsAreNeverSmallerThanFortyFourDp" classname="com.neptune.player.LayoutTest" time="1.897" />
+  <testcase name="iconsStaySquareNextToALongLabel" classname="com.neptune.player.LayoutTest" time="2.593" />
+  <testcase name="trackRowContentStartsAtTheRowEdge" classname="com.neptune.player.LayoutTest" time="2.257" />
+  <testcase name="panelCentresContentOnBothAxes" classname="com.neptune.player.LayoutTest" time="2.229" />
+  <testcase name="circularArtworkPreferenceIsHonoured" classname="com.neptune.player.LayoutTest" time="1.49" />
+  <testcase name="miniPlayerIsTransportOnlyAndKeepsEveryControlVisible" classname="com.neptune.player.LayoutTest" time="2.007" />
+  <testcase name="miniPlayerTransportFitsANarrowScreen" classname="com.neptune.player.LayoutTest" time="2.105" />
+  <testcase name="trackPillIsACentredCapsuleOfTheTokenHeight" classname="com.neptune.player.LayoutTest" time="2.788" />
+  <testcase name="tabLabelsFitInsideTheirCells" classname="com.neptune.player.LayoutTest" time="1.688" />
+  <testcase name="glassSheenOverlayDoesNotInflateThePanel" classname="com.neptune.player.LayoutTest" time="1.837" />
+  <testcase name="leadingIconCellIsTheBareTokenSize" classname="com.neptune.player.LayoutTest" time="2.506" />
+  <testcase name="trackWithoutArtworkRendersTheBrandFallback" classname="com.neptune.player.LayoutTest" time="2.0" />
+  <testcase name="trackPillAnnouncesTrackAndArtist" classname="com.neptune.player.LayoutTest" time="1.826" />
+  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="7.261" />
+  <testcase name="importedAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="7.412" />
+  <testcase name="likedAndRecentCollectionsOpenAndReturn" classname="com.neptune.player.PlayerFlowTest" time="5.568" />
+  <testcase name="albumShelfActionOpensTheLibraryAlbumsTab" classname="com.neptune.player.PlayerFlowTest" time="4.072" />
+  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="13.262" />
+  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="4.55" />
+  <testcase name="removeFromPlaylistWorksAndSurvivesASecondTap" classname="com.neptune.player.PlayerFlowTest" time="6.61" />
+</testsuite>

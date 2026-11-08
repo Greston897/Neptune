@@ -1,0 +1,118 @@
+name: build
+on:
+  push:
+    paths-ignore: ['apk/**', 'ci/**', 'assets/**', 'README.md']
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+      - name: Android SDK packages
+        run: |
+          yes 2>/dev/null | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0" > /dev/null 2>&1 || true
+      - name: Signing key
+        run: |
+          if [ ! -f app/neptune.jks ]; then
+            keytool -genkeypair -keystore app/neptune.jks -storepass neptune -keypass neptune \
+              -alias neptune -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Neptune, OU=Player, O=Neptune, L=Leipzig, C=DE"
+          fi
+      - name: Kotlin structure
+        run: python3 ci/check_structure.py
+      - name: Lazy-list key contract
+        run: python3 ci/check_list_keys.py
+      - name: Icon optical centring
+        run: python3 ci/check_icons.py
+      - name: Launcher icon geometry
+        run: python3 ci/check_launcher.py
+      - name: Media session artwork
+        run: python3 ci/check_media_art.py
+      - name: Unit tests and release APK
+        run: |
+          set -o pipefail
+          gradle --no-daemon --console=plain testDebugUnitTest assembleRelease assembleDebugAndroidTest 2>&1 | tee build.log | tail -n 100
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Android UI and playback tests
+        # A wedged emulator must fail fast instead of holding the branch for half an hour.
+        timeout-minutes: 14
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          # Match targetSdk. API 34 took the guest down at the SAME test in three runs
+          # (importedAudioActuallyPlaysAndBackReturnsHome, ~4s in, on NowPlaying composition) while an
+          # identical app build passed once -- so not a deterministic app bug. Host evidence rules out
+          # memory: 8.4 GB of 16 GB still available, empty dmesg OOM section, qemu RSS flat at 4.7 GB
+          # up to the sample where the process simply vanishes. The API 34 google_apis image is the
+          # unreliable component, and 35 is the level the app actually ships against.
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          # The guest died mid-suite twice (`device 'emulator-5554' not found`, 25 of 29 tests).
+          # Software-GPU blur plus a media session is memory-hungry; the 2 GB default is the
+          # tightest resource here, so give the guest room instead of masking it with retries.
+          ram-size: 3072M
+          heap-size: 512M
+          disable-animations: true
+          # ONE line on purpose: this action runs every script line in its own `sh -c`, so an
+          # inline multi-line script cannot share state and silently swallowed test failures.
+          script: bash ci/run_instrumented.sh
+      - name: Preserve build diagnostics
+        if: failure()
+        run: |
+          mkdir -p ci
+          cp build.log ci/last-build.log 2>/dev/null || true
+          cp emulator-tests.log ci/emulator-tests.log 2>/dev/null || true
+          cp ci/logcat.txt ci/logcat.txt 2>/dev/null || true
+          # Drop previous results first, or an old device's XML lingers beside the current one.
+          rm -f ci/TEST-*.xml
+          find app/build/outputs/androidTest-results -name '*.xml' -exec cp {} ci/ \; || true
+          git config user.name "neptune-ci"
+          git config user.email "ci@neptune.local"
+          git add -f ci/last-build.log ci/emulator-tests.log ci/logcat.txt ci/host-health.txt ci/gate-verdict.txt ci/TEST-*.xml
+          git commit -m "ci: build diagnostics [skip ci]" || exit 0
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Publish APK
+        if: success()
+        run: |
+          mkdir -p ci apk
+          cp build.log ci/last-build.log
+          # Refresh the test log on success as well. Committing it only on failure left the repo
+          # permanently showing the last FAILED run, which reads as "still broken" after a green one.
+          cp emulator-tests.log ci/emulator-tests.log
+          cp app/build/outputs/apk/release/app-release.apk apk/Neptune.apk
+          # Drop previous results first, or an old device's XML lingers beside the current one.
+          rm -f ci/TEST-*.xml
+          find app/build/outputs/androidTest-results -name '*.xml' -exec cp {} ci/ \; || true
+          git config user.name "neptune-ci"
+          git config user.email "ci@neptune.local"
+          # Refresh the guest diagnostics on success too. Committing them only on failure left the
+          # repo showing a dead API-34 guest long after the suite went green.
+          git add -f ci/last-build.log ci/emulator-tests.log ci/gate-verdict.txt ci/logcat.txt ci/host-health.txt ci/TEST-*.xml apk/Neptune.apk app/neptune.jks
+          git commit -m "ci: verified apk [skip ci]" || echo "nothing to commit"
+          for i in 1 2 3; do
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then break; fi
+            sleep 5
+          done
