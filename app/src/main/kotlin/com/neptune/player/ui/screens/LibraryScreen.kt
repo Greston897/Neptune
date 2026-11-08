@@ -48,6 +48,8 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
     var create by remember { mutableStateOf(false) }
     var sortMenu by remember { mutableStateOf(false) }
     val tracks = remember(library.tracks, state.librarySort) { state.sorted(library.tracks) }
+    // Same rule as Home: count resolvable tracks so a stale id cannot inflate the subtitle.
+    val likedCount = remember(users.liked, library.tracks) { library.tracks.count { it.id in users.liked } }
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item {
             Row(Modifier.fillMaxWidth().heightIn(min = NeRow.header), verticalAlignment = Alignment.CenterVertically) {
@@ -115,7 +117,7 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                 }
             }
             else -> {
-                item { CollectionLink("Любимые треки", trackCount(users.liked.size), NeIcon.HeartFill) { onCollection("liked", "") } }
+                item { CollectionLink("Любимые треки", trackCount(likedCount), NeIcon.HeartFill) { onCollection("liked", "") } }
                 items(users.playlists, key = { ListKeys.playlist(it.id) }) { p -> CollectionLink(p.name, trackCount(p.trackIds.size), NeIcon.Music) { onCollection("playlist", p.id) } }
                 item { NeButton("Новый плейлист", { create = true }, Modifier.fillMaxWidth().padding(top = NeSpace.lg), NeIcon.Plus, primary = false) }
             }

@@ -64,6 +64,9 @@ fun HomeScreen(
     val actions = LocalLibraryActions.current
     val recent = remember(users.recent, library.tracks) { val map = library.byId; users.recent.mapNotNull(map::get) }
     val albums = remember(library.tracks) { LibraryLogic.albums(library.tracks) }
+    // Count what actually resolves, not how many ids are stored: favourites saved against the demo
+    // catalogue removed in 2.9 would otherwise inflate the tile above an empty collection.
+    val likedCount = remember(users.liked, library.tracks) { library.tracks.count { it.id in users.liked } }
     val greeting = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
         in 5..11 -> "Доброе утро"; in 12..17 -> "Добрый день"; in 18..22 -> "Добрый вечер"; else -> "Доброй ночи"
     }
@@ -127,7 +130,7 @@ fun HomeScreen(
         }
         item {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(NeSpace.sm)) {
-                QuickCollection("Любимое", trackCount(users.liked.size), NeIcon.HeartFill, Modifier.weight(1f)) { onCollection("liked", "") }
+                QuickCollection("Любимое", trackCount(likedCount), NeIcon.HeartFill, Modifier.weight(1f)) { onCollection("liked", "") }
                 QuickCollection("Недавнее", trackCount(recent.size), NeIcon.Clock, Modifier.weight(1f)) { onCollection("recent", "") }
             }
         }

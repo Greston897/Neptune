@@ -34,9 +34,19 @@ class SettingsStore(context: Context) {
             glassEnabled = true, glassBlur = 40f, glassTint = 0.38f, glassRim = 0.85f,
             ambientGlow = true, accentGlow = true,
         ).validated()
+    }.let { loaded ->
+        // One-time move to the round look 2.9 asks for. Changing the read default is not enough:
+        // `edit()` writes every field, so anyone who ever touched a setting has "avatar" = 1
+        // (SQUIRCLE) persisted and would keep square art after updating. This folds this one value
+        // to the circle once, then never interferes with a deliberate later choice.
+        if (prefs.getBoolean("roundArtV4", false)) loaded
+        else loaded.copy(avatarIndex = 0, artShapeIndex = 0).validated()
     })
     val state = _state
     init {
+        if (!prefs.getBoolean("roundArtV4", false)) {
+            prefs.edit().putBoolean("roundArtV4", true).putInt("avatar", 0).putInt("artShape", 0).apply()
+        }
         if (!prefs.getBoolean("glassRecipeV3", false)) {
             val s = _state.value
             prefs.edit().putBoolean("glassRecipeV3", true).putBoolean("glassRecipeV2", true)

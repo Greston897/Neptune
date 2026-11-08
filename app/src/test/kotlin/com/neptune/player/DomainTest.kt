@@ -15,6 +15,18 @@ import org.junit.Test
 
 class DomainTest {
     private val track = Track("1", "Невесомость", "Neptune Studio", "Ночные сессии", 36000, "content://neptune.test/audio/1")
+    /**
+     * Favourites are stored as ids, but the demo catalogue was deleted in 2.9. A tile must count the
+     * ids that still resolve to a track, otherwise an upgraded install shows "6 треков" above an
+     * empty «Любимое».
+     */
+    @Test fun likedCountIgnoresIdsThatNoLongerResolve() {
+        val data = UserData(liked = setOf("demo:afterhours", "demo:orbit", track.id))
+        val catalog = listOf(track)
+        assertEquals("only resolvable favourites may be counted", 1, catalog.count { it.id in data.liked })
+        assertEquals("stored ids are still three", 3, data.liked.size)
+    }
+
     @Test fun searchNormalizesCaseAndYo() { assertTrue(LibraryLogic.matches(track, "НЕВЕСОМОСТЬ neptune")) }
     @Test fun searchRequiresAllTerms() { assertFalse(LibraryLogic.matches(track, "невесомость unknown")) }
     @Test fun blankSearchDoesNotReturnFakeResults() { assertTrue(LibraryLogic.search(listOf(track), " ").isEmpty()) }
