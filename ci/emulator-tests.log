@@ -89,72 +89,20 @@ emulator-5554 - 15 Tests 7/38 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 11/38 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 15/38 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 20/38 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 23/38 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 28/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 24/38 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 29/38 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 30/38 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 31/38 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 32/38 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 33/38 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 34/38 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 35/38 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 36/38 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 37/38 completed. (0 skipped) (0 failed)
-
-> Task :app:connectedDebugAndroidTest
-
-com.neptune.player.PlayerFlowTest > subscriptionScreenShowsWhatIsFreeAndCanBeOpened[emulator-5554 - 15] [31mFAILED [0m
-
-
-emulator-5554 - 15 Tests 38/38 completed. (0 skipped) (1 failed)
 Finished 38 tests on emulator-5554 - 15
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794145466371.json
 
-> Task :app:connectedDebugAndroidTest
-Tests on emulator-5554 - 15 failed: There was 1 failure(s).
-Exception thrown during onAfterAll invocation of plugin AndroidTestApkInstallerPlugin: device 'emulator-5554' not found
-device 'emulator-5554' not found
-com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
-	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:981)
-	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:1000)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$18(DeviceImpl.java:785)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:755)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$15(DeviceImpl.java:618)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:615)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeShellCommand$14(DeviceImpl.java:573)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeShellCommand(DeviceImpl.java:570)
-	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDevice.executeShellCommand(DdmlibAndroidDevice.kt)
-	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDeviceController$executeAsync$deferred$1.invokeSuspend(DdmlibAndroidDeviceController.kt:171)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
-	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:570)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:749)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
-
-Test run failed to complete. Expected 38 tests, received 37
-
-> Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794144734885.json
-
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-Execution failed for task ':app:connectedDebugAndroidTest'.
-> There were failing tests. See the report at: file:///home/runner/work/Neptune/Neptune/app/build/reports/androidTests/connected/debug/index.html
-
-* Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-
-BUILD FAILED in 4m 29s
+BUILD SUCCESSFUL in 3m 47s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
-FAIL: 1 instrumented test(s) failed
-  subscriptionScreenShowsWhatIsFreeAndCanBeOpened
-    (no message — suspect device/emulator loss)
-instrumented suite exit status: 1
+OK: 38 instrumented tests ran, 0 failures (declared 38)
+instrumented suite exit status: 0

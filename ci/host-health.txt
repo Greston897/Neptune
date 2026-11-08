@@ -1,425 +1,361 @@
---- 13:32:07 ---
+--- 13:44:19 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        4720        3173          50        8484       11262
-3834372 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-67048 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
-21680 netsimd         /usr/local/lib/android/sdk/emulator/netsimd --host-dns=127.0.0.53
- 7344 tee             tee emulator-tests.log
+Mem:           15983        4814        3079          50        8483       11168
+3911100 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+22432 java            /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+21696 netsimd         /usr/local/lib/android/sdk/emulator/netsimd --host-dns=127.0.0.53
 List of devices attached emulator-5554	device  
---- 13:32:12 ---
+--- 13:44:24 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        5103        2765          50        8508       10879
-3850868 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-168844 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-116328 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67048 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        5232        2640          50        8504       10750
+3925020 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+196812 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+112468 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:32:17 ---
+--- 13:44:29 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        5205        2657          50        8515       10777
-3857824 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-375556 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-113448 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67048 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        5321        2543          50        8512       10661
+3927816 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+386160 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+109412 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:32:22 ---
+--- 13:44:34 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        5262        2586          50        8528       10720
-3898436 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-430160 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-113496 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67048 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        5417        2436          50        8523       10565
+3992776 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+445280 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+109456 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:32:27 ---
+--- 13:44:39 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        5428        2415          50        8534       10554
-3928860 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-568836 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-113504 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67048 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        5461        2385          50        8530       10521
+3992896 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+509928 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+109460 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:32:33 ---
+--- 13:44:44 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        5445        2392          50        8540       10537
-3928992 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-587504 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-113848 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67052 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        5578        2265          50        8534       10404
+4011776 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+595052 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+109804 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:32:38 ---
+--- 13:44:49 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        5546        2282          50        8549       10437
-3930508 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-675344 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-113904 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67052 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        5792        2040          50        8544       10190
+4012752 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+805448 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+109872 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:32:43 ---
+--- 13:44:55 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        5618        2170          50        8590       10364
-3942444 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-752308 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-113908 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67052 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        5826        1967          50        8583       10156
+4012752 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+829220 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+109880 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:32:48 ---
+--- 13:45:00 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        5719        2047          50        8612       10264
-3942444 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-861440 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-114048 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67052 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        5934        1836          50        8606       10048
+4016608 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+949648 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+110012 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:32:53 ---
+--- 13:45:05 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6069        1657          50        8651        9913
-3965512 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1193260 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-114048 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67052 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        6489        1239          50        8648        9493
+4016644 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1539376 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+110012 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:32:58 ---
+--- 13:45:10 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6343        1342          50        8692        9639
-3965444 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1420608 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-114048 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67052 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        6558        1133          50        8686        9424
+4020816 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1573112 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+110016 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:33:03 ---
+--- 13:45:15 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6394        1229          50        8755        9589
-3965520 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1490512 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-114284 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67056 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        6729         926          50        8722        9254
+4020824 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1762272 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+110188 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:33:08 ---
+--- 13:45:20 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6491        1096          50        8790        9491
-3965600 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1608676 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-120948 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67056 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        6783         830          50        8763        9199
+4020824 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1803660 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+115320 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:33:13 ---
+--- 13:45:25 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6520        1061          50        8796        9462
-3965632 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1642432 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-120948 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67056 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
+Mem:           15983        6809         774          50        8793        9173
+4020832 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1832836 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+115324 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+67076 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
 List of devices attached emulator-5554	device  
---- 13:33:18 ---
+--- 13:45:30 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6729         845          50        8803        9253
-3965684 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1653992 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-192028 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-120948 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        7059         520          50        8798        8923
+4020736 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1976792 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+126016 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115324 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:33:23 ---
+--- 13:45:35 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6737         831          50        8810        9245
-3966764 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1654004 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-196564 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-120948 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6496        1074          50        8806        9486
+4021344 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1322536 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+177712 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115324 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:33:29 ---
+--- 13:45:40 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6840         725          50        8812        9142
-4073584 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1654940 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-185396 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-120948 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6459        1107          50        8811        9523
+4021428 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1323828 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+175624 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115324 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:33:34 ---
+--- 13:45:45 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6945         617          50        8815        9037
-4178420 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1654952 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-185476 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-120948 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6654         904          50        8819        9328
+4228240 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324060 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+176208 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115324 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:33:39 ---
+--- 13:45:50 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6950         606          50        8821        9032
-4188420 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655056 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-185680 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-120948 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6661         895          50        8821        9321
+4238348 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324160 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+176268 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115328 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:33:44 ---
+--- 13:45:55 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6929         621          50        8826        9053
-4188648 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655152 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-185836 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-120948 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6676         854          50        8847        9306
+4265448 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324276 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+176448 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112444 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:33:49 ---
+--- 13:46:00 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6955         595          50        8827        9027
-4208964 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655304 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-186320 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-120956 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6704         772          50        8901        9278
+4295904 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324308 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+176532 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112444 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:33:54 ---
+--- 13:46:06 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6968         549          50        8860        9014
-4216496 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655344 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-186780 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116224 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6706         748          50        8923        9276
+4296028 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324340 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+176628 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112444 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:33:59 ---
+--- 13:46:11 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6973         487          50        8916        9009
-4226368 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655420 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-187000 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116224 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6705         745          50        8926        9277
+4296340 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324368 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+177432 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112444 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:34:04 ---
+--- 13:46:16 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6978         480          50        8919        9004
-4227164 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655368 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-187432 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116232 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6736         712          50        8929        9246
+4329180 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324300 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+177784 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112444 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:34:09 ---
+--- 13:46:21 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6989         466          50        8922        8993
-4237444 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655452 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-187528 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116236 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6741         704          50        8932        9242
+4329400 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324348 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+178048 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112444 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:34:14 ---
+--- 13:46:26 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        6993         460          50        8925        8989
-4246680 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655488 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-187620 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116236 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6745         680          50        8952        9237
+4329512 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324508 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+178128 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112456 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:34:19 ---
+--- 13:46:31 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7031         411          50        8935        8951
-4281740 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655520 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-187460 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116244 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6756         663          50        8958        9226
+4339716 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324580 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+178132 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112460 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:34:24 ---
+--- 13:46:36 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7034         398          50        8945        8948
-4285700 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655560 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-187500 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116244 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6780         636          50        8960        9202
+4370388 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324616 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+178084 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112460 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:34:29 ---
+--- 13:46:41 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7034         385          50        8958        8948
-4285888 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655588 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-187652 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116248 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6783         632          50        8962        9199
+4369868 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324636 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+178196 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112464 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:34:34 ---
+--- 13:46:46 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7030         386          50        8961        8952
-4285660 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655612 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-187764 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116248 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6793         620          50        8964        9189
+4380756 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324684 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+178248 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112464 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:34:40 ---
+--- 13:46:51 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7029         383          50        8964        8953
-4286068 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655612 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-187824 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116248 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6797         588          50        8992        9185
+4380908 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324712 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+178420 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112464 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:34:45 ---
+--- 13:46:56 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7040         351          50        8987        8942
-4287088 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655616 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-187880 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116248 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6799         584          50        8994        9184
+4380968 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324712 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+178424 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112464 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:34:50 ---
+--- 13:47:01 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7059         324          50        8994        8923
-4307616 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655624 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-188132 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116248 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6799         578          50        9000        9183
+4381088 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324728 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+178480 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112464 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:34:55 ---
+--- 13:47:06 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7060         322          50        8996        8922
-4307792 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655652 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-188204 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116248 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6797         573          50        9006        9185
+4381196 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324744 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+178548 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+112464 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:35:00 ---
+--- 13:47:12 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7057         318          50        9003        8925
-4307732 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655652 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-188204 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116248 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6807         557          50        9012        9175
+4381228 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324744 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+179476 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+117044 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:35:05 ---
+--- 13:47:17 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7055         319          50        9003        8927
-4307904 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655592 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-188260 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116248 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6803         560          50        9014        9179
+4381320 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324680 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+179500 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115200 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:35:10 ---
+--- 13:47:22 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7053         319          50        9005        8929
-4308032 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655616 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-188272 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116248 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6801         560          50        9015        9181
+4381372 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324720 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+179508 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115208 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:35:15 ---
+--- 13:47:27 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7054         294          50        9029        8928
-4308112 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655640 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-188332 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116248 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6803         539          50        9034        9179
+4381432 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324724 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+179520 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115208 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:35:20 ---
+--- 13:47:32 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7060         215          50        9102        8922
-4307956 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655640 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189276 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116248 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6844         459          50        9073        9138
+4416220 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324736 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+179520 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115212 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:35:25 ---
+--- 13:47:37 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7066         342          50        8969        8916
-4342548 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655644 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189276 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116256 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6841         463          50        9074        9141
+4416220 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324740 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+179520 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115212 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:35:30 ---
+--- 13:47:42 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7070         336          50        8972        8912
-4342836 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655712 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189292 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116256 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6841         462          50        9074        9141
+4416344 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324780 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+179532 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115212 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:35:35 ---
+--- 13:47:47 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7070         334          50        8974        8912
-4342952 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655716 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189292 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116292 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6840         462          50        9075        9142
+4416380 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324796 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+179552 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115212 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:35:40 ---
+--- 13:47:52 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7069         333          50        8975        8913
-4343044 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655720 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189320 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116292 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6839         461          50        9077        9143
+4416336 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324796 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+179556 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115216 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:35:46 ---
+--- 13:47:57 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7069         332          50        8976        8913
-4343188 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655728 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189400 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116292 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6841         427          50        9109        9141
+4416432 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324796 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+179608 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115216 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:35:51 ---
+--- 13:48:02 ---
                total        used        free      shared  buff/cache   available
-Mem:           15983        7182         234         178        9090        8800
-4472540 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655728 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189400 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116292 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
+Mem:           15983        6842         370          50        9166        9141
+4416576 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
+1324804 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
+179932 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
+115220 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
 List of devices attached emulator-5554	device  
---- 13:35:56 ---
-               total        used        free      shared  buff/cache   available
-Mem:           15983        7160         217         181        9131        8822
-4474940 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655732 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189400 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116292 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-List of devices attached emulator-5554	device  
---- 13:36:01 ---
-               total        used        free      shared  buff/cache   available
-Mem:           15983        7188         207         183        9115        8794
-4476916 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655732 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189400 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116292 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-List of devices attached emulator-5554	device  
---- 13:36:07 ---
-               total        used        free      shared  buff/cache   available
-Mem:           15983        7216         225         183        9070        8766
-4476916 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655664 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189400 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116292 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-List of devices attached emulator-5554	device  
---- 13:36:12 ---
-               total        used        free      shared  buff/cache   available
-Mem:           15983        7211         180         183        9119        8771
-4476916 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655668 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189400 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116292 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-List of devices attached emulator-5554	device  
---- 13:36:17 ---
-               total        used        free      shared  buff/cache   available
-Mem:           15983        7212         255         183        9043        8770
-4476916 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655668 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189400 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116292 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-List of devices attached emulator-5554	device  
---- 13:36:22 ---
-               total        used        free      shared  buff/cache   available
-Mem:           15983        7183         329         183        8998        8799
-4476916 qemu-system-x86 /usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -port 5554 -avd test -no-window -gpu swiftshader_indir
-1655684 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-189400 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116292 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-List of devices attached emulator-5554	device  
---- 13:36:27 ---
-               total        used        free      shared  buff/cache   available
-Mem:           15983        3023       10152          50        3203       12959
-1655804 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-191860 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116292 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67056 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
-List of devices attached  
---- 13:36:32 ---
-               total        used        free      shared  buff/cache   available
-Mem:           15983        2976       10198          50        3203       13006
-1655804 java          /usr/lib/jvm/temurin-17-jdk-amd64/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED 
-191860 java           /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -Djava.util.logging.config.file=/home/runner/.config/.android/utp/logg
-116292 java           /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64/bin/java -Xmx64m -Xms64m -javaagent:/home/runner/work/_temp/.gradle-actions/gr
-67056 MainThread      /home/runner/actions-runner/cached/2.338.2/externals/node24/bin/node /home/runner/work/_actions/reactivecircus/android-emulator-runner/v2/
-List of devices attached  
 --- dmesg: oom / qemu ---

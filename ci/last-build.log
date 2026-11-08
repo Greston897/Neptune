@@ -25,15 +25,15 @@ Daemon will be stopped at the end of the build
 > Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
-> Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileDebug
-> Task :app:javaPreCompileDebugUnitTest
 > Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebug
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
 > Task :app:generateReleaseBuildConfig
-> Task :app:checkReleaseAarMetadata
 > Task :app:generateReleaseResValues FROM-CACHE
+> Task :app:checkReleaseAarMetadata
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
 > Task :app:processDebugResources
@@ -50,28 +50,24 @@ Daemon will be stopped at the end of the build
 > Task :app:mergeReleaseNativeLibs
 > Task :app:processReleaseManifestForPackage
 > Task :app:checkReleaseDuplicateClasses
-
-> Task :app:stripReleaseDebugSymbols
-Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
-
 > Task :app:desugarReleaseFileDependencies
 > Task :app:mergeReleaseStartupProfile
-> Task :app:extractReleaseNativeSymbolTables
-> Task :app:processReleaseResources
-
 > Task :app:compileDebugKotlin
-e: The daemon has terminated unexpectedly on startup attempt #1 with error code: 0. The daemon process output:
-    1. Kotlin compile daemon is ready
-
+> Task :app:processReleaseResources
+> Task :app:stripReleaseDebugSymbols
 > Task :app:mergeExtDexRelease
 
 > Task :app:compileDebugKotlin
 w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/NowPlaying.kt:138:13 Condition is always 'true'.
 
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
+
 > Task :app:compileDebugJavaWithJavac
 > Task :app:processDebugJavaRes
-> Task :app:bundleDebugClassesToCompileJar
 > Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:extractReleaseNativeSymbolTables
 > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :app:mergeReleaseArtProfile
 > Task :app:mergeReleaseShaders
@@ -82,19 +78,19 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:extractReleaseVersionControlInfo
 > Task :app:collectReleaseDependencies
 > Task :app:sdkReleaseDependencyData
-> Task :app:optimizeReleaseResources
 > Task :app:validateSigningRelease
 > Task :app:writeReleaseAppMetadata
 > Task :app:writeReleaseSigningConfigVersions
 > Task :app:preDebugAndroidTestBuild SKIPPED
-> Task :app:compileDebugUnitTestKotlin
 > Task :app:processDebugAndroidTestManifest
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:generateDebugAndroidTestBuildConfig
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes
 > Task :app:testDebugUnitTest
-> Task :app:generateDebugAndroidTestBuildConfig
-> Task :app:generateDebugAndroidTestResValues FROM-CACHE
 > Task :app:checkDebugAndroidTestAarMetadata
+> Task :app:optimizeReleaseResources
+> Task :app:generateDebugAndroidTestResValues FROM-CACHE
 > Task :app:mapDebugAndroidTestSourceSetPaths
 > Task :app:generateDebugAndroidTestResources
 > Task :app:javaPreCompileDebugAndroidTest FROM-CACHE
@@ -106,11 +102,11 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:desugarDebugAndroidTestFileDependencies
 > Task :app:mergeDebugAndroidTestResources
 > Task :app:checkDebugAndroidTestDuplicateClasses
-> Task :app:processDebugAndroidTestResources
 
 > Task :app:compileReleaseKotlin
 w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/NowPlaying.kt:138:13 Condition is always 'true'.
 
+> Task :app:processDebugAndroidTestResources
 > Task :app:mergeExtDexDebugAndroidTest
 > Task :app:compileReleaseJavaWithJavac
 > Task :app:generateReleaseLintVitalReportModel
@@ -128,12 +124,12 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:validateSigningDebugAndroidTest
 > Task :app:compileDebugAndroidTestJavaWithJavac
 > Task :app:dexBuilderDebugAndroidTest
-> Task :app:mergeDexRelease
 > Task :app:mergeDebugAndroidTestGlobalSynthetics
 > Task :app:processDebugAndroidTestJavaRes
 > Task :app:mergeProjectDexDebugAndroidTest
 > Task :app:writeDebugAndroidTestSigningConfigVersions
 > Task :app:mergeDebugAndroidTestJavaResource
+> Task :app:mergeDexRelease
 > Task :app:packageDebugAndroidTest
 > Task :app:createDebugAndroidTestApkListingFileRedirect
 > Task :app:assembleDebugAndroidTest
@@ -144,7 +140,7 @@ w: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/play
 > Task :app:lintVitalReportRelease
 > Task :app:lintVitalRelease
 > Task :app:assembleRelease
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794144384495.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794145080918.json
 
-BUILD SUCCESSFUL in 4m 27s
-104 actionable tasks: 98 executed, 6 from cache
+BUILD SUCCESSFUL in 4m 19s
+104 actionable tasks: 97 executed, 7 from cache

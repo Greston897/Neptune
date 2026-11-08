@@ -1,3 +1,1 @@
-FAIL: 1 instrumented test(s) failed
-  subscriptionScreenShowsWhatIsFreeAndCanBeOpened
-    (no message — suspect device/emulator loss)
+OK: 38 instrumented tests ran, 0 failures (declared 38)
