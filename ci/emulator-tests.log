@@ -84,37 +84,53 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 41 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 2/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 6/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 4/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 9/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 12/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 16/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 14/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 21/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 26/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 29/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 30/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 31/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 32/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 33/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 34/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 36/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 37/41 completed. (0 skipped) (0 failed)
 
 > Task :app:connectedDebugAndroidTest
 
-com.neptune.player.PlayerFlowTest > customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: the appearance subtitle renders inside the plan page bounds at Rect.fromLTRB(53.0, 501.0, 738.0, 544.0) — the overlay and the screen under it are being drawn together
-	at com.neptune.player.PlayerFlowTest.customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt(PlayerFlowTest.kt:370)
+com.neptune.player.PlayerFlowTest > sleepTimerOpensOnlyFromItsRowAndAlwaysCloses[emulator-5554 - 15] [31mFAILED [0m
 
-emulator-5554 - 15 Tests 39/41 completed. (0 skipped) (1 failed)
-emulator-5554 - 15 Tests 40/41 completed. (0 skipped) (1 failed)
-Finished 41 tests on emulator-5554 - 15
+
+emulator-5554 - 15 Tests 37/41 completed. (0 skipped) (1 failed)
+Finished 37 tests on emulator-5554 - 15
 
 > Task :app:connectedDebugAndroidTest
 Tests on emulator-5554 - 15 failed: There was 1 failure(s).
+Exception thrown during onAfterAll invocation of plugin AndroidTestApkInstallerPlugin: device 'emulator-5554' not found
+device 'emulator-5554' not found
+com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
+	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:981)
+	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:1000)
+	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$18(DeviceImpl.java:785)
+	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
+	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:755)
+	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$15(DeviceImpl.java:618)
+	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
+	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:615)
+	at com.android.ddmlib.internal.DeviceImpl.lambda$executeShellCommand$14(DeviceImpl.java:573)
+	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
+	at com.android.ddmlib.internal.DeviceImpl.executeShellCommand(DeviceImpl.java:570)
+	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDevice.executeShellCommand(DdmlibAndroidDevice.kt)
+	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDeviceController$executeAsync$deferred$1.invokeSuspend(DdmlibAndroidDeviceController.kt:171)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:570)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:749)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
+
+Test run failed to complete. Expected 41 tests, received 36
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794170513136.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794171357102.json
 
 FAILURE: Build failed with an exception.
 
@@ -128,12 +144,11 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 4m 40s
+BUILD FAILED in 3m 29s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
 FAIL: 1 instrumented test(s) failed
-  customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt
-    java.lang.AssertionError: the appearance subtitle renders inside the plan page bounds at Rect.fromLTRB(53.0, 501.0, 738.0, 544.0) — the overlay and the screen under it are being drawn together
-at com.neptune.player.PlayerFlowTest.customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt(PlayerFlowTest.kt:370)
+  sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
+    (no message — suspect device/emulator loss)
 instrumented suite exit status: 1
