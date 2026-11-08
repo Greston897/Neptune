@@ -96,7 +96,10 @@ fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
                 Modifier.fillMaxWidth().padding(top = NeSpace.md, bottom = NeSpace.xl),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                NeptuneMark(Modifier.size(56.dp), accent(), animated = true)
+                // Deliberately still: a breathing mark over a blurred panel is the most expensive
+                // frame on this screen (software GPU on low-end devices) and buys nothing — the page
+                // is read once, then acted on.
+                NeptuneMark(Modifier.size(56.dp), accent())
                 Spacer(Modifier.height(NeSpace.md))
                 NeText(
                     if (isPlus) "Neptune Plus активен" else "Neptune Plus",
