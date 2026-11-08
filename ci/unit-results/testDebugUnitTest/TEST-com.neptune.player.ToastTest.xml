@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.neptune.player.ToastTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-08T19:47:14" hostname="runnervmwuk1x" time="0.007">
+<testsuite name="com.neptune.player.ToastTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-08T19:58:52" hostname="runnervmwuk1x" time="0.014">
   <properties/>
-  <testcase name="everyNoticeGetsItsOwnId" classname="com.neptune.player.ToastTest" time="0.005"/>
-  <testcase name="aStaleTimerCannotClearANewerNotice" classname="com.neptune.player.ToastTest" time="0.0"/>
+  <testcase name="everyNoticeGetsItsOwnId" classname="com.neptune.player.ToastTest" time="0.011"/>
+  <testcase name="aStaleTimerCannotClearANewerNotice" classname="com.neptune.player.ToastTest" time="0.002"/>
   <testcase name="pillBorrowsItselfForTwoSeconds" classname="com.neptune.player.ToastTest" time="0.0"/>
   <testcase name="toneAndIconAreCarriedThrough" classname="com.neptune.player.ToastTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
