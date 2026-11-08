@@ -1,26 +1,3 @@
 FAIL: 1 instrumented test(s) failed
-  subscriptionScreenShowsWhatIsFreeAndCanBeOpened
-    java.lang.AssertionError: Timed out waiting for 'Отключить Plus'. Roots: Printing with useUnmergedTree = 'true'
-Node #5689 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
-|-Node #5877 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
-| IsTraversalGroup = 'true'
-| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
-| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@ee5c8f'
-| Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
-|  |-Node #5881 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
-|  | Text = '[Настройки]'
-|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #5883 at (l=53.0, t=501.0, r=451.0, b=544.0)px
-|  | Text = '[Всё под тебя. Без лишнего.]'
-|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #5885 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
-|  | Focused = 'false'
-|  | Actions = [OnClick, RequestFocus]
-|  | MergeDescendants = 'true'
-|  |  |-Node #5889 at (l=418.0, t=860.0, r=662.0, b=922.0)px
-|  |  | Text = '[Слушатель]'
-|  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |  |-Node #5891 at (l=333.0, t=933.0, r=747.0, b=976.0)px
-|  |    Text = '[Изменить профиль и аватар]'
-|  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #5894 at (l=95.0, t=1102.0, r=27
+  sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
+    (no message — suspect device/emulator loss)
