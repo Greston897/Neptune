@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
@@ -73,7 +74,9 @@ fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
     DisposableEffect(Unit) { onDispose { state.paywall = null } }
 
     LazyColumn(
-        Modifier.fillMaxSize().statusBarsPadding(),
+        // Tagged so a test can scroll to a control that lives below the fold instead of assuming
+        // it fits on the viewport (a LazyColumn does not compose off-screen items at all).
+        Modifier.fillMaxSize().statusBarsPadding().testTag("subscriptionList"),
         contentPadding = PaddingValues(
             start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm, bottom = LocalBottomInset.current,
         ),
@@ -219,9 +222,11 @@ fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
             }
         }
     }
-    if (confirmCancel) ConfirmDestructiveDialog(
+    // Not the destructive dialog: cancelling a plan loses no music and no text, only the extras that
+    // Plus itself added. Red "this cannot be undone" wording would be a lie here.
+    if (confirmCancel) ConfirmDialog(
         title = "Отключить Neptune Plus?",
-        text = "Свой акцентный цвет и фото профиля вернутся к базовым настройкам. Сохранённые тексты останутся в приложении.",
+        text = "Свой акцентный цвет и фото профиля вернутся к базовым настройкам. Плейлисты, любимое и тексты останутся.",
         action = "Отключить",
         onDismiss = { confirmCancel = false },
     ) {

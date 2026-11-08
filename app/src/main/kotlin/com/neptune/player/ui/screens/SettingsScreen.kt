@@ -315,6 +315,8 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit, onSubscription: () ->
                             .border(if (selected) 1.5.dp else 1.dp,
                                 if (selected) accent() else Color.White.copy(alpha = 0.10f), RoundedCornerShape(16.dp))
                             .clickable { state.edit { it.copy(avatarIndex = shape.ordinal) } }
+                            // Plain name in the description: quotes belong to the caption below, which is
+                            // typeset. A screen reader should say "Форма Круг", not "Форма «Круг»".
                             .semantics { this.selected = selected; contentDescription = "Форма ${shape.title}" }
                             .padding(vertical = NeSpace.md, horizontal = NeSpace.sm),
                         horizontalAlignment = Alignment.CenterHorizontally,

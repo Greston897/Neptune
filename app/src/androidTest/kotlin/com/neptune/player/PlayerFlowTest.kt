@@ -6,9 +6,11 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.printToString
 import androidx.compose.ui.test.hasText
@@ -135,9 +137,9 @@ class PlayerFlowTest {
     @Test fun avatarShapeChoicePersistsAndBackWorks() {
         compose.onNodeWithContentDescription("Профиль и аватар").performClick()
         compose.onNodeWithText("Твой профиль").assertIsDisplayed()
-        // The shape tiles now carry their own description ("Форма «Круг»"), because the label alone
-        // is short enough to collide with any other one-word text on the screen.
-        compose.onNodeWithContentDescription("Форма «Круг»").performClick()
+        // The tile's accessibility description is the plain form name ("Форма Круг"); the quotes live
+        // only in the visible caption, because a description is read out, not typeset.
+        compose.onNodeWithContentDescription("Форма Круг").performClick()
         compose.waitUntil(5000) {
             var value = false
             compose.activityRule.scenario.onActivity { value = container(it).settings.state.value.avatarIndex == 0 }
@@ -287,8 +289,10 @@ class PlayerFlowTest {
         compose.onNodeWithText("Плеер целиком").assertIsDisplayed()
         compose.onNodeWithText("В NEPTUNE PLUS").assertIsDisplayed()
         // The one-tap entry has to exist while nothing is charged, or the list above describes a
-        // state no tap can reach.
-        clickText("Открыть Plus сейчас")
+        // state no tap can reach. It sits below the feature list, and a LazyColumn does not compose
+        // off-screen items, so the list itself is scrolled to the node before it is clicked.
+        compose.onNodeWithTag("subscriptionList").performScrollToNode(hasText("Открыть Plus сейчас"))
+        compose.onNodeWithText("Открыть Plus сейчас").performClick()
         waitText("Neptune Plus активен")
         compose.waitUntil(5000) {
             var plus = false
@@ -297,9 +301,10 @@ class PlayerFlowTest {
             }
             plus
         }
-        // Leaving the plan must also drop the extras it unlocked.
+        // Leaving the plan must also drop the extras it unlocked. The confirmation is dialogs' own
+        // action word "Отключить", which is not the same node as the row that opened it.
         clickText("Отключить Plus")
-        clickText("Отключить")
+        compose.onNode(hasText("Отключить") and hasClickAction()).performClick()
         compose.waitUntil(5000) {
             var free = false
             compose.activityRule.scenario.onActivity { free = container(it).plan.tier.value == com.neptune.player.model.PlanTier.FREE }
