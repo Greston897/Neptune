@@ -55,8 +55,14 @@ kill "$logcat_pid" "$health_pid" 2>/dev/null || true
 wait "$logcat_pid" "$health_pid" 2>/dev/null || true
 # Host OOM killer verdict, if any. Needs sudo on the runner; harmless when unavailable.
 { echo "--- dmesg: oom / qemu ---"; sudo dmesg 2>/dev/null | grep -iE "out of memory|oom-kill|killed process" | tail -20; } >> "$health" || true
-grep -E "TestRunner|AndroidRuntime|com.neptune|permissioncontroller|ActivityTaskManager|lowmemorykiller|lmkd|FATAL|ANR in" \
-  "$raw" > ci/logcat.txt || true
+# Bound the artifact. Raw WindowManager transitions run to several KB per line and this file is
+# committed on every run, so an unbounded copy bloats history fast. Keep the tail -- that is where
+# a death shows up -- and clip line length. The header states the scope so a clipped log is never
+# mistaken for a complete one.
+{
+  echo "# filtered logcat: last 1000 matching lines, each clipped to 260 chars"
+  grep -E "TestRunner|AndroidRuntime|com.neptune|permissioncontroller|ActivityTaskManager|lowmemorykiller|lmkd|FATAL|ANR in" "$raw" | cut -c1-260 | tail -n 1000
+} > ci/logcat.txt || true
 rm -f "$raw"
 
 # A genuine gate: non-zero here fails the step, because this whole file is one shell.

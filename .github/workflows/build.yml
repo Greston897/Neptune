@@ -103,7 +103,9 @@ jobs:
           find app/build/outputs/androidTest-results -name '*.xml' -exec cp {} ci/ \; || true
           git config user.name "neptune-ci"
           git config user.email "ci@neptune.local"
-          git add -f ci/last-build.log ci/emulator-tests.log ci/gate-verdict.txt ci/TEST-*.xml apk/Neptune.apk app/neptune.jks
+          # Refresh the guest diagnostics on success too. Committing them only on failure left the
+          # repo showing a dead API-34 guest long after the suite went green.
+          git add -f ci/last-build.log ci/emulator-tests.log ci/gate-verdict.txt ci/logcat.txt ci/host-health.txt ci/TEST-*.xml apk/Neptune.apk app/neptune.jks
           git commit -m "ci: verified apk [skip ci]" || echo "nothing to commit"
           for i in 1 2 3; do
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
