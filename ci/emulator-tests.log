@@ -37,8 +37,8 @@ Daemon will be stopped at the end of the build
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
 > Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets FROM-CACHE
 > Task :app:desugarDebugFileDependencies FROM-CACHE
-> Task :app:compressDebugAssets
 > Task :app:dexBuilderDebug
 > Task :app:mergeDebugGlobalSynthetics FROM-CACHE
 > Task :app:processDebugJavaRes UP-TO-DATE
@@ -82,21 +82,22 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 [EmulatorConsole]: Failed to start Emulator console for 5554
 
 > Task :app:connectedDebugAndroidTest
-Starting 30 tests on emulator-5554 - 15
+Starting 32 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 5/30 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 11/30 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 18/30 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 24/30 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 25/30 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 27/30 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 28/30 completed. (0 skipped) (0 failed)
-Finished 30 tests on emulator-5554 - 15
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794099945506.json
+emulator-5554 - 15 Tests 4/32 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 9/32 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 11/32 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 19/32 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 26/32 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 28/32 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 29/32 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 31/32 completed. (0 skipped) (0 failed)
+Finished 32 tests on emulator-5554 - 15
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794103991668.json
 
-BUILD SUCCESSFUL in 2m 18s
-67 actionable tasks: 15 executed, 3 from cache, 49 up-to-date
+BUILD SUCCESSFUL in 3m 9s
+67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
-OK: 30 instrumented tests ran, 0 failures (declared 30)
+OK: 32 instrumented tests ran, 0 failures (declared 32)
 instrumented suite exit status: 0

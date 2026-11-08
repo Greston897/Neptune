@@ -1,1 +1,1 @@
-OK: 30 instrumented tests ran, 0 failures (declared 30)
+OK: 32 instrumented tests ran, 0 failures (declared 32)
