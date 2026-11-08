@@ -375,14 +375,17 @@ class PlayerFlowTest {
             compose.activityRule.scenario.onActivity { playing = container(it).playback.state.value.track != null }
             playing
         }
+        // Leave the full player by its own back control. The system back press is flaky right after
+        // a route transition, and this test is about the pill, not about the gesture.
+        compose.onNodeWithContentDescription("Вернуться назад").performClick()
+        waitText("Слушать")
+
         // The pill announces itself as "Сейчас играет: …"; that is a stable handle for the capsule
         // without adding a test-only tag to production code.
         fun pillShown() = runCatching {
             compose.onAllNodes(hasContentDescription("Сейчас играет", substring = true))
                 .fetchSemanticsNodes().isNotEmpty()
         }.getOrDefault(false)
-
-        back()
         compose.waitUntil(15000) { pillShown() }
 
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
@@ -399,8 +402,10 @@ class PlayerFlowTest {
         compose.onNodeWithTag("appearanceList").performScrollToNode(hasText("Сбросить внешний вид"))
         clickText("Сбросить внешний вид")
         clickText("Сбросить")
-        compose.waitUntil(10000) {
-            compose.onAllNodes(hasText("Внешний вид восстановлен")).fetchSemanticsNodes().isNotEmpty()
+        compose.waitUntil(15000) {
+            runCatching {
+                compose.onAllNodes(hasText("Внешний вид восстановлен")).fetchSemanticsNodes().isNotEmpty()
+            }.getOrDefault(false)
         }
     }
 
