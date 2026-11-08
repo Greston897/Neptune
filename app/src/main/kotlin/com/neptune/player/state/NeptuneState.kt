@@ -10,6 +10,7 @@ import com.neptune.player.NeptuneApplication
 import com.neptune.player.data.AvatarStore
 import com.neptune.player.data.LibraryLogic
 import com.neptune.player.model.Features
+import com.neptune.player.model.LyricsDoc
 import com.neptune.player.model.PlanFeature
 import com.neptune.player.model.PlanTier
 import com.neptune.player.model.Pricing
@@ -189,8 +190,13 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
         toast("Снова фирменный знак", NeIcon.Orbit)
     }
 
-    /** Lyrics of the current track, keyed by track id. Free: karaoke is part of the player. */
-    fun lyricsFor(track: Track?): String? = track?.let { container.lyrics.get(it.id) }
+    /**
+     * Lyrics of the current track, keyed by track id. Free: karaoke is part of the player.
+     *
+     * Returns the *document*, so callers get the timings as well as the text — a String here would
+     * throw away exactly the part that makes the highlight possible.
+     */
+    fun lyricsFor(track: Track?): LyricsDoc? = track?.let { container.lyrics.get(it.id) }
 
     /** Saving an edited text is a Plus feature, and the gate is checked here, not in the UI. */
     fun saveLyrics(track: Track, text: String) {

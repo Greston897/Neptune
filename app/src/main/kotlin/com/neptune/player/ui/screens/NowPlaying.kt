@@ -132,7 +132,7 @@ fun NowPlayingScreen(
         // carries timings — an unsynchronised text would show a line that does not follow the song,
         // which reads as a bug rather than a feature.
         val lyricsDocs by state.lyricsDocs.collectAsStateWithLifecycle()
-        val lyricsDoc = track?.let { lyricsDocs[it.id] ?: state.lyricsFor(it) }
+        val lyricsDoc: com.neptune.player.model.LyricsDoc? = track?.let { state.lyricsFor(it) ?: lyricsDocs[it.id] }
         if (track != null) {
             LaunchedEffect(track.id) { state.requestLyrics(track) }
             val doc = lyricsDoc

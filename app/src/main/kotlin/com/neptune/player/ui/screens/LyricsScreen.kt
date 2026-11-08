@@ -76,13 +76,15 @@ fun LyricsScreen(state: NeptuneState, onBack: () -> Unit) {
     val track = target ?: playback.track
     val playing = target == null || target.id == playback.track?.id
     var editing by remember { mutableStateOf(false) }
+    val pickFile = LocalLibraryActions.current.lyricsFile
     var draft by remember(track?.id) { mutableStateOf("") }
 
     // Reading the tag is I/O; it is kicked off once per track and published through the repository.
     LaunchedEffect(track?.id) {
         if (track != null) state.requestLyrics(track)
     }
-    val doc: LyricsDoc? = track?.let { docs[it.id] ?: state.lyricsFor(it) }
+    // `docs` is the observed map, so a scan that finishes while this screen is open repaints it.
+    val doc: LyricsDoc? = track?.let { state.lyricsFor(it) ?: docs[it.id] }
     // `LyricsDoc.None` is a real answer from the repository ("scanned, nothing found"), so an empty
     // document means "no text", while `null` still means "scan has not finished". Without that
     // distinction the screen would keep promising that text is on its way.
@@ -218,18 +220,22 @@ fun LyricsScreen(state: NeptuneState, onBack: () -> Unit) {
         }
     }
 
-    if (editing) LyricsEditorDialog(
+    // Everything below runs only with a real track: the earlier guard returns for the empty player,
+    // but the editor is composed outside that scope, so the value is bound explicitly here.
+    val editable = track
+    if (editing && editable != null) LyricsEditorDialog(
         initial = draft,
         saveIncluded = Features.has(PlanFeature.LyricsSave, tier),
         onDismiss = { editing = false },
         onSave = { text ->
             editing = false
-            state.saveLyrics(track, text.take(MaxLyricsChars))
+            state.saveLyrics(editable, text.take(MaxLyricsChars))
         },
         onPickFile = {
             editing = false
-            state.requestLyricsFile(track)
-            LocalLibraryActions.current.lyricsFile()
+            state.requestLyricsFile(editable)
+            // Read outside the lambda's composition scope: the picker lives in the activity host.
+            pickFile()
         },
     )
 }

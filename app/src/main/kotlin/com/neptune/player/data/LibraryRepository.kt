@@ -144,7 +144,7 @@ class LibraryRepository(private val context: Context, private val scope: Corouti
         if (track.source != Track.Source.IMPORTED) return false
         val existing = importedUris().toMutableSet()
         if (!existing.remove(track.uri)) return false
-        prefs.edit().putString("imports", JSONArray(existing.toList())).apply()
+        prefs.edit().putString("imports", JSONArray().apply { existing.forEach { put(it) } }.toString()).apply()
         runCatching {
             context.contentResolver.releasePersistableUriPermission(Uri.parse(track.uri), Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }

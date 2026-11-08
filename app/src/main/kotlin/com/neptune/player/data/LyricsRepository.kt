@@ -60,10 +60,15 @@ class LyricsRepository(private val context: Context, private val scope: Coroutin
 
     fun set(trackId: String, text: String) {
         val doc = LyricsParser.fromText(text, LyricsSource.SAVED)
-        val next = if (doc == null) saved.value - trackId else saved.value + (trackId to doc)
+        if (doc == null) {
+            // An empty or whitespace-only save clears the stored text instead of keeping a blank.
+            clear(trackId)
+            return
+        }
+        cache.update { it + (trackId to doc) }
+        val next = saved.value + (trackId to doc)
         saved.value = next
         persist(next)
-        cache.update { it + (trackId to doc) }
     }
 
     fun clear(trackId: String) {
