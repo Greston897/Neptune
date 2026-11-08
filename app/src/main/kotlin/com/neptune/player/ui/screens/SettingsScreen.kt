@@ -253,7 +253,24 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit) {
             }
             SettingSlider("Размер планеты", s.avatarSize, 0.8f..1.25f, "${(s.avatarSize * 100).toInt()}%", { v -> state.edit { it.copy(avatarSize = v) } })
         } } }
-        item { SettingsGroup("ЦВЕТ АВАТАРА") { AccentPicker(s.avatarTone) { i -> state.edit { it.copy(avatarTone = i) } } } }
+        item { SettingsGroup("ЦВЕТ АВАТАРА") {
+            // With a personal accent the avatar follows it, so the preset grid would be a dead
+            // control. Say so instead of letting taps silently do nothing.
+            if (s.customAccent) {
+                Column(Modifier.padding(NeRow.panelInset)) {
+                    Row(Modifier.fillMaxWidth().heightIn(min = NeRow.setting), verticalAlignment = Alignment.CenterVertically) {
+                        ProfileAvatar(Modifier.size(40.dp))
+                        Spacer(Modifier.width(NeSpace.md))
+                        NeText(
+                            "Аватар использует твой акцентный цвет. Выключи «Свой акцентный цвет» во внешнем виде, чтобы выбрать отдельный оттенок.",
+                            size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 3,
+                        )
+                    }
+                }
+            } else {
+                AccentPicker(s.avatarTone) { i -> state.edit { it.copy(avatarTone = i) } }
+            }
+        } }
     }
 }
 

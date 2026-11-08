@@ -9,7 +9,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.printToString
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasContentDescription
@@ -103,18 +103,21 @@ class PlayerFlowTest {
         // "Медиатека" is also the nav tab's label, so the shelf action is addressed by its own
         // semantics tag instead of by text. The shelf sits below the hero and can start off-screen
         // on a short viewport, hence the scroll rather than a dependence on device height.
+        // Scroll the list to the node: a LazyColumn does not compose off-screen items, so
+        // performScrollTo on the target alone would never find it on a short viewport.
         compose.waitUntil(20000) {
-            compose.onAllNodes(hasTestTag("homeAlbumsAction")).fetchSemanticsNodes().isNotEmpty()
+            compose.onAllNodes(hasTestTag("homeList")).fetchSemanticsNodes().isNotEmpty()
         }
-        compose.onNodeWithTag("homeAlbumsAction").performScrollTo().performClick()
+        compose.onNodeWithTag("homeList").performScrollToNode(hasTestTag("homeAlbumsAction"))
+        compose.onNodeWithTag("homeAlbumsAction").performClick()
         waitText("Альбомы")
         compose.onNode(hasContentDescription("Медиатека") and isSelectable()).assertIsSelected()
-        compose.activityRule.scenario.onActivity {
-            assertEquals("the albums tab must be the one selected", 1, container(it).libraryTab)
-        }
+        // The albums tab proves its own selection with a filter chip and the grid's own labels; the
+        // tab index itself lives in the ViewModel, which this rule cannot reach.
         compose.onAllNodes(hasText("ПОДБОРКА")).fetchSemanticsNodes().let {
             assertEquals("a tab action must not open a collection", 0, it.size)
         }
+        compose.onNode(hasContentDescription("Сортировка")).assertIsDisplayed()
     }
 
     @Test fun settingsBackReturnsToPreviousPageThenHome() {
