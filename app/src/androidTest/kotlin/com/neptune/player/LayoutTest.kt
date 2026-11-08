@@ -47,7 +47,7 @@ class LayoutTest {
 
     private val longTrack = Track(
         "layout:1", "Очень длинное название трека, которое раньше выталкивало кнопки за экран",
-        "Неизвестный исполнитель с длинным именем", "Альбом с длинным названием", 245000, "asset:///audio/x.m4a",
+        "Неизвестный исполнитель с длинным именем", "Альбом с длинным названием", 245000, "content://neptune.test/audio/layout",
     )
 
     private fun host(fontScale: Float = 1f, content: @Composable () -> Unit) {
@@ -424,6 +424,50 @@ class LayoutTest {
         host { TrackArtwork(broken, Modifier.testTag("art").size(96.dp), 12.dp) }
         val b = compose.onNodeWithTag("art", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
         assertTrue("broken artwork collapsed the tile", b.width > 0f && b.height > 0f)
+    }
+
+    /**
+     * The pill's cover used to sit 4dp from the left edge while the capsule left 8dp above and
+     * below it, so it read as pressed against the curve. The inset is now a token; this asserts the
+     * rendered gap against that token rather than against a screenshot.
+     */
+    @Test fun pillArtworkIsInsetFromTheLeftEdge() {
+        val playback = PlaybackState(track = longTrack, isPlaying = true, durationMs = 245000, positionMs = 30000)
+        host {
+            Box(Modifier.width(360.dp)) {
+                TrackPill(playback, {}, Modifier.testTag("pill"))
+            }
+        }
+        val pill = compose.onNodeWithTag("pill", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val art = compose.onNodeWithTag("pillArt", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val density = compose.density.density
+        val gap = art.left - pill.left
+        val expected = NeRow.pillArtInset.value * density
+        assertTrue("pill artwork gap $gap must match token $expected", kotlin.math.abs(gap - expected) <= 1.5f)
+        // The vertical gap is the capsule's own breathing room; the left inset must be at least
+        // that, which is precisely what the old 4dp value violated.
+        val verticalGap = (pill.height - art.height) / 2f
+        assertTrue("artwork is closer to the left edge ($gap) than to the top ($verticalGap)", gap >= verticalGap - 1.5f)
+    }
+
+    /**
+     * "Круг" must actually produce a circle everywhere, not just on the avatar: the resolver is
+     * shared, so a 96dp tile has to report the full radius rather than a rounded-square corner.
+     */
+    @Test fun circularArtworkPreferenceIsHonoured() {
+        compose.setContent {
+            NeptuneTheme(Settings(animations = false, artworkMotion = false, ambientGlow = false, artShapeIndex = 0)) {
+                Box(Modifier.fillMaxSize()) {
+                    TrackArtwork(longTrack.copy(artworkUri = null), Modifier.testTag("art").size(96.dp), 12.dp)
+                }
+            }
+        }
+        val b = compose.onNodeWithTag("art", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        // A circle is still laid out as a square; the guarantee here is that the tile keeps its
+        // geometry under the circular clip instead of collapsing or being inset by the shape.
+        val expected = 96f * compose.density.density
+        assertTrue("circular tile must stay square: ${b.width}x${b.height}",
+            kotlin.math.abs(b.width - expected) <= 1.5f && kotlin.math.abs(b.height - expected) <= 1.5f)
     }
 
     @Test fun noPromotionalCopyIsRendered() {

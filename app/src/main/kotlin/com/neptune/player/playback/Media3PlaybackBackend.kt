@@ -89,9 +89,29 @@ class Media3PlaybackBackend(
         }, MoreExecutors.directExecutor())
     }
 
-    private fun item(track: Track) = MediaItem.Builder().setMediaId(track.id).setUri(track.uri)
-        .setMediaMetadata(MediaMetadata.Builder().setTitle(track.title).setArtist(track.artist).setAlbumTitle(track.album)
-            .apply { track.artworkUri?.let { setArtworkUri(android.net.Uri.parse(it)) } }.build()).build()
+    /**
+     * Builds a queue entry that always carries artwork.
+     *
+     * A real cover is passed as `artworkUri`; when there is none, the app mark is attached as
+     * `artworkData` so the media session never reports "no artwork" and the system overlays stop
+     * substituting the play/pause glyph. See [SessionArtwork] for why bytes are required here.
+     */
+    private fun item(track: Track): MediaItem {
+        val metadata = MediaMetadata.Builder()
+            .setTitle(track.title).setArtist(track.artist).setAlbumTitle(track.album)
+            .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+            .apply {
+                val art = track.artworkUri
+                if (art != null) {
+                    setArtworkUri(android.net.Uri.parse(art))
+                } else {
+                    SessionArtwork.brandPng(app)?.let {
+                        setArtworkData(it, MediaMetadata.PICTURE_TYPE_FRONT_COVER)
+                    }
+                }
+            }.build()
+        return MediaItem.Builder().setMediaId(track.id).setUri(track.uri).setMediaMetadata(metadata).build()
+    }
 
     private fun command(block: suspend (MediaController) -> Unit) {
         scope.launch {

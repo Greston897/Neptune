@@ -14,7 +14,7 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class DomainTest {
-    private val track = Track("1", "Невесомость", "Neptune Studio", "Ночные сессии", 36000, "asset:///audio/test.m4a")
+    private val track = Track("1", "Невесомость", "Neptune Studio", "Ночные сессии", 36000, "content://neptune.test/audio/1")
     @Test fun searchNormalizesCaseAndYo() { assertTrue(LibraryLogic.matches(track, "НЕВЕСОМОСТЬ neptune")) }
     @Test fun searchRequiresAllTerms() { assertFalse(LibraryLogic.matches(track, "невесомость unknown")) }
     @Test fun blankSearchDoesNotReturnFakeResults() { assertTrue(LibraryLogic.search(listOf(track), " ").isEmpty()) }

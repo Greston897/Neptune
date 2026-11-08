@@ -46,6 +46,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.neptune.player.BuildConfig
 import com.neptune.player.model.Accent
+import com.neptune.player.model.ArtShape
 import com.neptune.player.model.AvatarShape
 import com.neptune.player.model.Surface
 import com.neptune.player.model.formatTime
@@ -59,7 +60,7 @@ fun ScreenTitle(title: String, onBack: (() -> Unit)? = null, subtitle: String? =
             if (onBack != null) NeIconButton(NeIcon.Back, "Назад", onBack)
             NeText(
                 title, Modifier.weight(1f).padding(start = if (onBack == null) 0.dp else NeSpace.sm, top = NeSpace.sm, bottom = NeSpace.sm),
-                size = NeType.display, lineHeight = NeType.displayLine, weight = FontWeight.ExtraBold, tracking = (-0.8).sp, maxLines = 2,
+                size = NeType.headline, lineHeight = NeType.headlineLine, weight = FontWeight.ExtraBold, tracking = (-0.6).sp, maxLines = 2,
             )
         }
         if (subtitle != null) {
@@ -131,7 +132,18 @@ fun AppearanceScreen(state: NeptuneState, onBack: () -> Unit) {
                 NeIconView(NeIcon.Check, NeIconSize.sm, accent())
             }
         } } }
-        item { SettingsGroup("АКЦЕНТ") { AccentPicker(s.accentIndex) { i -> state.edit { it.copy(accentIndex = i) } } } }
+        item { SettingsGroup("АКЦЕНТ") {
+            ToggleRow("Свой акцентный цвет", "Любой оттенок вместо готовой палитры", s.customAccent) { v ->
+                // Seed the custom colour from the current preset so enabling the toggle never
+                // jumps the whole app to an unrelated hue.
+                state.edit { it.copy(customAccent = v, accentArgb = if (v) it.accent.hex.toInt() else it.accentArgb) }
+            }
+            if (s.customAccent) {
+                CustomAccentPicker(s.accentArgb) { colour -> state.edit { it.copy(accentArgb = colour) } }
+            } else {
+                AccentPicker(s.accentIndex) { i -> state.edit { it.copy(accentIndex = i) } }
+            }
+        } }
         item { SettingsGroup("LIQUID GLASS") {
             ToggleRow("Чёрное стекло", "Настоящее размытие фона на Android 12+, мягкая панель на старых версиях", s.glassEnabled) { v -> state.edit { it.copy(glassEnabled = v) } }
             SettingSlider("Размытие", s.glassBlur, 8f..56f, "${s.glassBlur.toInt()} dp", { v -> state.edit { it.copy(glassBlur = v) } })
@@ -143,8 +155,14 @@ fun AppearanceScreen(state: NeptuneState, onBack: () -> Unit) {
         item { SettingsGroup("ФОРМА И ТИПОГРАФИКА") {
             SettingSlider("Скругление панелей", s.radius, 12f..32f, "${s.radius.toInt()} dp", { v -> state.edit { it.copy(radius = v) } })
             SettingSlider("Размер текста", s.fontScale, 0.9f..1.2f, "${(s.fontScale * 100).toInt()}%", { v -> state.edit { it.copy(fontScale = v) } }, steps = 4)
+            ShapeChoice("Форма обложек", ArtShape.entries.toList(), s.artShapeIndex, { it.title }) { i -> state.edit { it.copy(artShapeIndex = i) } }
+            SettingSlider("Размер обложек", s.thumbScale, 0.85f..1.25f, "${(s.thumbScale * 100).toInt()}%", { v -> state.edit { it.copy(thumbScale = v) } })
             ToggleRow("Компактный список", "Больше треков на одном экране", s.compact) { v -> state.edit { it.copy(compact = v) } }
             ToggleRow("Подписи навигации", "Названия разделов внизу экрана", s.navLabels) { v -> state.edit { it.copy(navLabels = v) } }
+        } }
+        item { SettingsGroup("ГЛАВНЫЙ ЭКРАН") {
+            ToggleRow("Полка альбомов", "Горизонтальный ряд альбомов на главной", s.showAlbumRow) { v -> state.edit { it.copy(showAlbumRow = v) } }
+            ToggleRow("Недавние треки", "Панель «Вернуться к музыке»", s.showRecentPanel) { v -> state.edit { it.copy(showRecentPanel = v) } }
         } }
         item { SettingsGroup("ДВИЖЕНИЕ И ОТКЛИК") {
             ToggleRow("Анимации интерфейса", "Плавные переходы и отклик кнопок", s.animations) { v -> state.edit { it.copy(animations = v) } }
@@ -277,14 +295,14 @@ fun DataScreen(state: NeptuneState, onBack: () -> Unit, onRecent: () -> Unit) {
         item { ScreenTitle("Музыка и данные", onBack, "Твоя коллекция остаётся на твоём устройстве.") }
         item { SettingsGroup("ИСТОЧНИКИ") {
             SettingRow("Музыка на устройстве", if (library.permission) "${library.localCount} локальных треков · доступ разрешён" else "Нет доступа к аудиофайлам", NeIcon.Device, onClick = if (library.permission) actions.appSettings else actions.permission)
-            SettingRow("Импорт аудиофайлов", "Выбрать музыку через системный проводник", NeIcon.Folder, onClick = actions.import)
+            SettingRow("Импорт аудиофайлов", "Один трек или несколько сразу", NeIcon.Folder, onClick = actions.import)
             SettingRow("Обновить медиатеку", if (library.loading) "Сканирование…" else "Найти новые треки", NeIcon.Reset, onClick = state::refreshLibrary)
         } }
         item { SettingsGroup("ИСТОРИЯ") {
             SettingRow("Недавно прослушанные", "${users.recent.size} треков в истории", NeIcon.Clock, onClick = onRecent)
             SettingRow("Очистить историю", "Не затрагивает любимое и плейлисты", NeIcon.Trash) { clear = true }
         } }
-        item { NeText("Демо-треки доступны без разрешений. Обложки локальных треков читаются из системной медиатеки.", Modifier.padding(top = NeSpace.xl), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint, maxLines = 4) }
+        item { NeText("Neptune не содержит встроенной музыки. Добавляй файлы по одному или выбирай сразу несколько — встроенные обложки читаются автоматически, а доступ к медиатеке устройства нужен только для автоматического поиска.", Modifier.padding(top = NeSpace.xl), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint, maxLines = 5) }
     }
     if (clear) ConfirmDialog("Очистить историю?", "Любимые треки и плейлисты сохранятся.", "Очистить", { clear = false }) { state.clearHistory(); clear = false }
 }

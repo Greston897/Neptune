@@ -9,12 +9,17 @@ data class Track(
     val durationMs: Long,
     val uri: String,
     val artworkUri: String? = null,
-    val source: Source = Source.DEMO,
+    val source: Source = Source.IMPORTED,
     val year: Int? = null,
     val artSeed: Int = 0,
 ) {
-    enum class Source { DEMO, DEVICE, IMPORTED }
-    val isLocal: Boolean get() = source != Source.DEMO
+    /**
+     * Where a track came from.
+     *
+     * `DEMO` was removed in 2.9: the app no longer ships audio, so every track is either picked by
+     * the user through the document picker or found by the MediaStore scan they enabled.
+     */
+    enum class Source { DEVICE, IMPORTED }
 }
 
 data class Playlist(val id: String, val name: String, val trackIds: List<String> = emptyList())

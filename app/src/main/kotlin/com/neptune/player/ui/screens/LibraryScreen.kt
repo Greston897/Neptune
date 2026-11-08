@@ -51,7 +51,7 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item {
             Row(Modifier.fillMaxWidth().heightIn(min = NeRow.header), verticalAlignment = Alignment.CenterVertically) {
-                NeText("Медиатека", Modifier.weight(1f), size = NeType.display, lineHeight = NeType.displayLine, weight = FontWeight.ExtraBold, tracking = (-0.8).sp, maxLines = 1)
+                NeText("Медиатека", Modifier.weight(1f), size = NeType.headline, lineHeight = NeType.headlineLine, weight = FontWeight.ExtraBold, tracking = (-0.6).sp, maxLines = 1)
                 NeIconButton(NeIcon.Plus, "Создать плейлист", { create = true })
                 androidx.compose.foundation.layout.Box {
                     NeIconButton(NeIcon.Sort, "Сортировка", { sortMenu = true }, color = Ne.Dim)
@@ -119,6 +119,13 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                 items(users.playlists, key = { ListKeys.playlist(it.id) }) { p -> CollectionLink(p.name, trackCount(p.trackIds.size), NeIcon.Music) { onCollection("playlist", p.id) } }
                 item { NeButton("Новый плейлист", { create = true }, Modifier.fillMaxWidth().padding(top = NeSpace.lg), NeIcon.Plus, primary = false) }
             }
+        }
+        if (!library.loading && library.tracks.isEmpty() && state.libraryTab != 3) item {
+            EmptyState(
+                NeIcon.Music, "Медиатека пуста",
+                "Выбери один или несколько аудиофайлов — либо разреши доступ, чтобы найти музыку на устройстве.",
+                action = "Добавить музыку", onAction = actions.import,
+            )
         }
         if (library.loading) item { NeText("Обновляем медиатеку…", Modifier.padding(vertical = NeSpace.xl), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim) }
         library.error?.let { error -> item { NeText(error, Modifier.padding(vertical = NeSpace.lg), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Error, maxLines = 3) } }

@@ -34,6 +34,9 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import com.neptune.player.R
 import com.neptune.player.model.AvatarShape
+import com.neptune.player.model.ArtShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.ColorFilter
@@ -55,7 +58,7 @@ import kotlin.math.sin
  */
 @Composable
 fun TrackArtwork(track: Track, modifier: Modifier = Modifier, corner: Dp = 12.dp, animate: Boolean = false) {
-    Box(modifier.clip(androidx.compose.foundation.shape.RoundedCornerShape(corner))) {
+    Box(modifier.clip(artShape(corner))) {
         var covered by remember(track.artworkUri) { mutableStateOf(false) }
         if (!covered) BrandCover(track.artSeed, animate)
         if (track.artworkUri != null) {
@@ -92,6 +95,24 @@ private fun BrandCover(seed: Int, animated: Boolean) {
     }
 }
 
+/**
+ * Resolves the user's corner preference for a piece of cover art.
+ *
+ * Every thumbnail, tile and hero cover goes through here, so choosing "Круг" rounds the pill, the
+ * lists, the grids and Now Playing identically instead of each call site keeping its own radius.
+ * [corner] is only the starting point for the rounded variant and is scaled with the tile, which
+ * keeps a 36dp pill thumb from looking like a squircle next to a 148dp album card.
+ */
+@Composable
+fun artShape(corner: Dp = 12.dp): Shape {
+    val s = LocalSettings.current
+    return when (s.artShape) {
+        ArtShape.CIRCLE -> CircleShape
+        ArtShape.ROUNDED -> RoundedCornerShape(corner)
+        ArtShape.SQUARE -> RoundedCornerShape(4.dp)
+    }
+}
+
 @Composable
 fun TrackThumb(track: Track, size: Dp = 48.dp, corner: Dp = 8.dp) = TrackArtwork(track, Modifier.size(size), corner)
 
@@ -124,11 +145,13 @@ fun NeptuneMark(modifier: Modifier = Modifier, tone: Color = Ne.Text, animated: 
 @Composable
 fun ProfileAvatar(modifier: Modifier = Modifier, animated: Boolean = false) {
     val s = LocalSettings.current
-    val tone = Color(com.neptune.player.model.Accent.of(s.avatarTone).hex)
+    // A personal accent should carry into the avatar too, otherwise the profile keeps a colour the
+    // user explicitly moved away from.
+    val tone = if (s.customAccent) accent() else Color(com.neptune.player.model.Accent.of(s.avatarTone).hex)
     val shape = when (s.avatarShape) {
         AvatarShape.CIRCLE -> CircleShape
-        AvatarShape.SQUIRCLE -> androidx.compose.foundation.shape.RoundedCornerShape(32.dp)
-        AvatarShape.SQUARE -> androidx.compose.foundation.shape.RoundedCornerShape(14.dp)
+        AvatarShape.SQUIRCLE -> RoundedCornerShape(32.dp)
+        AvatarShape.SQUARE -> RoundedCornerShape(14.dp)
     }
     Box(modifier.clip(shape).background(Color(0xFF000000)).border(1.dp, Color.White.copy(alpha = 0.08f * s.glassRim), shape), contentAlignment = Alignment.Center) {
         NeptuneMark(Modifier.fillMaxSize(0.62f * s.avatarSize), tone, animated)

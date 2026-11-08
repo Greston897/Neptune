@@ -50,11 +50,10 @@ fun CollectionScreen(state: NeptuneState, kind: String, key: String, onBack: () 
             "album" -> library.tracks.filter { "${it.artist}\u0000${it.album}" == key }
             "artist" -> library.tracks.filter { it.artist == key }
             "playlist" -> playlist?.trackIds?.mapNotNull(map::get) ?: emptyList()
-            "demo" -> library.tracks.filter { it.source == Track.Source.DEMO }
             else -> emptyList()
         }
     }
-    val title = when (kind) { "liked" -> "Любимые треки"; "recent" -> "Недавно слушали"; "album" -> key.substringAfter('\u0000'); "artist" -> key; "playlist" -> playlist?.name ?: "Плейлист"; "demo" -> "Демо-треки"; else -> "Подборка" }
+    val title = when (kind) { "liked" -> "Любимые треки"; "recent" -> "Недавно слушали"; "album" -> key.substringAfter('\u0000'); "artist" -> key; "playlist" -> playlist?.name ?: "Плейлист"; else -> "Подборка" }
     var menu by remember { mutableStateOf(false) }
     var rename by remember { mutableStateOf(false) }
     var delete by remember { mutableStateOf(false) }

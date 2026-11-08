@@ -49,6 +49,25 @@ class PlayerFlowTest {
     }
 
     /**
+     * Imports test audio through the real picker path.
+     *
+     * The app ships no music since 2.9, so playback tests must supply their own file. This calls
+     * `importUris` — the same entry point `OpenMultipleDocuments` uses — rather than injecting
+     * tracks into the state, so the import path itself is covered too.
+     */
+    private fun seedLibrary() {
+        compose.activityRule.scenario.onActivity { activity ->
+            val c = container(activity)
+            c.library.importUris(listOf(AudioFixture.write(activity))) {}
+        }
+        compose.waitUntil(20000) {
+            var loaded = false
+            compose.activityRule.scenario.onActivity { loaded = container(it).library.state.value.tracks.isNotEmpty() }
+            loaded
+        }
+    }
+
+    /**
      * Regression: opening ANY collection used to crash the app.
      *
      * The collection header's back button carried `Modifier.padding(start = -8.dp)`. Compose's
@@ -130,7 +149,8 @@ class PlayerFlowTest {
         waitText("Всё под тебя. Без лишнего.")
     }
 
-    @Test fun bundledAudioActuallyPlaysAndBackReturnsHome() {
+    @Test fun importedAudioActuallyPlaysAndBackReturnsHome() {
+        seedLibrary()
         clickText("Слушать")
         compose.onNodeWithText("СЕЙЧАС ИГРАЕТ").assertIsDisplayed()
         compose.waitUntil(20000) {
@@ -164,11 +184,7 @@ class PlayerFlowTest {
         val name = "Регрессия"
         var trackTitle = ""
         var playlistId = ""
-        compose.waitUntil(20000) {
-            var loaded = false
-            compose.activityRule.scenario.onActivity { loaded = container(it).library.state.value.tracks.isNotEmpty() }
-            loaded
-        }
+        seedLibrary()
         compose.activityRule.scenario.onActivity { activity ->
             val c = container(activity)
             val track = c.library.state.value.tracks.first()

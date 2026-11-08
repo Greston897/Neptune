@@ -76,6 +76,15 @@ object NeRow {
     /** Top now-playing pill: a fully rounded capsule, artwork on the left. */
     val pill: Dp = 52.dp
     val pillArt: Dp = 36.dp
+    /**
+     * Left inset of the pill's artwork.
+     *
+     * A 36dp thumb inside a 52dp capsule leaves 8dp above and below. The old 4dp start inset made
+     * the cover hug the left curve while the vertical gap was twice that, so it read as "прижатая к
+     * краю". 10dp balances the optical gap against the capsule's curvature without pushing the
+     * title far enough to cost it characters.
+     */
+    val pillArtInset: Dp = 10.dp
     val thumbCompact: Dp = 44.dp
     val thumb: Dp = 52.dp
     val leadingBadge: Dp = 40.dp

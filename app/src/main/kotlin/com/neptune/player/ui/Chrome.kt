@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.text.font.FontWeight
@@ -147,10 +148,10 @@ fun TrackPill(playback: PlaybackState, onOpen: () -> Unit, modifier: Modifier = 
             Modifier.fillMaxSize()
                 .clickable(onClickLabel = "Открыть плеер", onClick = onOpen)
                 .semantics { contentDescription = "Сейчас играет: ${track.title} — ${track.artist}" }
-                .padding(start = NeSpace.xs, end = NeSpace.md),
+                .padding(start = NeRow.pillArtInset, end = NeSpace.md),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TrackThumb(track, NeRow.pillArt, 12.dp)
+            Box(Modifier.testTag("pillArt")) { TrackThumb(track, NeRow.pillArt, 12.dp) }
             Spacer(Modifier.width(NeSpace.md))
             Column(Modifier.weight(1f)) {
                 NeText(

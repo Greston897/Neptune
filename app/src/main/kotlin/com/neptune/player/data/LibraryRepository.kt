@@ -26,10 +26,17 @@ data class LibraryState(
     val error: String? = null,
 ) {
     val byId get() = tracks.associateBy { it.id }
-    val localCount get() = tracks.count { it.isLocal }
+    val localCount get() = tracks.count { it.source == Track.Source.DEVICE }
 }
 
-/** Real local audio sources. The bundled PCM sessions are produced by the audio backend, not the UI. */
+/**
+ * The user's own music, and nothing else.
+ *
+ * 2.9 removed the bundled demo sessions: the library is built only from files the user picked with
+ * the system document picker (one or many at a time) plus an optional MediaStore scan. An empty
+ * library is a real, designed state now — Home and Library both offer the import action instead of
+ * showing somebody else's audio.
+ */
 class LibraryRepository(private val context: Context, private val scope: CoroutineScope) {
     private val prefs = context.getSharedPreferences("neptune.v2.sources", Context.MODE_PRIVATE)
     private val _state = MutableStateFlow(LibraryState(permission = hasPermission()))
@@ -43,7 +50,7 @@ class LibraryRepository(private val context: Context, private val scope: Corouti
         refreshJob = scope.launch {
             _state.update { it.copy(loading = true, permission = hasPermission(), error = null) }
             val result = withContext(Dispatchers.IO) {
-                val tracks = DemoSource.tracks(context).toMutableList()
+                val tracks = mutableListOf<Track>()
                 var error: String? = null
                 if (hasPermission()) runCatching { tracks += scanDevice() }
                     .onFailure { error = "Не удалось прочитать музыку на устройстве" }
@@ -53,7 +60,7 @@ class LibraryRepository(private val context: Context, private val scope: Corouti
                         if (tracks.none { it.uri == raw }) tracks += readImported(uri)
                     }.onFailure { error = "Часть файлов недоступна. Остальная музыка загружена." }
                 }
-                LibraryState(tracks.distinctBy { it.id }.sortedWith(compareBy({ !it.isLocal }, { it.title.lowercase() })),
+                LibraryState(tracks.distinctBy { it.id }.sortedBy { it.title.lowercase() },
                     false, hasPermission(), error)
             }
             _state.value = result
@@ -103,8 +110,26 @@ class LibraryRepository(private val context: Context, private val scope: Corouti
                 value(MediaMetadataRetriever.METADATA_KEY_ARTIST)?.ifBlank { null } ?: "Локальный файл",
                 value(MediaMetadataRetriever.METADATA_KEY_ALBUM)?.ifBlank { null } ?: "Импортированная музыка",
                 value(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0L,
-                uri.toString(), source = Track.Source.IMPORTED, artSeed = uri.hashCode())
+                uri.toString(), artworkUri = extractCover(uri, meta.embeddedPicture),
+                source = Track.Source.IMPORTED, artSeed = uri.hashCode())
         } finally { meta.release() }
+    }
+
+    /**
+     * Persists embedded cover art next to the cache and returns a `file://` URI for it.
+     *
+     * The bytes have to outlive the picker's transient read grant: a `content://` artwork URI stops
+     * resolving once the grant lapses, which is exactly when the media notification tries to load
+     * it. A cached file keeps the cover available to Coil, the notification and the lock screen.
+     */
+    private fun extractCover(uri: Uri, bytes: ByteArray?): String? {
+        if (bytes == null || bytes.isEmpty()) return null
+        return runCatching {
+            val dir = java.io.File(context.cacheDir, "covers").apply { mkdirs() }
+            val file = java.io.File(dir, "${uri.toString().hashCode().toUInt().toString(16)}.img")
+            if (!file.exists() || file.length() != bytes.size.toLong()) file.writeBytes(bytes)
+            Uri.fromFile(file).toString()
+        }.getOrNull()
     }
 
     fun importUris(uris: List<Uri>, onResult: (Int) -> Unit) {
@@ -117,21 +142,5 @@ class LibraryRepository(private val context: Context, private val scope: Corouti
         prefs.edit().putString("imports", JSONArray(existing.toList()).toString()).apply()
         refresh()
         onResult(added)
-    }
-}
-
-object DemoSource {
-    private data class Session(val file: String, val title: String, val album: String, val seconds: Int, val seed: Int)
-    private val sessions = listOf(
-        Session("afterhours", "After Hours", "Ночные сессии", 36, 0),
-        Session("weightless", "Невесомость", "Ночные сессии", 36, 1),
-        Session("north", "Северный свет", "Тихие координаты", 36, 2),
-        Session("slowmotion", "Замедление", "Тихие координаты", 36, 3),
-        Session("orbit", "Малая орбита", "Между станциями", 36, 4),
-        Session("home", "Почти дома", "Между станциями", 36, 5),
-    )
-    fun tracks(context: Context): List<Track> = sessions.map {
-        Track("demo:${it.file}", it.title, "Neptune Studio", it.album, it.seconds * 1000L,
-            "asset:///audio/${it.file}.m4a", source = Track.Source.DEMO, year = 2026, artSeed = it.seed)
     }
 }

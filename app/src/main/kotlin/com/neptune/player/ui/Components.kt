@@ -177,7 +177,8 @@ fun TrackRow(
     track: Track, current: Boolean, playing: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier,
     onMore: (() -> Unit)? = null, subtitle: String? = null, trailing: (@Composable () -> Unit)? = null,
 ) {
-    val compact = LocalSettings.current.compact
+    val settings = LocalSettings.current
+    val compact = settings.compact
     val tint = accent()
     Row(
         modifier.fillMaxWidth().heightIn(min = if (compact) NeRow.compact else NeRow.track)
@@ -187,7 +188,9 @@ fun TrackRow(
             .padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TrackThumb(track, if (compact) NeRow.thumbCompact else NeRow.thumb, 10.dp)
+        // One scale factor for every list in the app, so the preference reads the same on Home,
+        // Library, Search and inside collections.
+        TrackThumb(track, (if (compact) NeRow.thumbCompact else NeRow.thumb) * settings.thumbScale, 14.dp)
         Spacer(Modifier.width(NeSpace.md))
         Column(Modifier.weight(1f)) {
             NeText(
@@ -241,18 +244,18 @@ fun EmptyState(
     action: String? = null, onAction: (() -> Unit)? = null,
 ) {
     Column(
-        modifier.fillMaxWidth().padding(horizontal = NeSpace.xxl, vertical = 40.dp),
+        modifier.fillMaxWidth().padding(horizontal = NeSpace.lg, vertical = NeSpace.xxl),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(Modifier.size(56.dp), contentAlignment = Alignment.Center) {
+        Box(Modifier.size(48.dp), contentAlignment = Alignment.Center) {
             NeIconView(icon, NeIconSize.xxl, Ne.Dim)
         }
-        Spacer(Modifier.height(NeSpace.lg))
+        Spacer(Modifier.height(NeSpace.md))
         NeText(title, size = NeType.title, lineHeight = NeType.titleLine, weight = FontWeight.Bold, align = TextAlign.Center, maxLines = 2)
         Spacer(Modifier.height(NeSpace.sm))
         NeText(text, size = NeType.label, lineHeight = NeType.bodyLine, color = Ne.Dim, maxLines = 4, align = TextAlign.Center)
         if (action != null && onAction != null) {
-            Spacer(Modifier.height(NeSpace.xl))
+            Spacer(Modifier.height(NeSpace.lg))
             NeButton(action, onAction)
         }
     }

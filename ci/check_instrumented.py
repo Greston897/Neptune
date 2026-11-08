@@ -25,7 +25,8 @@ SRC = Path("app/src/androidTest/kotlin")
 # broken once. Named explicitly so a truncated suite cannot pass by happening to skip them.
 REQUIRED = {
     "likedAndRecentCollectionsOpenAndReturn": "collections crashed on open (negative padding)",
-    "bundledAudioActuallyPlaysAndBackReturnsHome": "playback must actually advance",
+    "importedAudioActuallyPlaysAndBackReturnsHome": "playback must advance from a user-imported file",
+    "pillArtworkIsInsetFromTheLeftEdge": "pill cover was pressed against the left curve",
     "sleepTimerOpensOnlyFromItsRowAndAlwaysCloses": "dock used to swallow the row tap",
     "trackWithoutArtworkRendersTheBrandFallback": "missing cover must show the app avatar",
     "removeFromPlaylistWorksAndSurvivesASecondTap": "playlist id was dereferenced at click time",

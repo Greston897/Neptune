@@ -53,12 +53,13 @@ val LocalHaptics = staticCompositionLocalOf<() -> Unit> { { } }
  */
 val NeEase: Easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
 
-@Composable fun accent() = LocalSettings.current.accent.let { Color(it.hex) }
+/** Single source of accent colour: honours the personal pick, falls back to the preset palette. */
+@Composable fun accent() = Color(LocalSettings.current.accentHexValue)
 @Composable fun neRadius() = LocalSettings.current.radius.dp
 
 @Composable
 fun NeptuneTheme(settings: Settings, content: @Composable () -> Unit) {
-    val accent = Color(settings.accent.hex)
+    val accent = Color(settings.accentHexValue)
     val background = Color(settings.surface.hex)
     val scheme = darkColorScheme(primary = accent, onPrimary = Ne.Black, background = background,
         surface = background, surfaceVariant = Ne.Ink, onBackground = Ne.Text, onSurface = Ne.Text,
