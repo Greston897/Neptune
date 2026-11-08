@@ -84,21 +84,26 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 41 tests on emulator-5554 - 15
 
+emulator-5554 - 15 Tests 1/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 4/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 9/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 14/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 8/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 12/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 16/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 20/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 28/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 25/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 29/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 30/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 31/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 33/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 34/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 36/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 37/41 completed. (0 skipped) (0 failed)
 
 > Task :app:connectedDebugAndroidTest
 
 com.neptune.player.PlayerFlowTest > customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: 'ЦВЕТ ОСНОВЫ' belongs to the screen under the overlay and must not render twice expected:<0> but was:<1>
-	at org.junit.Assert.fail(Assert.java:89)
+	java.lang.AssertionError: Failed to inject touch input.
+	Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + EditableText contains 'Свой акцентный цвет' (ignoreCase: false)) && (hasAnyDescendantThat(OnClick is defined)))
 
 emulator-5554 - 15 Tests 39/41 completed. (0 skipped) (1 failed)
 emulator-5554 - 15 Tests 40/41 completed. (0 skipped) (1 failed)
@@ -106,14 +111,14 @@ emulator-5554 - 15 Tests 40/41 completed. (0 skipped) (1 failed)
 > Task :app:connectedDebugAndroidTest
 
 com.neptune.player.PlayerFlowTest > subscriptionScreenShowsWhatIsFreeAndCanBeOpened[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Neptune Plus активен' (ignoreCase: false))
-	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	java.lang.AssertionError: Timed out waiting for 'Отключить Plus'. Roots: Printing with useUnmergedTree = 'true'
+	Node #5557 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
 Tests on emulator-5554 - 15 failed: There was 2 failure(s).
 
 Finished 41 tests on emulator-5554 - 15
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794164488064.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794165075151.json
 
 FAILURE: Build failed with an exception.
 
@@ -127,23 +132,48 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 3m
+BUILD FAILED in 4m 26s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
 FAIL: 2 instrumented test(s) failed
   customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt
-    java.lang.AssertionError: 'ЦВЕТ ОСНОВЫ' belongs to the screen under the overlay and must not render twice expected:<0> but was:<1>
-at org.junit.Assert.fail(Assert.java:89)
-at org.junit.Assert.failNotEquals(Assert.java:835)
-at org.junit.Assert.assertEquals(Assert.java:120)
-at com.neptune.player.PlayerFlowTest.customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt(PlayerFlowTest.kt:345)
+    java.lang.AssertionError: Failed to inject touch input.
+Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + EditableText contains 'Свой акцентный цвет' (ignoreCase: false)) && (hasAnyDescendantThat(OnClick is defined)))
+
+at androidx.compose.ui.test.SemanticsSelector.map(SemanticsSelector.kt:45)
+at androidx.compose.ui.test.SemanticsSelector.map(SemanticsSelector.kt:42)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNodes$ui_test_release(SemanticsNodeInteraction.kt:62)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:157)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
+at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
+at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
+at com.neptune.player.PlayerFlowTest.customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt(PlayerFlowTest.kt:346)
   subscriptionScreenShowsWhatIsFreeAndCanBeOpened
-    java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Neptune Plus активен' (ignoreCase: false))
-at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
-at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:359)
-at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:33)
-at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:47)
-at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:36)
-at com.neptune.player.PlayerFlowTest.subscriptionScreenShowsWhatIsFreeAndCanBeOpened(PlayerFlowTest.kt:424)
+    java.lang.AssertionError: Timed out waiting for 'Отключить Plus'. Roots: Printing with useUnmergedTree = 'true'
+Node #5557 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #5745 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
+| IsTraversalGroup = 'true'
+| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
+| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@3f511b7'
+| Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
+|  |-Node #5749 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
+|  | Text = '[Настройки]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5751 at (l=53.0, t=501.0, r=451.0, b=544.0)px
+|  | Text = '[Всё под тебя. Без лишнего.]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5753 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |  |-Node #5757 at (l=418.0, t=860.0, r=662.0, b=922.0)px
+|  |  | Text = '[Слушатель]'
+|  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |  |-Node #5759 at (l=333.0, t=933.0, r=747.0, b=976.0)px
+|  |    Text = '[Изменить профиль и аватар]'
+|  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5762 at (l=95.0, t=1102.0, r=2
 instrumented suite exit status: 1
