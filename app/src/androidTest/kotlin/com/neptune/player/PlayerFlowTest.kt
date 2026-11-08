@@ -19,6 +19,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.isSelectable
 import android.Manifest
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -360,20 +361,20 @@ class PlayerFlowTest {
             1,
             compose.onAllNodes(hasTestTag("subscriptionList")).fetchSemanticsNodes().size,
         )
-        // The screenshot that reported this bug showed two headers in one picture: "Внешний вид" and
-        // "ПОДПИСКА" over each other. Whatever the mechanism, the appearance screen's own title must
-        // not be inside the overlay's bounds.
-        val page = compose.onNodeWithTag("subscriptionList").fetchSemanticsNode().boundsInRoot
-        compose.onAllNodes(hasText("Спокойная основа. Акцент — на твоей музыке.")).fetchSemanticsNodes()
-            .filter { node -> node.boundsInRoot.top < page.bottom && node.boundsInRoot.bottom > page.top }
-            .forEach { node ->
-                throw AssertionError(
-                    "the appearance subtitle renders inside the plan page bounds at ${node.boundsInRoot} " +
-                        "— the overlay and the screen under it are being drawn together",
-                )
-            }
-        // Back closes the overlay and returns to the appearance screen, intact.
-        back()
+        // The screenshot that reported this bug showed two headers in one picture. The guarantee is
+        // that the page is a window of its own: a Dialog root, with the plan list inside it. In one
+        // window "on top" only means "painted later", and every translucent pixel of the page would
+        // reveal the screen underneath.
+        val dialogs = compose.onAllNodes(isDialog()).fetchSemanticsNodes()
+        assertEquals("the plan page must own exactly one window", 1, dialogs.size)
+        assertTrue(
+            "the plan list must live inside that window",
+            compose.onAllNodes(hasTestTag("subscriptionList")).fetchSemanticsNodes()
+                .all { it.boundsInRoot.bottom <= dialogs.first().boundsInRoot.bottom + 1f },
+        )
+        // Its own close control returns to the appearance screen, intact. (A programmatic back press
+        // goes to the activity's dispatcher, not to the dialog window, so it is not the way out here.)
+        compose.onNodeWithContentDescription("Закрыть").performClick()
         waitText("ЦВЕТ ОСНОВЫ")
         assertTrue(
             "the plan page must be gone after back",
@@ -471,7 +472,7 @@ class PlayerFlowTest {
             compose.activityRule.scenario.onActivity { free = container(it).plan.tier.value == com.neptune.player.model.PlanTier.FREE }
             free
         }
-        back()
-        compose.onNodeWithText("Всё под тебя. Без лишнего.").assertIsDisplayed()
+        compose.onNodeWithContentDescription("Закрыть").performClick()
+        waitText("Всё под тебя. Без лишнего.")
     }
 }
