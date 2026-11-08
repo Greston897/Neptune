@@ -85,11 +85,12 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 Starting 41 tests on emulator-5554 - 15
 
 emulator-5554 - 15 Tests 3/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 7/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 6/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 11/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 15/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 20/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 24/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 18/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 22/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 25/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 29/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 30/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 31/41 completed. (0 skipped) (0 failed)
@@ -97,34 +98,49 @@ emulator-5554 - 15 Tests 31/41 completed. (0 skipped) (0 failed)
 > Task :app:connectedDebugAndroidTest
 
 com.neptune.player.PlayerFlowTest > pillAndItsNoticesFollowTheUserIntoSubScreens[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
-	at androidx.compose.ui.test.TestContext.getAllSemanticsNodes$ui_test_release(TestOwner.kt:87)
+	androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
 
 emulator-5554 - 15 Tests 33/41 completed. (0 skipped) (1 failed)
-emulator-5554 - 15 Tests 34/41 completed. (0 skipped) (1 failed)
 emulator-5554 - 15 Tests 36/41 completed. (0 skipped) (1 failed)
-emulator-5554 - 15 Tests 37/41 completed. (0 skipped) (1 failed)
 
 > Task :app:connectedDebugAndroidTest
 
-com.neptune.player.PlayerFlowTest > customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Timed out waiting for 'ВСЕГДА БЕСПЛАТНО'. Roots: Printing with useUnmergedTree = 'true'
-	Node #3636 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+com.neptune.player.PlayerFlowTest > sleepTimerOpensOnlyFromItsRowAndAlwaysCloses[emulator-5554 - 15] [31mFAILED [0m
 
-emulator-5554 - 15 Tests 38/41 completed. (0 skipped) (2 failed)
-emulator-5554 - 15 Tests 39/41 completed. (0 skipped) (2 failed)
+
+emulator-5554 - 15 Tests 37/41 completed. (0 skipped) (2 failed)
+Finished 37 tests on emulator-5554 - 15
 
 > Task :app:connectedDebugAndroidTest
+Tests on emulator-5554 - 15 failed: There was 2 failure(s).
+Exception thrown during onAfterAll invocation of plugin AndroidTestApkInstallerPlugin: device 'emulator-5554' not found
+device 'emulator-5554' not found
+com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
+	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:981)
+	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:1000)
+	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$18(DeviceImpl.java:785)
+	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
+	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:755)
+	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$15(DeviceImpl.java:618)
+	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
+	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:615)
+	at com.android.ddmlib.internal.DeviceImpl.lambda$executeShellCommand$14(DeviceImpl.java:573)
+	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
+	at com.android.ddmlib.internal.DeviceImpl.executeShellCommand(DeviceImpl.java:570)
+	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDevice.executeShellCommand(DdmlibAndroidDevice.kt)
+	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDeviceController$executeAsync$deferred$1.invokeSuspend(DdmlibAndroidDeviceController.kt:171)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:570)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:749)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
 
-com.neptune.player.PlayerFlowTest > subscriptionScreenShowsWhatIsFreeAndCanBeOpened[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Neptune Plus активен' (ignoreCase: false))
-	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
-Tests on emulator-5554 - 15 failed: There was 3 failure(s).
-
-Finished 41 tests on emulator-5554 - 15
+Test run failed to complete. Expected 41 tests, received 36
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794163180067.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794163866975.json
 
 FAILURE: Build failed with an exception.
 
@@ -138,56 +154,16 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 4m 26s
+BUILD FAILED in 4m 55s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
-FAIL: 3 instrumented test(s) failed
+FAIL: 2 instrumented test(s) failed
   pillAndItsNoticesFollowTheUserIntoSubScreens
-    java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
-at androidx.compose.ui.test.TestContext.getAllSemanticsNodes$ui_test_release(TestOwner.kt:87)
-at androidx.compose.ui.test.TestContext.getAllSemanticsNodes$ui_test_release$default(TestOwner.kt:81)
-at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:256)
-at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:249)
-at com.neptune.player.PlayerFlowTest.pillAndItsNoticesFollowTheUserIntoSubScreens$pillShown(PlayerFlowTest.kt:380)
-at com.neptune.player.PlayerFlowTest.pillAndItsNoticesFollowTheUserIntoSubScreens$lambda$35(PlayerFlowTest.kt:383)
-at com.neptune.player.PlayerFlowTest.$r8$lambda$GS543dmyplMz2urMYTdhNdqOkHI(Unknown Source:0)
-at com.neptune.player.PlayerFlowTest$$ExternalSyntheticLambda22.invoke(D8$$SyntheticClass:0)
-at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:434)
+    androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
 at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
-at com.neptune.player.PlayerFlowTest.pillAndItsNoticesFollowTheU
-  customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt
-    java.lang.AssertionError: Timed out waiting for 'ВСЕГДА БЕСПЛАТНО'. Roots: Printing with useUnmergedTree = 'true'
-Node #3636 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
-|-Node #3906 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px, Tag: 'appearanceList'
-| IsTraversalGroup = 'true'
-| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
-| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@bfe9b4d'
-| Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
-|  |-Node #3910 at (l=53.0, t=171.0, r=179.0, b=297.0)px
-|  | ContentDescription = '[Назад]'
-|  | Role = 'Button'
-|  | Focused = 'false'
-|  | Actions = [OnClick, RequestFocus]
-|  | MergeDescendants = 'true'
-|  |-Node #3912 at (l=200.0, t=190.0, r=1027.0, b=277.0)px
-|  | Text = '[Внешний вид]'
-|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #3914 at (l=53.0, t=318.0, r=738.0, b=361.0)px
-|  | Text = '[Спокойная основа. Акцент — на твоей музыке.]'
-|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #3917 at (l=95.0, t=477.0, r=330.0, b=518.0)px
-|  | Text = '[ЦВЕТ ОСНОВЫ]'
-|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #3926 at (l=201.0, t=601.0, r=560.0, b=651.0)px
-|  | Text = '[Абсолютный чёрный]'
-|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextS
-  subscriptionScreenShowsWhatIsFreeAndCanBeOpened
-    java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Neptune Plus активен' (ignoreCase: false))
-at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
-at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:359)
-at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:33)
-at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:46)
-at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:35)
-at com.neptune.player.PlayerFlowTest.subscriptionScreenShowsWhatIsFreeAndCanBeOpened(PlayerFlowTest.kt:416)
+at com.neptune.player.PlayerFlowTest.pillAndItsNoticesFollowTheUserIntoSubScreens(PlayerFlowTest.kt:386)
+  sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
+    (no message — suspect device/emulator loss)
 instrumented suite exit status: 1
