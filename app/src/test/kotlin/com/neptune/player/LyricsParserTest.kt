@@ -150,12 +150,52 @@ class LyricsParserTest {
         assertEquals(2, doc.lines.size)
     }
 
+    /** Builds a real `©lyr` container with one `data` child, the way iTunes writes it. */
+    private fun mp4Lyrics(text: String): ByteArray {
+        val body = "\u0000\u0000\u0000\u0000".toByteArray(Charsets.ISO_8859_1) + text.toByteArray(Charsets.UTF_8)
+        val data = int32(8 + body.size) + "data".toByteArray(Charsets.ISO_8859_1) + body
+        val atom = int32(8 + data.size) + "\u00A9lyr".toByteArray(Charsets.ISO_8859_1) + data
+        // Real files carry the atom after a media header, so the fixture does too.
+        return Preamble + atom
+    }
+
+    /** Stand-in for `ftyp`/`moov`, so no four letters in this prefix can look like a text marker. */
+    private val Preamble = "abcd0123".toByteArray(Charsets.ISO_8859_1)
+
     @Test fun mp4LyricAtomIsRead() {
-        val payload = "\u0000\u0000\u0000©lyr".toByteArray(Charsets.ISO_8859_1) +
-            int32(40) + "тут текст песни целиком".toByteArray(Charsets.UTF_8)
-        val doc = LyricsParser.fromBytes(payload)
-        assertNotNull(doc)
+        val doc = LyricsParser.fromBytes(mp4Lyrics("тут текст песни целиком"))
+        assertNotNull("the data atom must be walked, not guessed", doc)
         assertTrue("found text: ${doc?.lines}", doc!!.lines.joinToString(" ").contains("тут текст"))
+    }
+
+    @Test fun mp4AtomWithoutDataChildIsIgnored() {
+        val broken = Preamble + int32(16) + "\u00A9lyr".toByteArray(Charsets.ISO_8859_1) +
+            "junk".toByteArray(Charsets.ISO_8859_1)
+        assertNull(LyricsParser.fromBytes(broken))
+    }
+
+    @Test fun mp4WithStampedTextBecomesKaraoke() {
+        val doc = LyricsParser.fromBytes(mp4Lyrics("[00:01.00]раз\n[00:03.00]два"))
+        assertNotNull(doc)
+        assertTrue("LRC inside an m4a is still timed", doc!!.synced)
+    }
+
+    @Test fun plainLrcFileIsReadAsText() {
+        val doc = LyricsParser.fromBytes("[00:02.00]первые строки\n[00:05.50]вторые строки".toByteArray())
+        assertNotNull(".lrc has no tag at all, the payload is the text", doc)
+        assertTrue(doc!!.synced)
+        assertEquals("вторые строки", doc.lines[1].text)
+    }
+
+    @Test fun windows1251LrcFileIsNotDropped() {
+        val doc = LyricsParser.fromBytes("привет мир".toByteArray(charset("windows-1251")))
+        assertNotNull("a Russian file saved in cp1251 must still open", doc)
+        assertEquals("привет мир", doc!!.lines.first().text)
+    }
+
+    @Test fun binaryPayloadIsNotPrintedAsMojibake() {
+        val png = byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A) + ByteArray(64) { it.toByte() }
+        assertNull(LyricsParser.fromBytes(png))
     }
 
     @Test fun savedTextWinsAsSource() {

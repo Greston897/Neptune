@@ -107,7 +107,10 @@ data class Settings(
         radius = radius.coerceIn(12f, 32f), fontScale = fontScale.coerceIn(0.9f, 1.2f),
         avatarIndex = avatarIndex.coerceIn(0, AvatarShape.entries.lastIndex),
         avatarSize = avatarSize.coerceIn(0.8f, 1.25f),
-        avatarPhoto = avatarPhoto.trim().take(64),
+        // Only a bare file name is ever stored: a stored path with separators (or "..") would be a
+        // traversal waiting to happen, and the value comes from preferences that can be written by
+        // an older build or a restored backup.
+        avatarPhoto = sanitizeAvatarName(avatarPhoto),
         avatarPhotoVersion = avatarPhotoVersion.coerceAtLeast(0),
         avatarZoom = avatarZoom.coerceIn(1f, 2.5f),
         profileName = profileName.trim().take(24).ifBlank { "Слушатель" },
@@ -137,4 +140,19 @@ data class Settings(
         glassTint = 0.38f, glassRim = 0.85f, ambientGlow = true, accentGlow = true,
         customAccent = false, accentArgb = 0xFF6FA8FF.toInt(), artShapeIndex = 0, thumbScale = 1f,
         showAlbumRow = true, showRecentPanel = true, avatarZoom = 1f)
+
+    companion object {
+        private val safeAvatar = Regex("^[A-Za-z0-9._-]{1,64}$")
+
+        /**
+         * Keeps only a bare file name for the stored avatar.
+         *
+         * The value names a file this app owns inside `filesDir`, so it must not be able to point
+         * anywhere else: no separators, no `..`, nothing outside `[A-Za-z0-9._-]`. Anything that does
+         * not match is dropped instead of being repaired into something surprising — losing a
+         * profile photo is recoverable, reading an arbitrary path is not.
+         */
+        fun sanitizeAvatarName(raw: String): String =
+            raw.trim().takeIf { safeAvatar.matches(it) && !it.contains("..") } ?: ""
+    }
 }

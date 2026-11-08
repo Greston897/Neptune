@@ -1,5 +1,10 @@
 package com.neptune.player.model
 
+import java.nio.ByteBuffer
+import java.nio.charset.CharacterCodingException
+import java.nio.charset.Charset
+import java.nio.charset.CodingErrorAction
+
 /**
  * One lyric line and when it should light up.
  *
@@ -106,7 +111,72 @@ object LyricsParser {
      * Returns null when nothing usable is present.
      */
     fun fromBytes(bytes: ByteArray): LyricsDoc? =
-        parseId3(bytes) ?: parseVorbis(bytes) ?: parseMp4(bytes)
+        parseId3(bytes) ?: parseVorbis(bytes) ?: parseMp4(bytes) ?: parseSidecar(bytes)
+
+    /**
+     * Last resort for a plain `.lrc`/`.txt` file: the payload itself is the text.
+     *
+     * A tag that names lyrics but carries unreadable or empty text is not a reason to give up —
+     * the file may well have a perfectly good text next to it, so every other source is tried
+     * before this one.
+     */
+    private fun parseSidecar(bytes: ByteArray): LyricsDoc? {
+        if (bytes.isEmpty() || bytes.size > MaxScanBytes) return null
+        val text = decodeLoose(bytes) ?: return null
+        return lyricDoc(text.trim(), LyricsSource.LRC)
+    }
+
+    /**
+     * Decodes a whole file that might be a text file, and returns null when it is not text at all.
+     *
+     * Strict UTF-8 first; a Russian `.lrc` saved in windows-1251 is common enough that a failed
+     * strict decode falls back to it rather than dropping the file. The printability check is what
+     * keeps a JPEG or a truncated frame from being printed as mojibake: binary content has NULs and
+     * runs of control characters, text does not.
+     */
+    private fun decodeLoose(bytes: ByteArray): String? {
+        val zeroFree = decodeStrict(bytes, Charsets.UTF_8) ?: decodeStrict(bytes, windows1251)
+        val decoded = if (zeroFree != null) zeroFree else decodeUtf16(bytes) ?: return null
+        val clean = decoded.trim().trimStart('\uFEFF')
+        if (clean.isEmpty()) return null
+        val controls = clean.count { it.isISOControl() && it != '\n' && it != '\r' && it != '\t' }
+        if (controls * 20 > clean.length) return null
+        return clean
+    }
+
+    private fun decodeStrict(bytes: ByteArray, charset: Charset): String? = try {
+        val decoder = charset.newDecoder()
+            .onMalformedInput(CodingErrorAction.REPORT)
+            .onUnmappableCharacter(CodingErrorAction.REPORT)
+        decoder.decode(ByteBuffer.wrap(bytes)).toString()
+    } catch (e: CharacterCodingException) {
+        null
+    } catch (e: IllegalArgumentException) {
+        null
+    }
+
+    /** Single-byte and UTF-8 text never decodes as UTF-16, so trying both is safe and ordered. */
+    private fun decodeUtf16(bytes: ByteArray): String? {
+        val charset = when {
+            bytes.size >= 2 && bytes[0] == 0xFF.toByte() && bytes[1] == 0xFE.toByte() -> Charsets.UTF_16LE
+            bytes.size >= 2 && bytes[0] == 0xFE.toByte() && bytes[1] == 0xFF.toByte() -> Charsets.UTF_16BE
+            looksLikeUtf16(bytes) -> Charsets.UTF_16LE
+            else -> return null
+        }
+        return decodeStrict(bytes, charset)
+    }
+
+    /** A UTF-16 text file is full of NULs but is still text; it must not be rejected as binary. */
+    private fun looksLikeUtf16(bytes: ByteArray): Boolean {
+        val bom = bytes.size >= 2 && ((bytes[0] == 0xFF.toByte() && bytes[1] == 0xFE.toByte()) ||
+            (bytes[0] == 0xFE.toByte() && bytes[1] == 0xFF.toByte()))
+        if (bom) return true
+        // Without a BOM: every other byte being zero is the signature of Latin/Cyrillic UTF-16.
+        val head = bytes.take(64)
+        val even = head.filterIndexed { i, _ -> i % 2 == 0 }.count { it == 0.toByte() }
+        val odd = head.filterIndexed { i, _ -> i % 2 == 1 }.count { it == 0.toByte() }
+        return even > head.size / 4 || odd > head.size / 4
+    }
 
     /**
      * Any text the user can see, parsed as LRC when it carries `[mm:ss]` stamps and as plain text
@@ -254,11 +324,7 @@ object LyricsParser {
         i = if (descriptorEnd < 0) i else descriptorEnd + terminatorLength(encoding)
         if (i >= payload.size) return null
         val text = decode(payload, i, payload.size - i, encoding).trim()
-        if (text.isEmpty()) return null
-        val stamped = parseLrc(text)
-        val lines = stamped ?: lyricLines(text)
-        if (lines.isEmpty()) return null
-        return LyricsDoc(lines, LyricsSource.USLT, text)
+        return lyricDoc(text, LyricsSource.USLT)
     }
 
     /**
@@ -301,12 +367,7 @@ object LyricsParser {
         var end = start + length
         while (end < bytes.size && bytes[end] != 0.toByte()) end += 1
         if (end <= start + length) return null
-        val text = String(bytes, start + length, end - start - length, Charsets.UTF_8).trim()
-        if (text.isEmpty()) return null
-        val stamped = parseLrc(text)
-        val lines = stamped ?: lyricLines(text)
-        if (lines.isEmpty()) return null
-        return LyricsDoc(lines, LyricsSource.VORBIS, text)
+        return readText(bytes, start + length, end - start - length, Charsets.UTF_8, LyricsSource.VORBIS)
     }
 
     // ---- MP4 `©lyr` -----------------------------------------------------------------------------
@@ -314,19 +375,46 @@ object LyricsParser {
     private fun parseMp4(bytes: ByteArray): LyricsDoc? {
         val marker = byteArrayOf(0xA9.toByte(), 'l'.code.toByte(), 'y'.code.toByte(), 'r'.code.toByte())
         val at = indexOf(bytes, marker, bytes.size) ?: return null
-        // Atom layout: size(4) name(4) payload. Payload is UTF-8 text, sometimes prefixed by a
-        // 2-byte data atom header which we skip when it does not decode as text.
-        var i = at + 8
-        while (i < bytes.size && (bytes[i] == 0.toByte() || (bytes[i].toInt() and 0xFF) < 0x20)) i += 1
-        if (i >= bytes.size) return null
-        var end = i
-        while (end < bytes.size && bytes[end] != 0.toByte()) end += 1
-        val text = String(bytes, i, minOf(end - i, 20_000), Charsets.UTF_8).trim()
-        if (text.length < 4 || text.any { it.code in 0x00..0x08 }) return null
-        val stamped = parseLrc(text)
-        val lines = stamped ?: lyricLines(text)
+        // `©lyr` is a container: size(4) name(4) then a `data` atom holding version/flags(4) and the
+        // text. Reading the raw bytes after the name would pick up the `data` header itself, which is
+        // why this walks the child atom rather than skipping control characters.
+        val containerStart = at - 4
+        val containerEnd = if (containerStart >= 0) {
+            val size = readInt32(bytes, containerStart) ?: return null
+            (containerStart + size).coerceIn(at + 4, bytes.size)
+        } else bytes.size
+        var i = at + 4
+        while (i + 8 <= containerEnd) {
+            val size = readInt32(bytes, i) ?: break
+            if (size < 8) break
+            val name = String(bytes, i + 4, 4, Charsets.ISO_8859_1)
+            if (name == "data") {
+                // 4 bytes version/flags, then the payload of this atom.
+                val textStart = i + 12
+                val textEnd = (i + size).coerceAtMost(bytes.size)
+                if (textStart >= textEnd) return null
+                return readText(bytes, textStart, textEnd - textStart, Charsets.UTF_8, LyricsSource.MP4)
+            }
+            i += size
+        }
+        return null
+    }
+
+    private fun readText(source: ByteArray, offset: Int, length: Int, charset: Charset, kind: LyricsSource): LyricsDoc? =
+        lyricDoc(String(source, offset, length, charset).trim().trimStart('\uFEFF'), kind)
+
+    /** Shared tail of every text container: LRC when stamps are present, plain lines otherwise. */
+    private fun lyricDoc(text: String, source: LyricsSource): LyricsDoc? {
+        if (text.isEmpty()) return null
+        val lines = parseLrc(text) ?: lyricLines(text)
         if (lines.isEmpty()) return null
-        return LyricsDoc(lines, LyricsSource.MP4, text)
+        return LyricsDoc(lines, source, text)
+    }
+
+    private fun readInt32(source: ByteArray, offset: Int): Int? {
+        if (offset < 0 || offset + 4 > source.size) return null
+        return ((source[offset].toInt() and 0xFF) shl 24) or ((source[offset + 1].toInt() and 0xFF) shl 16) or
+            ((source[offset + 2].toInt() and 0xFF) shl 8) or (source[offset + 3].toInt() and 0xFF)
     }
 
     // ---- primitives ----------------------------------------------------------------------------

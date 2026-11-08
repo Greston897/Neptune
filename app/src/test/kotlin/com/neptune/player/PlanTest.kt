@@ -66,8 +66,13 @@ class PlanTest {
 
     @Test fun avatarPhotoNameAndZoomAreSanitized() {
         val s = Settings(avatarPhoto = " ../../etc/passwd ", avatarZoom = 99f, avatarPhotoVersion = -5).validated()
-        assertFalse("a stored path must never escape the app directory", s.avatarPhoto.contains("/"))
+        assertEquals("a path is rejected outright, not repaired", "", s.avatarPhoto)
         assertEquals(2.5f, s.avatarZoom, 0.0001f)
         assertEquals(0, s.avatarPhotoVersion)
+        assertFalse("no separators may survive", s.avatarPhoto.contains("/"))
+        // A backslash is a separator on some paths and must not survive either.
+        assertEquals("", Settings(avatarPhoto = "..\\avatar-1.img").validated().avatarPhoto)
+        // The name this app itself writes must pass through untouched.
+        assertEquals("avatar-3.img", Settings(avatarPhoto = " avatar-3.img ").validated().avatarPhoto)
     }
 }
