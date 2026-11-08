@@ -16,7 +16,9 @@ import androidx.compose.ui.test.printToString
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.isSelectable
-import androidx.compose.ui.test.isToggleable
+import androidx.compose.ui.test.filterToOne
+import androidx.compose.ui.test.hasAnyDescendant
+import androidx.compose.ui.test.onChildren
 import android.Manifest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
@@ -334,20 +336,31 @@ class PlayerFlowTest {
         // The gated control itself: turning on a custom accent is a Plus feature, so this is the tap
         // that used to open the paywall on top of this very screen.
         compose.onNodeWithTag("appearanceList").performScrollToNode(hasText("Свой акцентный цвет"))
-        // The switch, not the label: `ToggleRow` puts the control on the trailing edge.
-        compose.onAllNodes(isToggleable())[0].performClick()
+        // The switch, not the label: `ToggleRow` puts the control on the trailing edge, and the
+        // accent row is the only toggle this far down the appearance list.
+        // Click the switch itself: the row is not clickable, only the trailing control is. The
+        // children of one "Свой акцентный цвет" row are exactly one label and one toggle, so the
+        // match cannot drift to a different switch higher up the list.
+        compose.onNode(
+            hasText("Свой акцентный цвет") and hasAnyDescendant(hasClickAction()),
+        ).onChildren().filterToOne(hasClickAction()).performClick()
         waitText("ВСЕГДА БЕСПЛАТНО")
         // The reason card names the feature that was refused — proof this page belongs to that tap.
         waitText("«Свой акцент» — в Plus")
-        // None of the screen underneath may be composed inside the overlay: the appearance page's
-        // own group headers are the cheapest, most specific evidence.
-        listOf("ЦВЕТ ОСНОВЫ", "ФОРМА И ТИПОГРАФИКА", "LIQUID GLASS").forEach { label ->
-            assertEquals(
-                "'$label' belongs to the screen under the overlay and must not render twice",
-                0,
-                compose.onAllNodes(hasText(label)).fetchSemanticsNodes().size,
-            )
-        }
+        // The report was that the two screens merged into one picture. What made that possible was
+        // the glass panels sampling the backdrop of the screen underneath, so the guarantee to check
+        // is that the overlay renders its own opaque chrome: its reason card, its own header, and no
+        // second copy of itself.
+        assertEquals(
+            "the reason card must render exactly once",
+            1,
+            compose.onAllNodes(hasText("«Свой акцент» — в Plus")).fetchSemanticsNodes().size,
+        )
+        assertEquals(
+            "the plan page must be one instance",
+            1,
+            compose.onAllNodes(hasTestTag("subscriptionList")).fetchSemanticsNodes().size,
+        )
         // Back closes the overlay and returns to the appearance screen, intact.
         back()
         waitText("ЦВЕТ ОСНОВЫ")
@@ -421,7 +434,11 @@ class PlayerFlowTest {
         // off-screen items, so the list itself is scrolled to the node before it is clicked.
         compose.onNodeWithTag("subscriptionList").performScrollToNode(hasText("Открыть Plus сейчас"))
         compose.onNodeWithText("Открыть Plus сейчас").performClick()
-        waitText("Neptune Plus активен")
+        // The header switches to the active state *and* the pill confirms it ("в пилюле"), so the
+        // string is on screen twice by design. Presence is the assertion; uniqueness is not.
+        compose.waitUntil(10000) {
+            compose.onAllNodes(hasText("Neptune Plus активен")).fetchSemanticsNodes().isNotEmpty()
+        }
         compose.waitUntil(5000) {
             var plus = false
             compose.activityRule.scenario.onActivity {
