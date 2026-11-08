@@ -84,62 +84,24 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 41 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 3/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 7/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 12/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 18/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 22/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 5/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 10/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 17/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 23/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 29/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 30/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 31/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 32/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 33/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 35/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 36/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 37/41 completed. (0 skipped) (0 failed)
-
-> Task :app:connectedDebugAndroidTest
-
-com.neptune.player.PlayerFlowTest > customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: the appearance subtitle renders inside the plan page bounds at Rect.fromLTRB(53.0, 501.0, 738.0, 544.0) — the overlay and the screen under it are being drawn together
-	at com.neptune.player.PlayerFlowTest.customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt(PlayerFlowTest.kt:370)
-
-emulator-5554 - 15 Tests 39/41 completed. (0 skipped) (1 failed)
-emulator-5554 - 15 Tests 40/41 completed. (0 skipped) (1 failed)
-
-> Task :app:connectedDebugAndroidTest
-
-com.neptune.player.PlayerFlowTest > subscriptionScreenShowsWhatIsFreeAndCanBeOpened[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Assert failed: The component is not displayed!
-	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
-Tests on emulator-5554 - 15 failed: There was 2 failure(s).
-
+emulator-5554 - 15 Tests 39/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 40/41 completed. (0 skipped) (0 failed)
 Finished 41 tests on emulator-5554 - 15
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794173283862.json
 
-> Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794172673766.json
-
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-Execution failed for task ':app:connectedDebugAndroidTest'.
-> There were failing tests. See the report at: file:///home/runner/work/Neptune/Neptune/app/build/reports/androidTests/connected/debug/index.html
-
-* Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-
-BUILD FAILED in 4m 23s
+BUILD SUCCESSFUL in 2m 58s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
-FAIL: 2 instrumented test(s) failed
-  customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt
-    java.lang.AssertionError: the appearance subtitle renders inside the plan page bounds at Rect.fromLTRB(53.0, 501.0, 738.0, 544.0) — the overlay and the screen under it are being drawn together
-at com.neptune.player.PlayerFlowTest.customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt(PlayerFlowTest.kt:370)
-  subscriptionScreenShowsWhatIsFreeAndCanBeOpened
-    java.lang.AssertionError: Assert failed: The component is not displayed!
-at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
-at com.neptune.player.PlayerFlowTest.subscriptionScreenShowsWhatIsFreeAndCanBeOpened(PlayerFlowTest.kt:475)
-instrumented suite exit status: 1
+OK: 41 instrumented tests ran, 0 failures (declared 41)
+instrumented suite exit status: 0

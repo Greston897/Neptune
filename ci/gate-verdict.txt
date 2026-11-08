@@ -1,8 +1,1 @@
-FAIL: 2 instrumented test(s) failed
-  customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt
-    java.lang.AssertionError: the appearance subtitle renders inside the plan page bounds at Rect.fromLTRB(53.0, 501.0, 738.0, 544.0) — the overlay and the screen under it are being drawn together
-at com.neptune.player.PlayerFlowTest.customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt(PlayerFlowTest.kt:370)
-  subscriptionScreenShowsWhatIsFreeAndCanBeOpened
-    java.lang.AssertionError: Assert failed: The component is not displayed!
-at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
-at com.neptune.player.PlayerFlowTest.subscriptionScreenShowsWhatIsFreeAndCanBeOpened(PlayerFlowTest.kt:475)
+OK: 41 instrumented tests ran, 0 failures (declared 41)
