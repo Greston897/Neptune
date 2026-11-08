@@ -16,9 +16,6 @@ import androidx.compose.ui.test.printToString
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.isSelectable
-import androidx.compose.ui.test.filterToOne
-import androidx.compose.ui.test.hasAnyDescendant
-import androidx.compose.ui.test.onChildren
 import android.Manifest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
@@ -338,12 +335,10 @@ class PlayerFlowTest {
         compose.onNodeWithTag("appearanceList").performScrollToNode(hasText("Свой акцентный цвет"))
         // The switch, not the label: `ToggleRow` puts the control on the trailing edge, and the
         // accent row is the only toggle this far down the appearance list.
-        // Click the switch itself: the row is not clickable, only the trailing control is. The
-        // children of one "Свой акцентный цвет" row are exactly one label and one toggle, so the
-        // match cannot drift to a different switch higher up the list.
-        compose.onNode(
-            hasText("Свой акцентный цвет") and hasAnyDescendant(hasClickAction()),
-        ).onChildren().filterToOne(hasClickAction()).performClick()
+        // Click the switch itself: the row is not clickable, only the trailing control is. It is
+        // addressed by its own state description ("Вкл.", because a custom accent is off on Free),
+        // which no other control in this list carries.
+        compose.onNode(hasText("Вкл.")).performClick()
         waitText("ВСЕГДА БЕСПЛАТНО")
         // The reason card names the feature that was refused — proof this page belongs to that tap.
         waitText("«Свой акцент» — в Plus")
@@ -446,6 +441,9 @@ class PlayerFlowTest {
             }
             plus
         }
+        // Purchasing closes the offer page, as it should; the manager lives on the Settings row now.
+        waitText("Всё под тебя. Без лишнего.")
+        clickText("Neptune Plus активен")
         // Leaving the plan must also drop the extras it unlocked. The confirmation is dialogs' own
         // action word "Отключить", which is not the same node as the row that opened it.
         clickText("Отключить Plus")
