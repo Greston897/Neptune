@@ -63,6 +63,10 @@ import com.neptune.player.ui.*
  *    real prices, one tap, and a cancel path that is one row further down.
  *  * **No backend, said plainly.** The purchase is stored on the device; there is no receipt server
  *    yet. Pretending otherwise would be the one dishonest thing on the screen.
+ *
+ * The host renders this page in its own window (see [NeptuneApp]). That is not a stylistic choice:
+ * inside the app's single window the screen underneath stays composed in the same coordinates, and
+ * every translucent pixel of this page would reveal it — the merged-screens bug from the report.
  */
 @Composable
 fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
