@@ -78,9 +78,9 @@ fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
     // open of this page — tapping "Neptune Plus активен" in Settings to manage or cancel the plan
     // opened the manager and shut it again in the same frame.
 
-    // Opaque, top to bottom, and it also swallows touches so nothing underneath reacts to a tap on
-    // what looks like this page. Everything behind it is another screen — often itself made of
-    // blurred panels — and any transparency here produced the smeared double exposure in the report.
+    // The host draws this page in a separate window, so nothing of the screen underneath can share a
+    // frame with it. The solid background stays as the page's own floor, and the empty pointerInput
+    // swallows taps so a stray touch cannot reach whatever the dialog window does not cover.
     Box(Modifier.fillMaxSize().background(Ne.Void).pointerInput(Unit) {}) {
     LazyColumn(
         // Tagged so a test can scroll to a control that lives below the fold instead of assuming

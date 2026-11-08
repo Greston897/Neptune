@@ -3,7 +3,6 @@ package com.neptune.player
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -31,6 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -220,20 +221,32 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                     }
                     // One paywall, drawn above everything else: it is an opaque page, so a second
                     // copy underneath it (or a blurred panel showing through) is impossible.
+                    // The plan page is its own window, not a Box on top of the app.
+                    //
+                    // In one window, "on top" only means "painted later": the screen underneath is
+                    // still composed, still measured in the same coordinates, and every transparent
+                    // pixel of the page — glass tints, rims, the sheen band — reveals it. That is
+                    // exactly the report: "Внешний вид" and "Твой профиль" showing through
+                    // "Подписка", two headers in one picture. A Dialog is a separate window with
+                    // its own surface, so the two can never share a frame, whatever the panel alpha.
                     if (state.paywallOpen) {
-                        // Back closes the overlay, not the screen underneath it. Without this the
-                        // system gesture popped Settings behind the open page.
-                        BackHandler(enabled = state.paywallOpen) { state.closePaywall() }
-                        // Haze samples the *layer behind the node*, not the composable's own parent:
-                        // leaving the shared states visible here made every panel on the page blur
-                        // the screen underneath it, so "Внешний вид" bled through "Подписка" even
-                        // though the page background is solid black. Null states = no sampling at
-                        // all, and GlassPanel falls back to a solid panel.
-                        CompositionLocalProvider(
-                            LocalBackgroundHaze provides null,
-                            LocalContentHaze provides null,
+                        Dialog(
+                            onDismissRequest = { state.closePaywall() },
+                            properties = DialogProperties(
+                                usePlatformDefaultWidth = false,
+                                decorFitsSystemWindows = false,
+                                dismissOnClickOutside = false,
+                            ),
                         ) {
-                            SubscriptionScreen(state) { state.closePaywall() }
+                            // Still no backdrop to sample: a panel here has nothing legitimate to blur.
+                            CompositionLocalProvider(
+                                LocalBackgroundHaze provides null,
+                                LocalContentHaze provides null,
+                            ) {
+                                Box(Modifier.fillMaxSize().background(Ne.Void)) {
+                                    SubscriptionScreen(state) { state.closePaywall() }
+                                }
+                            }
                         }
                     }
                 }

@@ -113,8 +113,14 @@ def check_paywall_is_one_opaque_page() -> None:
             f"{ROOT / 'NeptuneApp.kt'}: the plan overlay must isolate the haze locals. "
             "Panels that sample the backdrop blur the screen underneath, which merges the two screens."
         )
-    if "BackHandler" not in app:
-        fail(f"{ROOT / 'NeptuneApp.kt'}: back must close the plan overlay instead of popping the page under it")
+    if "Dialog(" not in app or "DialogProperties(" not in app:
+        fail(
+            f"{ROOT / 'NeptuneApp.kt'}: the plan overlay must be rendered in its own window. In one window "
+            "'on top' only means 'painted later', so every transparent pixel of the page reveals the screen "
+            "underneath — that is the merged-screens report."
+        )
+    if "usePlatformDefaultWidth = false" not in app:
+        fail(f"{ROOT / 'NeptuneApp.kt'}: the plan window must be full-bleed, not the platform dialog width")
     glass = text(ROOT / "ui/Glass.kt")
     if "val isolated = haze == null" not in glass:
         fail(
