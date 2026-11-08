@@ -129,7 +129,7 @@ fun AppearanceScreen(state: NeptuneState, onBack: () -> Unit) {
     var reset by remember { mutableStateOf(false) }
     // Tagged for the same reason as the plan page: a LazyColumn does not compose off-screen items,
     // so a test (and a reader of this file) needs a handle to scroll the list itself.
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding().testTag("appearanceList"), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding().testTag("appearanceList"), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Внешний вид", onBack, "Спокойная основа. Акцент — на твоей музыке.") }
         // The backdrop is fixed by design, so this group informs rather than offers a choice.
         item { SettingsGroup("ЦВЕТ ОСНОВЫ") { Column(Modifier.padding(NeRow.panelInset)) {
@@ -245,7 +245,7 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit, onSubscription: () ->
     var name by remember { mutableStateOf(s.profileName) }
     var zoomPreview by remember { mutableStateOf(s.avatarZoom) }
     var confirmRemovePhoto by remember { mutableStateOf(false) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Твой профиль", onBack) }
         item {
             Column(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -370,7 +370,7 @@ fun PlaybackSettingsScreen(state: NeptuneState, onBack: () -> Unit) {
     var sleep by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val notifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted -> state.toast(if (granted) "Уведомление плеера включено" else "Плеер работает и без уведомления", NeIcon.Bell, if (granted) ToastTone.DONE else ToastTone.INFO) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Воспроизведение", onBack, "Настоящий звук. Полный контроль.") }
         item { SettingsGroup("ЗВУК") {
             SettingSlider("Скорость", s.speed, 0.75f..1.5f, "×${"%.2f".format(s.speed)}", { v -> state.edit { it.copy(speed = v) } }, steps = 5)
@@ -406,7 +406,7 @@ fun DataScreen(state: NeptuneState, onBack: () -> Unit, onRecent: () -> Unit) {
     val users by state.users.collectAsStateWithLifecycle()
     val actions = LocalLibraryActions.current
     var clear by remember { mutableStateOf(false) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("Музыка и данные", onBack, "Твоя коллекция остаётся на твоём устройстве.") }
         item { SettingsGroup("ИСТОЧНИКИ") {
             SettingRow("Музыка на устройстве", if (library.permission) "${library.localCount} локальных треков · доступ разрешён" else "Нет доступа к аудиофайлам", NeIcon.Device, onClick = if (library.permission) actions.appSettings else actions.permission)
@@ -433,7 +433,7 @@ fun DataScreen(state: NeptuneState, onBack: () -> Unit, onRecent: () -> Unit) {
 
 @Composable
 fun AboutScreen(onBack: () -> Unit) {
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md, bottom = LocalBottomInset.current)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item { ScreenTitle("О Neptune", onBack) }
         item { Column(Modifier.fillMaxWidth().padding(vertical = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             NeptuneMark(Modifier.size(72.dp), animated = true)

@@ -168,6 +168,17 @@ def check_pill_follows_the_user() -> None:
     for route in ('"player"', '"subscription"'):
         if route not in body:
             fail(f"{ROOT / 'ui/Chrome.kt'}: {route} must be the only route that hides the pill")
+    # The pill is drawn on every route now, so every scrolling screen must reserve its height or the
+    # capsule covers the title. This is the follow-up bug the first version of the gate missed.
+    for screen in sorted((ROOT / "ui/screens").glob("*.kt")):
+        source = text(screen)
+        for line in source.splitlines():
+            if "PaddingValues(" in line and "start = NeSpace" in line and "LocalTopInset.current" not in line:
+                fail(
+                    f"{screen}: content padding without LocalTopInset — the top pill would cover this "
+                    "screen's header, because it is drawn on every route except the player and the plan page"
+                )
+                break
     app = text(ROOT / "NeptuneApp.kt")
     if "!state.paywallOpen" not in app:
         fail(f"{ROOT / 'NeptuneApp.kt'}: the dock must step aside while the plan page covers the screen")

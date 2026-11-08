@@ -27,7 +27,7 @@ fun QueueScreen(state: NeptuneState, onBack: () -> Unit) {
     val playback by state.playback.collectAsStateWithLifecycle()
     var editing by remember { mutableStateOf(false) }
     var confirm by remember { mutableStateOf(false) }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm, bottom = LocalBottomInset.current)) {
+    LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item { Row(Modifier.fillMaxWidth().heightIn(min = NeRow.header), verticalAlignment = Alignment.CenterVertically) {
             NeIconButton(NeIcon.Back, "Назад", onBack)
             NeText("Очередь", Modifier.weight(1f).padding(start = NeSpace.sm), size = NeType.headline, lineHeight = NeType.headlineLine, weight = FontWeight.ExtraBold, maxLines = 1)

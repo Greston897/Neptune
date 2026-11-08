@@ -104,7 +104,7 @@ fun LyricsScreen(state: NeptuneState, onBack: () -> Unit, onSubscribe: () -> Uni
     LazyColumn(
         state = listState, modifier = Modifier.fillMaxSize().statusBarsPadding(),
         contentPadding = PaddingValues(
-            start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm,
+            start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.sm + LocalTopInset.current,
             bottom = LocalBottomInset.current + 72.dp,
         ),
     ) {
