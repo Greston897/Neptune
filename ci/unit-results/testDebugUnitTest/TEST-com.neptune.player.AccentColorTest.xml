@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.neptune.player.AccentColorTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-08T19:31:25" hostname="runnervmwuk1x" time="0.062">
+<testsuite name="com.neptune.player.AccentColorTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-08T19:47:14" hostname="runnervmwuk1x" time="0.078">
   <properties/>
   <testcase name="hexFormattingIsSixDigitsAndUppercase" classname="com.neptune.player.AccentColorTest" time="0.003"/>
-  <testcase name="primaryColoursMapToTheirCanonicalHues" classname="com.neptune.player.AccentColorTest" time="0.0"/>
-  <testcase name="ensureVisibleIsIdempotentAndAlwaysOpaque" classname="com.neptune.player.AccentColorTest" time="0.022"/>
-  <testcase name="brightPicksAreLeftExactlyAsChosen" classname="com.neptune.player.AccentColorTest" time="0.0"/>
-  <testcase name="hexParsingAcceptsShortLongAndBareForms" classname="com.neptune.player.AccentColorTest" time="0.02"/>
-  <testcase name="darkPicksAreLiftedWithoutChangingHue" classname="com.neptune.player.AccentColorTest" time="0.001"/>
+  <testcase name="primaryColoursMapToTheirCanonicalHues" classname="com.neptune.player.AccentColorTest" time="0.001"/>
+  <testcase name="ensureVisibleIsIdempotentAndAlwaysOpaque" classname="com.neptune.player.AccentColorTest" time="0.02"/>
+  <testcase name="brightPicksAreLeftExactlyAsChosen" classname="com.neptune.player.AccentColorTest" time="0.001"/>
+  <testcase name="hexParsingAcceptsShortLongAndBareForms" classname="com.neptune.player.AccentColorTest" time="0.029"/>
+  <testcase name="darkPicksAreLiftedWithoutChangingHue" classname="com.neptune.player.AccentColorTest" time="0.0"/>
   <testcase name="hexParsingRejectsJunkInsteadOfGuessing" classname="com.neptune.player.AccentColorTest" time="0.006"/>
   <testcase name="resetAppearanceTurnsTheCustomColourOff" classname="com.neptune.player.AccentColorTest" time="0.003"/>
   <testcase name="validationClampsAnUnreadableStoredColour" classname="com.neptune.player.AccentColorTest" time="0.003"/>

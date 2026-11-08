@@ -1,68 +1,234 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<testsuite name="com.neptune.player.LayoutTest" tests="33" failures="1" errors="0" skipped="0" time="194.62" timestamp="2026-11-08T19:38:23" hostname="localhost">
+<testsuite name="com.neptune.player.LayoutTest" tests="41" failures="1" errors="0" skipped="0" time="215.734" timestamp="2026-11-08T19:54:42" hostname="localhost">
   <properties>
     <property name="device" value="emulator-5554 - 15" />
     <property name="flavor" value="" />
     <property name="project" value=":app" />
   </properties>
-  <testcase name="longTrackTitleNeverPushesControlsOffScreen" classname="com.neptune.player.LayoutTest" time="3.971" />
-  <testcase name="glyphSitsOnTheCentreOfItsBox" classname="com.neptune.player.LayoutTest" time="2.755" />
-  <testcase name="panelCentresContentShorterThanItself" classname="com.neptune.player.LayoutTest" time="3.213" />
-  <testcase name="sameTokenLabelsHaveIdenticalHeights" classname="com.neptune.player.LayoutTest" time="3.309" />
-  <testcase name="selectedTabIsExposedToAccessibility" classname="com.neptune.player.LayoutTest" time="2.328" />
-  <testcase name="pillArtworkIsInsetFromTheLeftEdge" classname="com.neptune.player.LayoutTest" time="3.478" />
-  <testcase name="iconButtonUsesExactlyTheRequestedSquare" classname="com.neptune.player.LayoutTest" time="1.83" />
-  <testcase name="priceChoiceIsAccessible" classname="com.neptune.player.LayoutTest" time="3.095" />
-  <testcase name="settingsRowsGrowInsteadOfClippingAtLargeFontScale" classname="com.neptune.player.LayoutTest" time="3.086" />
-  <testcase name="iconAndLabelShareACentreLine" classname="com.neptune.player.LayoutTest" time="2.592" />
-  <testcase name="navGlyphsAreIdenticalSquaresWhetherSelectedOrNot" classname="com.neptune.player.LayoutTest" time="2.259" />
-  <testcase name="noPromotionalCopyIsRendered" classname="com.neptune.player.LayoutTest" time="3.212" />
-  <testcase name="leadingIconSharesTheCentreLineOfItsLabelBlock" classname="com.neptune.player.LayoutTest" time="2.886" />
-  <testcase name="pillKeepsItsGeometryWhileAShortNoticeIsShown" classname="com.neptune.player.LayoutTest" time="2.739" />
-  <testcase name="trackWithBrokenArtworkUriStillRenders" classname="com.neptune.player.LayoutTest" time="2.627" />
-  <testcase name="touchTargetsAreNeverSmallerThanFortyFourDp" classname="com.neptune.player.LayoutTest" time="1.788" />
-  <testcase name="iconsStaySquareNextToALongLabel" classname="com.neptune.player.LayoutTest" time="2.601" />
-  <testcase name="trackRowContentStartsAtTheRowEdge" classname="com.neptune.player.LayoutTest" time="1.559" />
-  <testcase name="panelCentresContentOnBothAxes" classname="com.neptune.player.LayoutTest" time="2.346" />
-  <testcase name="circularArtworkPreferenceIsHonoured" classname="com.neptune.player.LayoutTest" time="3.075" />
-  <testcase name="miniPlayerIsTransportOnlyAndKeepsEveryControlVisible" classname="com.neptune.player.LayoutTest" time="1.665" />
-  <testcase name="miniPlayerTransportFitsANarrowScreen" classname="com.neptune.player.LayoutTest" time="2.617" />
-  <testcase name="trackPillIsACentredCapsuleOfTheTokenHeight" classname="com.neptune.player.LayoutTest" time="3.333" />
-  <testcase name="tabLabelsFitInsideTheirCells" classname="com.neptune.player.LayoutTest" time="1.998" />
-  <testcase name="currentTrackRowKeepsTheSameGeometryAsAnyOtherRow" classname="com.neptune.player.LayoutTest" time="2.955" />
-  <testcase name="glassSheenOverlayDoesNotInflateThePanel" classname="com.neptune.player.LayoutTest" time="2.304" />
-  <testcase name="leadingIconCellIsTheBareTokenSize" classname="com.neptune.player.LayoutTest" time="2.752" />
-  <testcase name="trackWithoutArtworkRendersTheBrandFallback" classname="com.neptune.player.LayoutTest" time="2.734" />
-  <testcase name="trackPillAnnouncesTrackAndArtist" classname="com.neptune.player.LayoutTest" time="2.296" />
-  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="9.435" />
-  <testcase name="lyricsScreenOpensAndExplainsWhenThereIsNoText" classname="com.neptune.player.PlayerFlowTest" time="8.93" />
-  <testcase name="pillAndItsNoticesFollowTheUserIntoSubScreens" classname="com.neptune.player.PlayerFlowTest" time="15.888" />
-  <testcase name="planPageIsOnePageAndClosesInOneTap" classname="com.neptune.player.PlayerFlowTest" time="71.136">
-    <failure></failure>
+  <testcase name="longTrackTitleNeverPushesControlsOffScreen" classname="com.neptune.player.LayoutTest" time="4.251" />
+  <testcase name="glyphSitsOnTheCentreOfItsBox" classname="com.neptune.player.LayoutTest" time="2.296" />
+  <testcase name="panelCentresContentShorterThanItself" classname="com.neptune.player.LayoutTest" time="3.624" />
+  <testcase name="sameTokenLabelsHaveIdenticalHeights" classname="com.neptune.player.LayoutTest" time="2.852" />
+  <testcase name="selectedTabIsExposedToAccessibility" classname="com.neptune.player.LayoutTest" time="2.804" />
+  <testcase name="pillArtworkIsInsetFromTheLeftEdge" classname="com.neptune.player.LayoutTest" time="2.725" />
+  <testcase name="iconButtonUsesExactlyTheRequestedSquare" classname="com.neptune.player.LayoutTest" time="4.434" />
+  <testcase name="priceChoiceIsAccessible" classname="com.neptune.player.LayoutTest" time="3.158" />
+  <testcase name="settingsRowsGrowInsteadOfClippingAtLargeFontScale" classname="com.neptune.player.LayoutTest" time="3.413" />
+  <testcase name="iconAndLabelShareACentreLine" classname="com.neptune.player.LayoutTest" time="2.779" />
+  <testcase name="navGlyphsAreIdenticalSquaresWhetherSelectedOrNot" classname="com.neptune.player.LayoutTest" time="1.945" />
+  <testcase name="noPromotionalCopyIsRendered" classname="com.neptune.player.LayoutTest" time="3.632" />
+  <testcase name="leadingIconSharesTheCentreLineOfItsLabelBlock" classname="com.neptune.player.LayoutTest" time="2.974" />
+  <testcase name="pillKeepsItsGeometryWhileAShortNoticeIsShown" classname="com.neptune.player.LayoutTest" time="3.779" />
+  <testcase name="trackWithBrokenArtworkUriStillRenders" classname="com.neptune.player.LayoutTest" time="4.228" />
+  <testcase name="touchTargetsAreNeverSmallerThanFortyFourDp" classname="com.neptune.player.LayoutTest" time="3.218" />
+  <testcase name="iconsStaySquareNextToALongLabel" classname="com.neptune.player.LayoutTest" time="2.808" />
+  <testcase name="trackRowContentStartsAtTheRowEdge" classname="com.neptune.player.LayoutTest" time="2.405" />
+  <testcase name="panelCentresContentOnBothAxes" classname="com.neptune.player.LayoutTest" time="1.764" />
+  <testcase name="circularArtworkPreferenceIsHonoured" classname="com.neptune.player.LayoutTest" time="1.477" />
+  <testcase name="miniPlayerIsTransportOnlyAndKeepsEveryControlVisible" classname="com.neptune.player.LayoutTest" time="1.67" />
+  <testcase name="miniPlayerTransportFitsANarrowScreen" classname="com.neptune.player.LayoutTest" time="1.728" />
+  <testcase name="trackPillIsACentredCapsuleOfTheTokenHeight" classname="com.neptune.player.LayoutTest" time="4.333" />
+  <testcase name="tabLabelsFitInsideTheirCells" classname="com.neptune.player.LayoutTest" time="1.818" />
+  <testcase name="currentTrackRowKeepsTheSameGeometryAsAnyOtherRow" classname="com.neptune.player.LayoutTest" time="2.204" />
+  <testcase name="glassSheenOverlayDoesNotInflateThePanel" classname="com.neptune.player.LayoutTest" time="2.451" />
+  <testcase name="leadingIconCellIsTheBareTokenSize" classname="com.neptune.player.LayoutTest" time="1.977" />
+  <testcase name="trackWithoutArtworkRendersTheBrandFallback" classname="com.neptune.player.LayoutTest" time="3.284" />
+  <testcase name="trackPillAnnouncesTrackAndArtist" classname="com.neptune.player.LayoutTest" time="3.054" />
+  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="9.947" />
+  <testcase name="lyricsScreenOpensAndExplainsWhenThereIsNoText" classname="com.neptune.player.PlayerFlowTest" time="7.955" />
+  <testcase name="pillAndItsNoticesFollowTheUserIntoSubScreens" classname="com.neptune.player.PlayerFlowTest" time="16.798" />
+  <testcase name="planPageIsOnePageAndClosesInOneTap" classname="com.neptune.player.PlayerFlowTest" time="7.691" />
+  <testcase name="importedAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="9.161" />
+  <testcase name="likedAndRecentCollectionsOpenAndReturn" classname="com.neptune.player.PlayerFlowTest" time="7.75" />
+  <testcase name="albumShelfActionOpensTheLibraryAlbumsTab" classname="com.neptune.player.PlayerFlowTest" time="5.087" />
+  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="17.921" />
+  <testcase name="customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt" classname="com.neptune.player.PlayerFlowTest" time="7.929" />
+  <testcase name="avatarShapeChoicePersistsAndBackWorks" classname="com.neptune.player.PlayerFlowTest" time="5.461" />
+  <testcase name="removeFromPlaylistWorksAndSurvivesASecondTap" classname="com.neptune.player.PlayerFlowTest" time="7.044" />
+  <testcase name="subscriptionScreenShowsWhatIsFreeAndCanBeOpened" classname="com.neptune.player.PlayerFlowTest" time="26.188">
+    <failure>java.lang.AssertionError: Timed out waiting for 'Отключить Plus'. Roots: Printing with useUnmergedTree = 'true'
+Node #5689 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #5877 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
+| IsTraversalGroup = 'true'
+| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
+| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo&#64;1a2296c'
+| Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
+|  |-Node #5881 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
+|  | Text = '[Настройки]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5883 at (l=53.0, t=501.0, r=451.0, b=544.0)px
+|  | Text = '[Всё под тебя. Без лишнего.]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5885 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |  |-Node #5889 at (l=418.0, t=860.0, r=662.0, b=922.0)px
+|  |  | Text = '[Слушатель]'
+|  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |  |-Node #5891 at (l=333.0, t=933.0, r=747.0, b=976.0)px
+|  |    Text = '[Изменить профиль и аватар]'
+|  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5894 at (l=95.0, t=1102.0, r=277.0, b=1143.0)px
+|  | Text = '[ПОДПИСКА]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5898 at (l=53.0, t=1164.0, r=1027.0, b=1343.0)px
+|  | Role = 'Button'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |  |-Node #5903 at (l=201.0, t=1202.0, r=605.0, b=1258.0)px
+|  |  | Text = '[Neptune Plus активен]'
+|  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |  |-Node #5905 at (l=201.0, t=1263.0, r=400.0, b=1306.0)px
+|  |    Text = '[149 ₽ в месяц]'
+|  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5911 at (l=95.0, t=1406.0, r=320.0, b=1447.0)px
+|  | Text = '[ПРИЛОЖЕНИЕ]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5915 at (l=53.0, t=1468.0, r=1027.0, b=1647.0)px
+|  | Role = 'Button'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |  |-Node #5920 at (l=201.0, t=1506.0, r=447.0, b=1562.0)px
+|  |  | Text = '[Внешний вид]'
+|  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |  |-Node #5922 at (l=201.0, t=1567.0, r=809.0, b=1610.0)px
+|  |    Text = '[Цвета, форма, движение и размер текста]'
+|  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5925 at (l=53.0, t=1647.0, r=1027.0, b=1826.0)px
+|  | Role = 'Button'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |  |-Node #5930 at (l=201.0, t=1685.0, r=543.0, b=1741.0)px
+|  |  | Text = '[Воспроизведение]'
+|  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |  |-Node #5932 at (l=201.0, t=1746.0, r=714.0, b=1789.0)px
+|  |    Text = '[Скорость, громкость и таймер сна]'
+|  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5935 at (l=53.0, t=1826.0, r=1027.0, b=2005.0)px
+|  | Role = 'Button'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |  |-Node #5940 at (l=201.0, t=1864.0, r=525.0, b=1920.0)px
+|  |  | Text = '[Музыка и данные]'
+|  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |  |-Node #5942 at (l=201.0, t=1925.0, r=728.0, b=1968.0)px
+|  |    Text = '[Доступ к файлам, импорт и история]'
+|  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5945 at (l=53.0, t=2005.0, r=1027.0, b=2184.0)px
+|  | Role = 'Button'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |  |-Node #5950 at (l=201.0, t=2043.0, r=398.0, b=2099.0)px
+|  |  | Text = '[О Neptune]'
+|  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |  |-Node #5952 at (l=201.0, t=2104.0, r=637.0, b=2147.0)px
+|  |    Text = '[Версия 3.0 · локальный плеер]'
+|  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5957 at (l=53.0, t=2247.0, r=1027.0, b=2290.0)px
+|    Text = '[Настройки сохраняются автоматически]'
+|    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #6071 at (l=209.0, t=149.0, r=871.0, b=286.0)px
+| ContentDescription = '[Сейчас играет: Без названия — Локальный файл]'
+| Focused = 'false'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|  |-Node #6072 at (l=235.0, t=170.0, r=330.0, b=265.0)px, Tag: 'pillArt'
+|  |-Node #6273 at (l=362.0, t=170.0, r=598.0, b=220.0)px
+|  | Text = '[Без названия]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #6275 at (l=362.0, t=225.0, r=590.0, b=266.0)px
+|    Text = '[Локальный файл]'
+|    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #6231 at (l=42.0, t=1932.0, r=1038.0, b=2100.0)px
+| Focused = 'false'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|  |-Node #6233 at (l=124.0, t=1948.0, r=240.0, b=2064.0)px
+|  | ContentDescription = '[Перемешать]'
+|  | Role = 'Button'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #6235 at (l=300.0, t=1948.0, r=416.0, b=2064.0)px
+|  | ContentDescription = '[Предыдущий трек]'
+|  | Role = 'Button'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #6237 at (l=477.0, t=1943.0, r=603.0, b=2069.0)px
+|  | ContentDescription = '[Воспроизвести]'
+|  | Role = 'Button'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #6239 at (l=664.0, t=1948.0, r=780.0, b=2064.0)px
+|  | ContentDescription = '[Следующий трек]'
+|  | Role = 'Button'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #6241 at (l=840.0, t=1948.0, r=956.0, b=2064.0)px
+|    ContentDescription = '[Выключить повтор]'
+|    Role = 'Button'
+|    Focused = 'false'
+|    Actions = [OnClick, RequestFocus]
+|    MergeDescendants = 'true'
+|-Node #6250 at (l=58.0, t=2147.0, r=299.0, b=2284.0)px
+| Selected = 'false'
+| ContentDescription = '[Главная]'
+| Role = 'Tab'
+| Focused = 'false'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|  |-Node #6253 at (l=124.0, t=2232.0, r=233.0, b=2273.0)px
+|    Text = '[Главная]'
+|    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #6254 at (l=299.0, t=2147.0, r=540.0, b=2284.0)px
+| Selected = 'false'
+| ContentDescription = '[Поиск]'
+| Role = 'Tab'
+| Focused = 'false'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|  |-Node #6257 at (l=377.0, t=2232.0, r=462.0, b=2273.0)px
+|    Text = '[Поиск]'
+|    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #6258 at (l=540.0, t=2147.0, r=781.0, b=2284.0)px
+| Selected = 'false'
+| ContentDescription = '[Медиатека]'
+| Role = 'Tab'
+| Focused = 'false'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|  |-Node #6261 at (l=585.0, t=2232.0, r=737.0, b=2273.0)px
+|    Text = '[Медиатека]'
+|    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #6262 at (l=781.0, t=2147.0, r=1022.0, b=2284.0)px
+Selected = 'true'
+ContentDescription = '[Настройки]'
+Role = 'Tab'
+Focused = 'false'
+Actions = [OnClick, RequestFocus]
+MergeDescendants = 'true'
+|-Node #6265 at (l=828.0, t=2232.0, r=976.0, b=2273.0)px
+Text = '[Настройки]'
+Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:46)
+at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:37)
+at com.neptune.player.PlayerFlowTest.clickText(PlayerFlowTest.kt:56)
+at com.neptune.player.PlayerFlowTest.subscriptionScreenShowsWhatIsFreeAndCanBeOpened(PlayerFlowTest.kt:453)
+... 54 trimmed
+Caused by: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
+at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:39)
+... 58 more
+</failure>
   </testcase>
-  <system-err>Exception thrown during onAfterAll invocation of plugin AndroidTestApkInstallerPlugin: device 'emulator-5554' not found
-device 'emulator-5554' not found
-com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
-	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:981)
-	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:1000)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$18(DeviceImpl.java:785)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:755)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$15(DeviceImpl.java:618)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:615)
-	at com.android.ddmlib.internal.DeviceImpl.lambda$executeShellCommand$14(DeviceImpl.java:573)
-	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
-	at com.android.ddmlib.internal.DeviceImpl.executeShellCommand(DeviceImpl.java:570)
-	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDevice.executeShellCommand(DdmlibAndroidDevice.kt)
-	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDeviceController$executeAsync$deferred$1.invokeSuspend(DdmlibAndroidDeviceController.kt:171)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
-	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:570)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:749)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
-
-Test run failed to complete. Expected 41 tests, received 32
-</system-err>
 </testsuite>
