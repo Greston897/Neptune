@@ -84,23 +84,25 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 41 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 4/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 9/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 14/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 21/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 3/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 8/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 11/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 15/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 17/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 18/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 20/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 26/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 29/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 31/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 32/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 34/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 36/41 completed. (0 skipped) (0 failed)
 
 > Task :app:connectedDebugAndroidTest
 
-com.neptune.player.PlayerFlowTest > sleepTimerOpensOnlyFromItsRowAndAlwaysCloses[emulator-5554 - 15] [31mFAILED [0m
+com.neptune.player.PlayerFlowTest > planPageIsOnePageAndClosesInOneTap[emulator-5554 - 15] [31mFAILED [0m
 
 
-emulator-5554 - 15 Tests 37/41 completed. (0 skipped) (1 failed)
-Finished 37 tests on emulator-5554 - 15
+emulator-5554 - 15 Tests 33/41 completed. (0 skipped) (1 failed)
+Finished 33 tests on emulator-5554 - 15
 
 > Task :app:connectedDebugAndroidTest
 Tests on emulator-5554 - 15 failed: There was 1 failure(s).
@@ -127,10 +129,10 @@ com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
 
-Test run failed to complete. Expected 41 tests, received 36
+Test run failed to complete. Expected 41 tests, received 32
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794171357102.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794172003326.json
 
 FAILURE: Build failed with an exception.
 
@@ -144,11 +146,11 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 3m 29s
+BUILD FAILED in 4m 27s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
 FAIL: 1 instrumented test(s) failed
-  sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
+  planPageIsOnePageAndClosesInOneTap
     (no message — suspect device/emulator loss)
 instrumented suite exit status: 1
