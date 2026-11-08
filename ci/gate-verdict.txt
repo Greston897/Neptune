@@ -1,3 +1,1 @@
-FAIL: 1 instrumented test(s) failed
-  bundledAudioActuallyPlaysAndBackReturnsHome
-    (no message — suspect device/emulator loss)
+OK: 29 instrumented tests ran, 0 failures (declared 29)
