@@ -274,8 +274,12 @@ object LyricsParser {
                 ((body[i + 4].toInt() and 0xFF) shl 24) or ((body[i + 5].toInt() and 0xFF) shl 16) or
                     ((body[i + 6].toInt() and 0xFF) shl 8) or (body[i + 7].toInt() and 0xFF)
             }
-            if (size <= 0 || i + header + size > body.size) break
-            val payload = body.copyOfRange(i + header, i + header + size)
+            // Long arithmetic on purpose: `i + header + size` overflows to a *negative* number for a
+            // corrupt 0x7FFFFFFF size, the bound check then passes, and `copyOfRange` is asked for a
+            // 2 GB array — an OutOfMemoryError from eight bytes of input.
+            val frameEnd = i.toLong() + header + size
+            if (size <= 0 || frameEnd > body.size) break
+            val payload = body.copyOfRange(i + header, frameEnd.toInt())
             val formatFlags = if (major == 2) 0 else body[i + 9].toInt() and 0xFF
             collected += Frame(id, stripFrameFormat(major, formatFlags, payload))
             i += header + size
@@ -384,21 +388,23 @@ object LyricsParser {
         val containerStart = at - 4
         val containerEnd = if (containerStart >= 0) {
             val size = readInt32(bytes, containerStart) ?: return null
-            (containerStart + size).coerceIn(at + 4, bytes.size)
+            (containerStart.toLong() + size).coerceAtMost(bytes.size.toLong()).toInt().coerceAtLeast(at + 4)
         } else bytes.size
         var i = at + 4
         while (i + 8 <= containerEnd) {
             val size = readInt32(bytes, i) ?: break
-            if (size < 8) break
+            // Same overflow trap as the ID3 frames: a Long bound makes a corrupt size just stop.
+            val atomEnd = i.toLong() + size
+            if (size < 8 || atomEnd > bytes.size) break
             val name = String(bytes, i + 4, 4, Charsets.ISO_8859_1)
             if (name == "data") {
                 // 4 bytes version/flags, then the payload of this atom.
                 val textStart = i + 12
-                val textEnd = (i + size).coerceAtMost(bytes.size)
+                val textEnd = atomEnd.toInt()
                 if (textStart >= textEnd) return null
                 return readText(bytes, textStart, textEnd - textStart, Charsets.UTF_8, LyricsSource.MP4)
             }
-            i += size
+            i = atomEnd.toInt()
         }
         return null
     }
@@ -452,8 +458,9 @@ object LyricsParser {
     }
 
     private fun decode(source: ByteArray, offset: Int, length: Int, encoding: Int): String {
-        if (length <= 0 || offset + length > source.size) return ""
-        val slice = source.copyOfRange(offset, offset + length)
+        val end = offset.toLong() + length
+        if (length <= 0 || offset < 0 || end > source.size) return ""
+        val slice = source.copyOfRange(offset, end.toInt())
         return runCatching {
             when (encoding) {
                 EncUtf16Bom -> String(slice, Charsets.UTF_16)

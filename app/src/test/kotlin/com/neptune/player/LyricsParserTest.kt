@@ -180,6 +180,14 @@ class LyricsParserTest {
         assertTrue("LRC inside an m4a is still timed", doc!!.synced)
     }
 
+    @Test fun mp4AtomClaimingTwoGigabytesDoesNotAllocate() {
+        // The same 0x7FFFFFFF trap as the ID3 frame, one level down: an atom size that overflows the
+        // 32-bit bound check must stop the walk, not ask for a 2 GB array.
+        val hostile = Preamble + int32(0x7FFFFFFF) + "\u00A9lyr".toByteArray(Charsets.ISO_8859_1) +
+            int32(0x7FFFFFFF) + "data".toByteArray(Charsets.ISO_8859_1)
+        assertNull("a hostile atom must not allocate 2 GB", runCatching { LyricsParser.fromBytes(hostile) }.getOrNull())
+    }
+
     @Test fun plainLrcFileIsReadAsText() {
         val doc = LyricsParser.fromBytes("[00:02.00]первые строки\n[00:05.50]вторые строки".toByteArray())
         assertNotNull(".lrc has no tag at all, the payload is the text", doc)

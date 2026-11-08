@@ -260,6 +260,10 @@ class Media3PlaybackBackend(
         }
     }
 
+    // `getCompleted()` is @ExperimentalCoroutinesApi: it throws when the future is still pending, and
+    // the guard below relies on that. Opting in keeps the intent explicit instead of leaving a
+    // warning that invites the next reader to delete a check that actually matters.
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     override fun retry() {
         if (!connection.isCompleted || connection.getCompleted() == null) {
             _state.value = _state.value.copy(error = "Перезапустите приложение, чтобы переподключить аудиосервис.")

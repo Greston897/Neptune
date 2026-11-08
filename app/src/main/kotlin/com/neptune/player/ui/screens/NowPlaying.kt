@@ -131,11 +131,13 @@ fun NowPlayingScreen(
         // A single live lyric line, tappable to open the full text. Only when the file actually
         // carries timings — an unsynchronised text would show a line that does not follow the song,
         // which reads as a bug rather than a feature.
+        // The repository map is what makes a scan finishing while this screen is open repaint; the
+        // track is bound once so the effect and the block below share one non-null value.
         val lyricsDocs by state.lyricsDocs.collectAsStateWithLifecycle()
-        val lyricsDoc: com.neptune.player.model.LyricsDoc? = track?.let { state.lyricsFor(it) ?: lyricsDocs[it.id] }
-        if (track != null) {
-            LaunchedEffect(track.id) { state.requestLyrics(track) }
-            val doc = lyricsDoc
+        val playingTrack = track
+        if (playingTrack != null) {
+            val doc = state.lyricsFor(playingTrack) ?: lyricsDocs[playingTrack.id]
+            LaunchedEffect(playingTrack.id) { state.requestLyrics(playingTrack) }
             if (doc != null && doc.synced && !doc.isEmpty) {
                 val index = doc.activeIndex(playback.positionMs)
                 val line = doc.lines.getOrNull(index)?.text
