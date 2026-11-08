@@ -14,6 +14,8 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.printToString
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isToggleable
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.isSelectable
 import android.Manifest
@@ -335,10 +337,10 @@ class PlayerFlowTest {
         compose.onNodeWithTag("appearanceList").performScrollToNode(hasText("Свой акцентный цвет"))
         // The switch, not the label: `ToggleRow` puts the control on the trailing edge, and the
         // accent row is the only toggle this far down the appearance list.
-        // Click the switch itself: the row is not clickable, only the trailing control is. It is
-        // addressed by its own state description ("Вкл.", because a custom accent is off on Free),
-        // which no other control in this list carries.
-        compose.onNode(hasText("Вкл.")).performClick()
+        // Click the switch itself: the row is not clickable, only the trailing control is. After
+        // scrolling to the accent group, the first switch in the list *is* that control — the group
+        // above it ("ЦВЕТ ОСНОВЫ") has no toggles at all, so this cannot drift to another one.
+        compose.onAllNodes(isToggleable()).onFirst().performClick()
         waitText("ВСЕГДА БЕСПЛАТНО")
         // The reason card names the feature that was refused — proof this page belongs to that tap.
         waitText("«Свой акцент» — в Plus")
@@ -443,7 +445,9 @@ class PlayerFlowTest {
         }
         // Purchasing closes the offer page, as it should; the manager lives on the Settings row now.
         waitText("Всё под тебя. Без лишнего.")
-        clickText("Neptune Plus активен")
+        // The pill is still echoing the purchase confirmation, so the Settings row is the *first*
+        // of the two nodes carrying this text — the list is composed before the floating overlay.
+        compose.onAllNodes(hasText("Neptune Plus активен")).onFirst().performClick()
         // Leaving the plan must also drop the extras it unlocked. The confirmation is dialogs' own
         // action word "Отключить", which is not the same node as the row that opened it.
         clickText("Отключить Plus")
