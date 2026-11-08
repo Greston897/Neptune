@@ -37,6 +37,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
@@ -146,7 +147,10 @@ fun NeChip(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modif
 }
 
 @Composable
-fun SectionHeader(title: String, modifier: Modifier = Modifier, action: String? = null, onAction: (() -> Unit)? = null) {
+fun SectionHeader(
+    title: String, modifier: Modifier = Modifier, action: String? = null, onAction: (() -> Unit)? = null,
+    actionTag: String? = null,
+) {
     Row(modifier.fillMaxWidth().heightIn(min = 40.dp), verticalAlignment = Alignment.CenterVertically) {
         NeText(
             title, Modifier.weight(1f).alignByBaseline(), size = NeType.section, lineHeight = NeType.sectionLine,
@@ -155,7 +159,8 @@ fun SectionHeader(title: String, modifier: Modifier = Modifier, action: String? 
         if (action != null && onAction != null) {
             NeText(
                 action,
-                Modifier.alignByBaseline().clip(CircleShape).clickable(onClick = onAction)
+                Modifier.alignByBaseline().then(if (actionTag != null) Modifier.testTag(actionTag) else Modifier)
+                    .clip(CircleShape).clickable(onClick = onAction)
                     .padding(start = NeSpace.sm, top = 6.dp, bottom = 6.dp),
                 size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, weight = FontWeight.SemiBold,
             )

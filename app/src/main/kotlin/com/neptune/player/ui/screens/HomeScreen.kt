@@ -55,7 +55,7 @@ import java.util.Calendar
 @Composable
 fun HomeScreen(
     state: NeptuneState, onCollection: (String, String) -> Unit, onPlayer: () -> Unit,
-    onProfile: () -> Unit, onSettings: () -> Unit,
+    onProfile: () -> Unit, onSettings: () -> Unit, onAlbums: () -> Unit = {},
 ) {
     val library by state.library.collectAsStateWithLifecycle()
     val users by state.users.collectAsStateWithLifecycle()
@@ -173,7 +173,7 @@ fun HomeScreen(
             }
         }
         if (settings.showAlbumRow && albums.isNotEmpty()) {
-            item { SectionHeader("Альбомы", action = "Медиатека", onAction = { onCollection("albums", "") }) }
+            item { SectionHeader("Альбомы", action = "Медиатека", onAction = onAlbums, actionTag = "homeAlbumsAction") }
             item {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(NeSpace.md)) {
                     items(albums, key = { ListKeys.album(it.first.first, it.first.second) }) { (meta, tracks) ->

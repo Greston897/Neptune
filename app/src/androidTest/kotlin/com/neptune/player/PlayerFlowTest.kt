@@ -1,11 +1,15 @@
 package com.neptune.player
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.printToString
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasContentDescription
@@ -87,6 +91,30 @@ class PlayerFlowTest {
         compose.onNodeWithText("ПОДБОРКА").assertIsDisplayed()
         back()
         compose.onNodeWithContentDescription("Профиль и аватар").assertIsDisplayed()
+    }
+
+    /**
+     * Regression: the album shelf's "Медиатека" action called onCollection("albums", ""), but
+     * CollectionScreen has no "albums" kind — it fell through to the else branch and opened an empty
+     * "Подборка". The action must land on the Library's albums tab instead.
+     */
+    @Test fun albumShelfActionOpensTheLibraryAlbumsTab() {
+        seedLibrary()
+        // "Медиатека" is also the nav tab's label, so the shelf action is addressed by its own
+        // semantics tag instead of by text. The shelf sits below the hero and can start off-screen
+        // on a short viewport, hence the scroll rather than a dependence on device height.
+        compose.waitUntil(20000) {
+            compose.onAllNodes(hasTestTag("homeAlbumsAction")).fetchSemanticsNodes().isNotEmpty()
+        }
+        compose.onNodeWithTag("homeAlbumsAction").performScrollTo().performClick()
+        waitText("Альбомы")
+        compose.onNode(hasContentDescription("Медиатека") and isSelectable()).assertIsSelected()
+        compose.activityRule.scenario.onActivity {
+            assertEquals("the albums tab must be the one selected", 1, container(it).libraryTab)
+        }
+        compose.onAllNodes(hasText("ПОДБОРКА")).fetchSemanticsNodes().let {
+            assertEquals("a tab action must not open a collection", 0, it.size)
+        }
     }
 
     @Test fun settingsBackReturnsToPreviousPageThenHome() {

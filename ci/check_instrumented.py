@@ -27,6 +27,7 @@ REQUIRED = {
     "likedAndRecentCollectionsOpenAndReturn": "collections crashed on open (negative padding)",
     "importedAudioActuallyPlaysAndBackReturnsHome": "playback must advance from a user-imported file",
     "pillArtworkIsInsetFromTheLeftEdge": "pill cover was pressed against the left curve",
+    "albumShelfActionOpensTheLibraryAlbumsTab": "shelf action opened an empty collection route",
     "sleepTimerOpensOnlyFromItsRowAndAlwaysCloses": "dock used to swallow the row tap",
     "trackWithoutArtworkRendersTheBrandFallback": "missing cover must show the app avatar",
     "removeFromPlaylistWorksAndSurvivesASecondTap": "playlist id was dereferenced at click time",

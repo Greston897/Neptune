@@ -102,7 +102,16 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                                     slideOutVertically(tween(NeMotion.Emphasized, easing = NeEase)) { it / 4 } + fadeOut(tween(NeMotion.Standard, easing = NeEase))
                                 else slideOutHorizontally(tween(NeMotion.Emphasized, easing = NeEase)) { it / 6 } + fadeOut(tween(NeMotion.Standard, easing = NeEase))
                             }) {
-                            composable("home") { HomeScreen(state, { kind, key -> nav.navigateCollection(kind, key) }, { nav.navigateOnce("player") }, { nav.navigateOnce("profile") }, { nav.navigateTab(Tab.SETTINGS) }) }
+                            composable("home") {
+                                HomeScreen(
+                                    state, { kind, key -> nav.navigateCollection(kind, key) },
+                                    { nav.navigateOnce("player") }, { nav.navigateOnce("profile") },
+                                    { nav.navigateTab(Tab.SETTINGS) },
+                                    // "Альбомы → Медиатека" must land on the albums tab, not on a
+                                    // collection route: "albums" is a Library tab, not a kind.
+                                    { state.libraryTab = 1; nav.navigateTab(Tab.LIBRARY) },
+                                )
+                            }
                             composable("search") { SearchScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
                             composable("library") { LibraryScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
                             composable("settings") { SettingsScreen(state, { nav.navigateOnce("profile") }, { nav.navigateOnce("appearance") }, { nav.navigateOnce("playback-settings") }, { nav.navigateOnce("data") }, { nav.navigateOnce("about") }) }
