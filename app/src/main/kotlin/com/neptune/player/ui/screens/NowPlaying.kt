@@ -88,7 +88,11 @@ fun NowPlayingScreen(
             NeIconButton(NeIcon.Mic, "Текст трека", onLyrics, enabled = track != null, color = Ne.Dim)
             NeIconButton(NeIcon.More, "Действия с треком", { state.contextTrack = track }, enabled = track != null)
         }
-        if (track == null) {
+        // Bound once, right after the empty-state guard: everything below (the lyric preview
+        // included) can then use a non-null track, so there is no second null check to keep in sync
+        // with this one — the compiler used to warn about exactly that redundancy.
+        val nowPlaying = track
+        if (nowPlaying == null) {
             EmptyState(
                 NeIcon.Music, "Выбери свой ритм", "Открой медиатеку и включи первый трек.",
                 action = "В медиатеку", onAction = onBack,
@@ -134,30 +138,27 @@ fun NowPlayingScreen(
         // The repository map is what makes a scan finishing while this screen is open repaint; the
         // track is bound once so the effect and the block below share one non-null value.
         val lyricsDocs by state.lyricsDocs.collectAsStateWithLifecycle()
-        val playingTrack = track
-        if (playingTrack != null) {
-            val doc = state.lyricsFor(playingTrack) ?: lyricsDocs[playingTrack.id]
-            LaunchedEffect(playingTrack.id) { state.requestLyrics(playingTrack) }
-            if (doc != null && doc.synced && !doc.isEmpty) {
-                val index = doc.activeIndex(playback.positionMs)
-                val line = doc.lines.getOrNull(index)?.text
-                    ?: doc.lines.firstOrNull { it.timeMs > playback.positionMs }?.text
-                if (line != null) {
-                    Spacer(Modifier.height(NeSpace.sm))
-                    Row(
-                        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp))
-                            .clickable(onClick = onLyrics)
-                            .padding(horizontal = NeSpace.xs, vertical = NeSpace.xs),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        NeIconView(NeIcon.Mic, NeIconSize.xs, accent())
-                        Spacer(Modifier.width(NeSpace.sm))
-                        NeText(
-                            line, Modifier.weight(1f), size = NeType.caption, lineHeight = NeType.captionLine,
-                            color = Ne.Dim, maxLines = 1,
-                        )
-                        NeIconView(NeIcon.ChevronRight, NeIconSize.xs, Ne.Whisper)
-                    }
+        val doc = state.lyricsFor(nowPlaying) ?: lyricsDocs[nowPlaying.id]
+        LaunchedEffect(nowPlaying.id) { state.requestLyrics(nowPlaying) }
+        if (doc != null && doc.synced && !doc.isEmpty) {
+            val index = doc.activeIndex(playback.positionMs)
+            val line = doc.lines.getOrNull(index)?.text
+                ?: doc.lines.firstOrNull { it.timeMs > playback.positionMs }?.text
+            if (line != null) {
+                Spacer(Modifier.height(NeSpace.sm))
+                Row(
+                    Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp))
+                        .clickable(onClick = onLyrics)
+                        .padding(horizontal = NeSpace.xs, vertical = NeSpace.xs),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    NeIconView(NeIcon.Mic, NeIconSize.xs, accent())
+                    Spacer(Modifier.width(NeSpace.sm))
+                    NeText(
+                        line, Modifier.weight(1f), size = NeType.caption, lineHeight = NeType.captionLine,
+                        color = Ne.Dim, maxLines = 1,
+                    )
+                    NeIconView(NeIcon.ChevronRight, NeIconSize.xs, Ne.Whisper)
                 }
             }
         }
