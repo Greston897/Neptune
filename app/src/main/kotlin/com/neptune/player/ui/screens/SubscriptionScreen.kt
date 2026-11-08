@@ -240,10 +240,11 @@ fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
 @Composable
 fun PriceChoice(
     title: String, note: String, selected: Boolean, onClick: () -> Unit, badge: String? = null,
+    modifier: Modifier = Modifier,
 ) {
     val haptic = LocalHaptics.current
     Column(
-        Modifier.fillMaxWidth().heightIn(min = NeTouch.standard)
+        modifier.fillMaxWidth().heightIn(min = NeTouch.standard)
             .clip(RoundedCornerShape(16.dp))
             .background(if (selected) accent().copy(alpha = 0.10f) else Color.White.copy(alpha = 0.04f))
             .border(
@@ -252,7 +253,12 @@ fun PriceChoice(
                 RoundedCornerShape(16.dp),
             )
             .clickable { haptic(); onClick() }
-            .semantics { this.selected = selected; contentDescription = title }
+            // The visible price is text; the description adds the state so TalkBack announces
+            // "selected" without the row having to duplicate the label in a second node.
+            .semantics {
+                this.selected = selected
+                contentDescription = "$title, ${if (selected) "выбрано" else "не выбрано"}"
+            }
             .padding(horizontal = NeSpace.lg, vertical = NeSpace.md),
     ) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {

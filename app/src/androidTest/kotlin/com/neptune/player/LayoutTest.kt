@@ -478,6 +478,7 @@ class LayoutTest {
      * row must keep exactly the geometry it has when it is not playing.
      */
     @Test fun currentTrackRowKeepsTheSameGeometryAsAnyOtherRow() {
+        compose.mainClock.autoAdvance = false
         val highlighted = androidx.compose.runtime.mutableStateOf(false)
         compose.setContent {
             NeptuneTheme(Settings(animations = false, artworkMotion = false, ambientGlow = false, thumbScale = 1f, compact = false)) {
@@ -486,10 +487,11 @@ class LayoutTest {
                 }
             }
         }
+        compose.mainClock.advanceTimeBy(16)
         fun bounds() = compose.onNodeWithTag("row", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
         val idle = bounds()
         compose.runOnIdle { highlighted.value = true }
-        compose.waitForIdle()
+        compose.mainClock.advanceTimeBy(1_000)
         val current = bounds()
         assertEquals("a highlighted row must not change width", idle.width, current.width, 0.5f)
         assertEquals("a highlighted row must not change height", idle.height, current.height, 0.5f)
@@ -502,6 +504,8 @@ class LayoutTest {
      * screen would twitch each time a track is queued.
      */
     @Test fun pillKeepsItsGeometryWhileAShortNoticeIsShown() {
+        // No preview: the pill is measured while a notice is actually composed, not mid-fade.
+        compose.mainClock.autoAdvance = false
         val playback = PlaybackState(track = longTrack, isPlaying = true, durationMs = 245000, positionMs = 30000)
         val notice = com.neptune.player.ui.ToastNotice(1, "Добавлено в очередь", NeIcon.Check, com.neptune.player.ui.ToastTone.DONE)
         val showing = androidx.compose.runtime.mutableStateOf<com.neptune.player.ui.ToastNotice?>(null)
@@ -512,9 +516,11 @@ class LayoutTest {
                 }
             }
         }
+        compose.mainClock.advanceTimeBy(16)
         val before = compose.onNodeWithTag("pill", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
         compose.runOnIdle { showing.value = notice }
-        compose.waitForIdle()
+        // Cross-fade plus slide: run the clock past both so the incoming content is laid out.
+        compose.mainClock.advanceTimeBy(1_000)
         compose.onNodeWithText("Добавлено в очередь", useUnmergedTree = true).assertIsDisplayed()
         val during = compose.onNodeWithTag("pill", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
         assertEquals("notice must not resize the pill", before.width, during.width, 0.5f)
@@ -522,8 +528,9 @@ class LayoutTest {
         assertEquals("notice must not move the pill", before.left, during.left, 0.5f)
         // Accessibility: the announcement becomes the notice, not the stale track.
         compose.onNodeWithContentDescription("Добавлено в очередь").assertIsDisplayed()
+        // And the track comes back when the notice expires.
         compose.runOnIdle { showing.value = null }
-        compose.waitForIdle()
+        compose.mainClock.advanceTimeBy(1_000)
         compose.onNodeWithText(longTrack.title, useUnmergedTree = true).assertIsDisplayed()
     }
 
@@ -535,8 +542,8 @@ class LayoutTest {
                 com.neptune.player.ui.screens.PriceChoice("149 ₽ в месяц", "гибко", selected = false, onClick = {})
             }
         }
-        compose.onNodeWithContentDescription("1490 ₽ в год").assertIsSelected()
-        compose.onNodeWithContentDescription("149 ₽ в месяц").assertIsNotSelected()
+        compose.onNodeWithContentDescription("1490 ₽ в год, выбрано").assertIsSelected()
+        compose.onNodeWithContentDescription("149 ₽ в месяц, не выбрано").assertIsNotSelected()
     }
 
     @Test fun noPromotionalCopyIsRendered() {

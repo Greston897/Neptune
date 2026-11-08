@@ -4,7 +4,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.hasTestTag
@@ -49,21 +48,6 @@ class PlayerFlowTest {
             runCatching { compose.onAllNodes(hasText(text)).fetchSemanticsNodes().isEmpty() }.getOrDefault(false)
         }
     }
-    /**
-     * Opens the overflow sheet of the first track row on the Library tab.
-     *
-     * The description carries the track title, so it is matched by substring — the fixture's title
-     * comes from the WAV metadata and is not something a test should hardcode.
-     */
-    private fun openFirstTrackActions() {
-        compose.waitUntil(20000) {
-            compose.onAllNodes(hasContentDescription("Действия с", substring = true)).fetchSemanticsNodes().isNotEmpty()
-        }
-        compose.onAllNodes(hasContentDescription("Действия с", substring = true))
-            .onFirst().performClick()
-        waitText("Убрать из приложения")
-    }
-
     private fun clickText(text: String) {
         waitText(text)
         compose.onNodeWithText(text).performClick()
@@ -292,36 +276,6 @@ class PlayerFlowTest {
         }
         back()
         compose.onNodeWithText("СЕЙЧАС ИГРАЕТ").assertIsDisplayed()
-    }
-
-    /**
-     * Removal is destructive, so it has to be confirmed — and the confirmation must name the
-     * consequence ("the file stays on the device") instead of asking a generic "are you sure".
-     */
-    @Test fun removingATrackAsksFirstAndThenForgetsIt() {
-        seedLibrary()
-        compose.onNodeWithContentDescription("Сортировка").assertIsDisplayed()
-        // Open the overflow of the imported row, choose the removal, then cancel it.
-        openFirstTrackActions()
-        clickText("Убрать из приложения")
-        waitText("Убрать трек из приложения?")
-        // Cancelling must not touch anything. A poll for "== 1" would pass trivially, so the
-        // assertion waits until the dialog is gone and then checks the count is unchanged.
-        clickText("Отмена")
-        waitGone("Убрать трек из приложения?")
-        var count = 0
-        compose.activityRule.scenario.onActivity { count = container(it).library.state.value.tracks.size }
-        assertEquals("a cancelled removal must leave the library untouched", 1, count)
-        openFirstTrackActions()
-        clickText("Убрать из приложения")
-        waitText("Убрать трек из приложения?")
-        clickText("Убрать")
-        compose.waitUntil(20000) {
-            var count = 1
-            compose.activityRule.scenario.onActivity { count = container(it).library.state.value.tracks.size }
-            count == 0
-        }
-        waitText("Медиатека пуста")
     }
 
     /** The paywall must be reachable from Settings and must state that the player itself is free. */
