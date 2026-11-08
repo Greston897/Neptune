@@ -13,6 +13,8 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.printToString
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.onFirst
@@ -445,9 +447,9 @@ class PlayerFlowTest {
         }
         // Purchasing closes the offer page, as it should; the manager lives on the Settings row now.
         waitText("Всё под тебя. Без лишнего.")
-        // The pill is still echoing the purchase confirmation, so the Settings row is the *first*
-        // of the two nodes carrying this text — the list is composed before the floating overlay.
-        compose.onAllNodes(hasText("Neptune Plus активен")).onFirst().performClick()
+        // Two nodes carry this text: the Settings row and the pill echoing the confirmation. The row
+        // is the one inside the scrolling list; the pill is not, so the ancestor tells them apart.
+        compose.onNode(hasText("Neptune Plus активен") and hasAnyAncestor(hasScrollAction())).performClick()
         // Leaving the plan must also drop the extras it unlocked. The confirmation is dialogs' own
         // action word "Отключить", which is not the same node as the row that opened it.
         clickText("Отключить Plus")
