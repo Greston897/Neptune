@@ -82,21 +82,23 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 [EmulatorConsole]: Failed to start Emulator console for 5554
 
 > Task :app:connectedDebugAndroidTest
-Starting 32 tests on emulator-5554 - 15
+Starting 33 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 1/32 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 9/32 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 17/32 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 25/32 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 27/32 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 29/32 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 31/32 completed. (0 skipped) (0 failed)
-Finished 32 tests on emulator-5554 - 15
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794104586074.json
+emulator-5554 - 15 Tests 4/33 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 10/33 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 14/33 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 19/33 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 23/33 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 26/33 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 28/33 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 30/33 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 32/33 completed. (0 skipped) (0 failed)
+Finished 33 tests on emulator-5554 - 15
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794105533448.json
 
-BUILD SUCCESSFUL in 2m 47s
+BUILD SUCCESSFUL in 2m 39s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
-OK: 32 instrumented tests ran, 0 failures (declared 32)
+OK: 33 instrumented tests ran, 0 failures (declared 33)
 instrumented suite exit status: 0
