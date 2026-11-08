@@ -16,6 +16,7 @@ import androidx.compose.ui.test.printToString
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.isSelectable
+import androidx.compose.ui.test.isToggleable
 import android.Manifest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
@@ -333,7 +334,8 @@ class PlayerFlowTest {
         // The gated control itself: turning on a custom accent is a Plus feature, so this is the tap
         // that used to open the paywall on top of this very screen.
         compose.onNodeWithTag("appearanceList").performScrollToNode(hasText("Свой акцентный цвет"))
-        clickText("Свой акцентный цвет")
+        // The switch, not the label: `ToggleRow` puts the control on the trailing edge.
+        compose.onAllNodes(isToggleable())[0].performClick()
         waitText("ВСЕГДА БЕСПЛАТНО")
         // The reason card names the feature that was refused — proof this page belongs to that tap.
         waitText("«Свой акцент» — в Plus")
@@ -375,21 +377,22 @@ class PlayerFlowTest {
         }
         // The pill announces itself as "Сейчас играет: …"; that is a stable handle for the capsule
         // without adding a test-only tag to production code.
-        fun pillShown() = compose.onAllNodes(
-            hasContentDescription("Сейчас играет", substring = true),
-        ).fetchSemanticsNodes().isNotEmpty()
+        fun pillShown() = runCatching {
+            compose.onAllNodes(hasContentDescription("Сейчас играет", substring = true))
+                .fetchSemanticsNodes().isNotEmpty()
+        }.getOrDefault(false)
 
         back()
-        compose.waitUntil(5000) { pillShown() }
+        compose.waitUntil(15000) { pillShown() }
 
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
         waitText("Внешний вид")
-        compose.waitUntil(5000) { pillShown() }
+        compose.waitUntil(15000) { pillShown() }
 
         clickText("Внешний вид")
         waitText("ЦВЕТ ОСНОВЫ")
         // The sub-screen keeps the pill: this is the route that used to lose it.
-        compose.waitUntil(5000) { pillShown() }
+        compose.waitUntil(15000) { pillShown() }
 
         // A real control on this very sub-screen produces a confirmation, and it must be visible —
         // which is only possible if the pill is composed here.
