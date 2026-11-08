@@ -84,41 +84,55 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 41 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 4/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 8/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 11/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 14/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 18/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 3/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 6/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 9/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 13/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 17/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 22/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 25/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 29/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 30/41 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 31/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 33/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 35/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 36/41 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 37/41 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 32/41 completed. (0 skipped) (0 failed)
 
 > Task :app:connectedDebugAndroidTest
 
-com.neptune.player.PlayerFlowTest > customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Failed to inject touch input.
-	Reason: Expected exactly '1' node but could not find any node that satisfies: (Text + EditableText contains 'Вкл.' (ignoreCase: false))
+com.neptune.player.PlayerFlowTest > planPageIsOnePageAndClosesInOneTap[emulator-5554 - 15] [31mFAILED [0m
 
-emulator-5554 - 15 Tests 39/41 completed. (0 skipped) (1 failed)
 
-> Task :app:connectedDebugAndroidTest
-
-com.neptune.player.PlayerFlowTest > subscriptionScreenShowsWhatIsFreeAndCanBeOpened[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Neptune Plus активен' (ignoreCase: false))
-	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
-
-emulator-5554 - 15 Tests 41/41 completed. (0 skipped) (2 failed)
-Finished 41 tests on emulator-5554 - 15
+emulator-5554 - 15 Tests 33/41 completed. (0 skipped) (1 failed)
+Finished 33 tests on emulator-5554 - 15
 
 > Task :app:connectedDebugAndroidTest
-Tests on emulator-5554 - 15 failed: There was 2 failure(s).
+Tests on emulator-5554 - 15 failed: There was 1 failure(s).
+Exception thrown during onAfterAll invocation of plugin AndroidTestApkInstallerPlugin: device 'emulator-5554' not found
+device 'emulator-5554' not found
+com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
+	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:981)
+	at com.android.ddmlib.AdbHelper.setDevice(AdbHelper.java:1000)
+	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$18(DeviceImpl.java:785)
+	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
+	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:755)
+	at com.android.ddmlib.internal.DeviceImpl.lambda$executeRemoteCommand$15(DeviceImpl.java:618)
+	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
+	at com.android.ddmlib.internal.DeviceImpl.executeRemoteCommand(DeviceImpl.java:615)
+	at com.android.ddmlib.internal.DeviceImpl.lambda$executeShellCommand$14(DeviceImpl.java:573)
+	at com.android.ddmlib.internal.DeviceImpl.logRun1(DeviceImpl.java:1801)
+	at com.android.ddmlib.internal.DeviceImpl.executeShellCommand(DeviceImpl.java:570)
+	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDevice.executeShellCommand(DdmlibAndroidDevice.kt)
+	at com.android.tools.utp.plugins.deviceprovider.ddmlib.DdmlibAndroidDeviceController$executeAsync$deferred$1.invokeSuspend(DdmlibAndroidDeviceController.kt:171)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:570)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:749)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
+
+Test run failed to complete. Expected 41 tests, received 32
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794165758514.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794166443665.json
 
 FAILURE: Build failed with an exception.
 
@@ -132,29 +146,11 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 4m 32s
+BUILD FAILED in 4m 27s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
-FAIL: 2 instrumented test(s) failed
-  customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt
-    java.lang.AssertionError: Failed to inject touch input.
-Reason: Expected exactly '1' node but could not find any node that satisfies: (Text + EditableText contains 'Вкл.' (ignoreCase: false))
-
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
-at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
-at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
-at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
-at com.neptune.player.PlayerFlowTest.customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt(PlayerFlowTest.kt:341)
-  subscriptionScreenShowsWhatIsFreeAndCanBeOpened
-    java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Neptune Plus активен' (ignoreCase: false))
-at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
-at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:359)
-at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:33)
-at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:46)
-at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:35)
-at com.neptune.player.PlayerFlowTest.clickText(PlayerFlowTest.kt:54)
-at com.neptune.player.PlayerFlowTest.subscriptionScreenShowsWhatIsFreeAndCanBeOpened(PlayerFlowTest.kt:446)
+FAIL: 1 instrumented test(s) failed
+  planPageIsOnePageAndClosesInOneTap
+    (no message — suspect device/emulator loss)
 instrumented suite exit status: 1

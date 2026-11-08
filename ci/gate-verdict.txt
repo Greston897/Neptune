@@ -1,21 +1,3 @@
-FAIL: 2 instrumented test(s) failed
-  customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt
-    java.lang.AssertionError: Failed to inject touch input.
-Reason: Expected exactly '1' node but could not find any node that satisfies: (Text + EditableText contains 'Вкл.' (ignoreCase: false))
-
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
-at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
-at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
-at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
-at com.neptune.player.PlayerFlowTest.customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt(PlayerFlowTest.kt:341)
-  subscriptionScreenShowsWhatIsFreeAndCanBeOpened
-    java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Neptune Plus активен' (ignoreCase: false))
-at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
-at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:359)
-at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:33)
-at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:46)
-at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:35)
-at com.neptune.player.PlayerFlowTest.clickText(PlayerFlowTest.kt:54)
-at com.neptune.player.PlayerFlowTest.subscriptionScreenShowsWhatIsFreeAndCanBeOpened(PlayerFlowTest.kt:446)
+FAIL: 1 instrumented test(s) failed
+  planPageIsOnePageAndClosesInOneTap
+    (no message — suspect device/emulator loss)
