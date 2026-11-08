@@ -1,3 +1,3 @@
 FAIL: 1 instrumented test(s) failed
-  sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
+  planPageIsOnePageAndClosesInOneTap
     (no message — suspect device/emulator loss)

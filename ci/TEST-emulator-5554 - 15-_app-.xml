@@ -1,47 +1,43 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<testsuite name="com.neptune.player.LayoutTest" tests="37" failures="1" errors="0" skipped="0" time="149.804" timestamp="2026-11-08T20:59:20" hostname="localhost">
+<testsuite name="com.neptune.player.LayoutTest" tests="33" failures="1" errors="0" skipped="0" time="189.896" timestamp="2026-11-08T21:11:03" hostname="localhost">
   <properties>
     <property name="device" value="emulator-5554 - 15" />
     <property name="flavor" value="" />
     <property name="project" value=":app" />
   </properties>
-  <testcase name="longTrackTitleNeverPushesControlsOffScreen" classname="com.neptune.player.LayoutTest" time="2.861" />
-  <testcase name="glyphSitsOnTheCentreOfItsBox" classname="com.neptune.player.LayoutTest" time="1.765" />
-  <testcase name="panelCentresContentShorterThanItself" classname="com.neptune.player.LayoutTest" time="1.683" />
-  <testcase name="sameTokenLabelsHaveIdenticalHeights" classname="com.neptune.player.LayoutTest" time="1.382" />
-  <testcase name="selectedTabIsExposedToAccessibility" classname="com.neptune.player.LayoutTest" time="2.311" />
-  <testcase name="pillArtworkIsInsetFromTheLeftEdge" classname="com.neptune.player.LayoutTest" time="1.711" />
-  <testcase name="iconButtonUsesExactlyTheRequestedSquare" classname="com.neptune.player.LayoutTest" time="1.145" />
-  <testcase name="priceChoiceIsAccessible" classname="com.neptune.player.LayoutTest" time="1.427" />
-  <testcase name="settingsRowsGrowInsteadOfClippingAtLargeFontScale" classname="com.neptune.player.LayoutTest" time="2.044" />
-  <testcase name="iconAndLabelShareACentreLine" classname="com.neptune.player.LayoutTest" time="6.777" />
-  <testcase name="navGlyphsAreIdenticalSquaresWhetherSelectedOrNot" classname="com.neptune.player.LayoutTest" time="1.439" />
-  <testcase name="noPromotionalCopyIsRendered" classname="com.neptune.player.LayoutTest" time="1.145" />
-  <testcase name="leadingIconSharesTheCentreLineOfItsLabelBlock" classname="com.neptune.player.LayoutTest" time="1.228" />
-  <testcase name="pillKeepsItsGeometryWhileAShortNoticeIsShown" classname="com.neptune.player.LayoutTest" time="1.828" />
-  <testcase name="trackWithBrokenArtworkUriStillRenders" classname="com.neptune.player.LayoutTest" time="1.112" />
-  <testcase name="touchTargetsAreNeverSmallerThanFortyFourDp" classname="com.neptune.player.LayoutTest" time="0.925" />
-  <testcase name="iconsStaySquareNextToALongLabel" classname="com.neptune.player.LayoutTest" time="1.27" />
-  <testcase name="trackRowContentStartsAtTheRowEdge" classname="com.neptune.player.LayoutTest" time="1.753" />
-  <testcase name="panelCentresContentOnBothAxes" classname="com.neptune.player.LayoutTest" time="1.289" />
-  <testcase name="circularArtworkPreferenceIsHonoured" classname="com.neptune.player.LayoutTest" time="1.421" />
-  <testcase name="miniPlayerIsTransportOnlyAndKeepsEveryControlVisible" classname="com.neptune.player.LayoutTest" time="1.56" />
-  <testcase name="miniPlayerTransportFitsANarrowScreen" classname="com.neptune.player.LayoutTest" time="1.463" />
-  <testcase name="trackPillIsACentredCapsuleOfTheTokenHeight" classname="com.neptune.player.LayoutTest" time="1.21" />
-  <testcase name="tabLabelsFitInsideTheirCells" classname="com.neptune.player.LayoutTest" time="0.977" />
-  <testcase name="currentTrackRowKeepsTheSameGeometryAsAnyOtherRow" classname="com.neptune.player.LayoutTest" time="1.113" />
-  <testcase name="glassSheenOverlayDoesNotInflateThePanel" classname="com.neptune.player.LayoutTest" time="1.02" />
-  <testcase name="leadingIconCellIsTheBareTokenSize" classname="com.neptune.player.LayoutTest" time="1.425" />
-  <testcase name="trackWithoutArtworkRendersTheBrandFallback" classname="com.neptune.player.LayoutTest" time="1.273" />
-  <testcase name="trackPillAnnouncesTrackAndArtist" classname="com.neptune.player.LayoutTest" time="1.477" />
-  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="5.121" />
-  <testcase name="lyricsScreenOpensAndExplainsWhenThereIsNoText" classname="com.neptune.player.PlayerFlowTest" time="4.129" />
-  <testcase name="pillAndItsNoticesFollowTheUserIntoSubScreens" classname="com.neptune.player.PlayerFlowTest" time="9.883" />
-  <testcase name="planPageIsOnePageAndClosesInOneTap" classname="com.neptune.player.PlayerFlowTest" time="5.184" />
-  <testcase name="importedAudioActuallyPlaysAndBackReturnsHome" classname="com.neptune.player.PlayerFlowTest" time="4.195" />
-  <testcase name="likedAndRecentCollectionsOpenAndReturn" classname="com.neptune.player.PlayerFlowTest" time="3.833" />
-  <testcase name="albumShelfActionOpensTheLibraryAlbumsTab" classname="com.neptune.player.PlayerFlowTest" time="2.264" />
-  <testcase name="sleepTimerOpensOnlyFromItsRowAndAlwaysCloses" classname="com.neptune.player.PlayerFlowTest" time="55.428">
+  <testcase name="longTrackTitleNeverPushesControlsOffScreen" classname="com.neptune.player.LayoutTest" time="3.729" />
+  <testcase name="glyphSitsOnTheCentreOfItsBox" classname="com.neptune.player.LayoutTest" time="2.677" />
+  <testcase name="panelCentresContentShorterThanItself" classname="com.neptune.player.LayoutTest" time="1.499" />
+  <testcase name="sameTokenLabelsHaveIdenticalHeights" classname="com.neptune.player.LayoutTest" time="2.384" />
+  <testcase name="selectedTabIsExposedToAccessibility" classname="com.neptune.player.LayoutTest" time="2.044" />
+  <testcase name="pillArtworkIsInsetFromTheLeftEdge" classname="com.neptune.player.LayoutTest" time="1.925" />
+  <testcase name="iconButtonUsesExactlyTheRequestedSquare" classname="com.neptune.player.LayoutTest" time="1.936" />
+  <testcase name="priceChoiceIsAccessible" classname="com.neptune.player.LayoutTest" time="2.505" />
+  <testcase name="settingsRowsGrowInsteadOfClippingAtLargeFontScale" classname="com.neptune.player.LayoutTest" time="1.934" />
+  <testcase name="iconAndLabelShareACentreLine" classname="com.neptune.player.LayoutTest" time="3.748" />
+  <testcase name="navGlyphsAreIdenticalSquaresWhetherSelectedOrNot" classname="com.neptune.player.LayoutTest" time="3.546" />
+  <testcase name="noPromotionalCopyIsRendered" classname="com.neptune.player.LayoutTest" time="2.015" />
+  <testcase name="leadingIconSharesTheCentreLineOfItsLabelBlock" classname="com.neptune.player.LayoutTest" time="3.178" />
+  <testcase name="pillKeepsItsGeometryWhileAShortNoticeIsShown" classname="com.neptune.player.LayoutTest" time="3.494" />
+  <testcase name="trackWithBrokenArtworkUriStillRenders" classname="com.neptune.player.LayoutTest" time="2.304" />
+  <testcase name="touchTargetsAreNeverSmallerThanFortyFourDp" classname="com.neptune.player.LayoutTest" time="3.924" />
+  <testcase name="iconsStaySquareNextToALongLabel" classname="com.neptune.player.LayoutTest" time="4.27" />
+  <testcase name="trackRowContentStartsAtTheRowEdge" classname="com.neptune.player.LayoutTest" time="2.707" />
+  <testcase name="panelCentresContentOnBothAxes" classname="com.neptune.player.LayoutTest" time="46.932" />
+  <testcase name="circularArtworkPreferenceIsHonoured" classname="com.neptune.player.LayoutTest" time="1.545" />
+  <testcase name="miniPlayerIsTransportOnlyAndKeepsEveryControlVisible" classname="com.neptune.player.LayoutTest" time="1.727" />
+  <testcase name="miniPlayerTransportFitsANarrowScreen" classname="com.neptune.player.LayoutTest" time="1.822" />
+  <testcase name="trackPillIsACentredCapsuleOfTheTokenHeight" classname="com.neptune.player.LayoutTest" time="1.305" />
+  <testcase name="tabLabelsFitInsideTheirCells" classname="com.neptune.player.LayoutTest" time="1.771" />
+  <testcase name="currentTrackRowKeepsTheSameGeometryAsAnyOtherRow" classname="com.neptune.player.LayoutTest" time="1.547" />
+  <testcase name="glassSheenOverlayDoesNotInflateThePanel" classname="com.neptune.player.LayoutTest" time="1.424" />
+  <testcase name="leadingIconCellIsTheBareTokenSize" classname="com.neptune.player.LayoutTest" time="1.694" />
+  <testcase name="trackWithoutArtworkRendersTheBrandFallback" classname="com.neptune.player.LayoutTest" time="1.161" />
+  <testcase name="trackPillAnnouncesTrackAndArtist" classname="com.neptune.player.LayoutTest" time="2.57" />
+  <testcase name="settingsBackReturnsToPreviousPageThenHome" classname="com.neptune.player.PlayerFlowTest" time="7.151" />
+  <testcase name="lyricsScreenOpensAndExplainsWhenThereIsNoText" classname="com.neptune.player.PlayerFlowTest" time="5.178" />
+  <testcase name="pillAndItsNoticesFollowTheUserIntoSubScreens" classname="com.neptune.player.PlayerFlowTest" time="11.896" />
+  <testcase name="planPageIsOnePageAndClosesInOneTap" classname="com.neptune.player.PlayerFlowTest" time="40.933">
     <failure></failure>
   </testcase>
   <system-err>Exception thrown during onAfterAll invocation of plugin AndroidTestApkInstallerPlugin: device 'emulator-5554' not found
@@ -67,6 +63,6 @@ com.android.ddmlib.AdbCommandRejectedException: device 'emulator-5554' not found
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
 
-Test run failed to complete. Expected 41 tests, received 36
+Test run failed to complete. Expected 41 tests, received 32
 </system-err>
 </testsuite>
