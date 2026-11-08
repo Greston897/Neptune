@@ -349,7 +349,11 @@ fun ProfileScreen(state: NeptuneState, onBack: () -> Unit, onSubscription: () ->
                 )
             }
         } } }
-        item { PlanCard(state, onSubscription) }
+        // Its own gap: the card used to sit flush under the avatar panel, so it read as a footer of
+        // that panel rather than as the next thing on the page.
+        item { Box(Modifier.padding(top = NeSpace.lg)) { PlanCard(state, onSubscription) } }
+        // Breathing room under the last card, on top of the dock clearance already reserved.
+        item { Spacer(Modifier.height(NeSpace.md)) }
     }
     if (confirmRemovePhoto) ConfirmDestructiveDialog(
         title = "Убрать фото профиля?",

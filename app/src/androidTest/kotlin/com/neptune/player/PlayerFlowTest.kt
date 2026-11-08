@@ -360,6 +360,18 @@ class PlayerFlowTest {
             1,
             compose.onAllNodes(hasTestTag("subscriptionList")).fetchSemanticsNodes().size,
         )
+        // The screenshot that reported this bug showed two headers in one picture: "Внешний вид" and
+        // "ПОДПИСКА" over each other. Whatever the mechanism, the appearance screen's own title must
+        // not be inside the overlay's bounds.
+        val page = compose.onNodeWithTag("subscriptionList").fetchSemanticsNode().boundsInRoot
+        compose.onAllNodes(hasText("Спокойная основа. Акцент — на твоей музыке.")).fetchSemanticsNodes()
+            .filter { node -> node.boundsInRoot.top < page.bottom && node.boundsInRoot.bottom > page.top }
+            .forEach { node ->
+                throw AssertionError(
+                    "the appearance subtitle renders inside the plan page bounds at ${node.boundsInRoot} " +
+                        "— the overlay and the screen under it are being drawn together",
+                )
+            }
         // Back closes the overlay and returns to the appearance screen, intact.
         back()
         waitText("ЦВЕТ ОСНОВЫ")

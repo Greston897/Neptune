@@ -112,16 +112,21 @@ fun GlassPanel(
     val base = Modifier.clip(shape)
     val sheenPhase = LocalSheenPhase.current
     val sheenTint = accent()
+    // An overlay draws its panels over a page it must not reveal. Its own tint/rim/sheen are all
+    // semi-transparent by design, so on top of a solid page they still let anything painted *under*
+    // the page through — that is how text from "Внешний вид" ended up inside the cards of "Подписка".
+    // Isolation therefore means: no blur source, and no alpha at all.
+    val isolated = haze == null
     val style = glassStyle(s)
     // Uniform RenderEffect blur only. Haze's progressive/shader path looks marginally nicer but
     // collapses to a crawl on software renderers (and some low-end GPUs), so it is not worth it.
+    // No `haze` means there is deliberately nothing to sample — a full-screen overlay provides
+    // `null` on purpose (see NeptuneApp). The panel is then painted solid, because a translucent
+    // panel over a blurred *other screen* is exactly the smear this was reported as.
     val surface = if (s.glassEnabled && haze != null) base.hazeChild(haze, style) {
         // RenderEffect blur needs API 31+; older devices get the opaque fallback instead of a crash.
         blurEnabled = Build.VERSION.SDK_INT >= 31
     } else base.background(Color(0xFF121212))
-    // No `haze` means there is deliberately nothing to sample — a full-screen overlay provides
-    // `null` on purpose (see NeptuneApp). The panel is then painted solid, because 94% black over a
-    // blurred *other screen* is exactly the smear this was reported as.
     // A Box defaults to TopStart. When the panel is taller than its content (a search field with
     // heightIn(min = 52.dp), a quick tile with heightIn(min = 80.dp)) the row was pinned to the top
     // and looked "завышено". Centring by default puts icon + label on the panel's centre line.
@@ -129,7 +134,7 @@ fun GlassPanel(
         // Sheen sits *under* the content so icons and text stay crisp, and is always present: a
         // static pearlescent lift plus a travelling accent-tinted highlight. Drawn with two rounded
         // rects, so it costs nothing like the shader blur that had to be removed in 2.4.
-        if (s.glassEnabled) Canvas(Modifier.matchParentSize()) {
+        if (s.glassEnabled && !isolated) Canvas(Modifier.matchParentSize()) {
             val phase = sheenPhase()
             val r = CornerRadius(corner.toPx().coerceAtMost(size.minDimension / 2f))
             drawRoundRect(
@@ -154,7 +159,7 @@ fun GlassPanel(
             )
         }
         content()
-        if (rim && s.glassEnabled) Canvas(Modifier.matchParentSize()) {
+        if (rim && s.glassEnabled && !isolated) Canvas(Modifier.matchParentSize()) {
             val r = corner.toPx().coerceAtMost(size.minDimension / 2f)
             val inset = 0.6.dp.toPx()
             drawRoundRect(

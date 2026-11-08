@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -77,10 +78,10 @@ fun SubscriptionScreen(state: NeptuneState, onClose: () -> Unit) {
     // open of this page — tapping "Neptune Plus активен" in Settings to manage or cancel the plan
     // opened the manager and shut it again in the same frame.
 
-    // Opaque, not translucent. Everything behind this page is another screen — often itself a
-    // blurred panel — and showing it through a glass sheet produced a smeared double exposure.
-    // The scrim stays for the one frame a fade takes, then the page is simply itself.
-    Box(Modifier.fillMaxSize().background(Ne.Void)) {
+    // Opaque, top to bottom, and it also swallows touches so nothing underneath reacts to a tap on
+    // what looks like this page. Everything behind it is another screen — often itself made of
+    // blurred panels — and any transparency here produced the smeared double exposure in the report.
+    Box(Modifier.fillMaxSize().background(Ne.Void).pointerInput(Unit) {}) {
     LazyColumn(
         // Tagged so a test can scroll to a control that lives below the fold instead of assuming
         // it fits on the viewport (a LazyColumn does not compose off-screen items at all).

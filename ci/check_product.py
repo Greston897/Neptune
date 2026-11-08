@@ -116,6 +116,14 @@ def check_paywall_is_one_opaque_page() -> None:
     if "BackHandler" not in app:
         fail(f"{ROOT / 'NeptuneApp.kt'}: back must close the plan overlay instead of popping the page under it")
     glass = text(ROOT / "ui/Glass.kt")
+    if "val isolated = haze == null" not in glass:
+        fail(
+            f"{ROOT / 'ui/Glass.kt'}: an isolated panel must be recognisable. Its tint, rim and sheen are "
+            "semi-transparent by design, so on top of an overlay they leak whatever is painted under the page."
+        )
+    for layer in ('if (s.glassEnabled && !isolated) Canvas', 'if (rim && s.glassEnabled && !isolated) Canvas'):
+        if layer not in glass:
+            fail(f"{ROOT / 'ui/Glass.kt'}: {layer!r} must stay — no alpha above a page that has something to hide")
     if ".background(Color(0xFF121212).copy(alpha" in glass:
         fail(
             f"{ROOT / 'ui/Glass.kt'}: a panel with no backdrop to sample must be opaque, "
