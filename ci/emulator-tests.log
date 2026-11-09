@@ -84,28 +84,30 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 47 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 4/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 9/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 14/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 18/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 23/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 3/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 8/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 11/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 15/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 19/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 24/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 29/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 30/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 32/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 33/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 35/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 37/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 34/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 36/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 38/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 39/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 40/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 41/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 42/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 43/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 44/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 45/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 46/47 completed. (0 skipped) (0 failed)
 Finished 47 tests on emulator-5554 - 15
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794230808680.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794231489192.json
 
-BUILD SUCCESSFUL in 4m 30s
+BUILD SUCCESSFUL in 5m 20s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
