@@ -1,39 +1,38 @@
 == compile errors ==
 == failures ==
-77:YandexTest > aSearchResponseBecomesRemoteTracks FAILED
-78:    org.junit.ComparisonFailure at YandexTest.kt:167
-80:YandexTest > jsonReaderHandlesEscapesAndNesting FAILED
-85:> Task :app:testDebugUnitTest FAILED
-98:BUILD FAILED in 3m 52s
+76:YandexTest > jsonReaderHandlesEscapesAndNesting FAILED
+77:    java.lang.AssertionError at YandexTest.kt:123
+81:> Task :app:testDebugUnitTest FAILED
+93:BUILD FAILED in 2m 38s
 == tail ==
-> Task :app:checkReleaseDuplicateClasses
 > Task :app:mergeReleaseStartupProfile
 > Task :app:compileDebugKotlin
 > Task :app:compileReleaseKotlin
+> Task :app:stripReleaseDebugSymbols
 > Task :app:mergeExtDexRelease
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
+
 > Task :app:compileDebugJavaWithJavac
 > Task :app:processDebugJavaRes
 > Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:bundleDebugClassesToCompileJar
 > Task :app:compileReleaseJavaWithJavac
-> Task :app:generateReleaseLintVitalReportModel
 > Task :app:compileDebugUnitTestKotlin
+> Task :app:generateReleaseLintVitalReportModel
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes
 
 > Task :app:testDebugUnitTest
 
-YandexTest > aSearchResponseBecomesRemoteTracks FAILED
-    org.junit.ComparisonFailure at YandexTest.kt:167
-
 YandexTest > jsonReaderHandlesEscapesAndNesting FAILED
-    com.neptune.player.data.yandex.MiniJson$JsonException at YandexTest.kt:101
+    java.lang.AssertionError at YandexTest.kt:123
 
-87 tests completed, 2 failed
+87 tests completed, 1 failed
 
 > Task :app:testDebugUnitTest FAILED
-> Task :app:lintVitalAnalyzeRelease
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794197360020.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794197737260.json
 
 FAILURE: Build failed with an exception.
 
@@ -44,5 +43,5 @@ Execution failed for task ':app:testDebugUnitTest'.
 * Try:
 > Run with --scan to get full insights.
 
-BUILD FAILED in 3m 52s
-53 actionable tasks: 48 executed, 5 from cache
+BUILD FAILED in 2m 38s
+51 actionable tasks: 46 executed, 5 from cache
