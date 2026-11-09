@@ -100,8 +100,11 @@ class LibraryRepository(private val context: Context, private val scope: Corouti
         val catalog = remote ?: return emptyList()
         val ids = linkedSetOf<String>()
         ids += savedStreamIds
+        // No de-duplication against `local` here: `LibraryState.all` and `byId` already fold the two
+        // lists, and filtering by id dropped a saved catalogue track the moment a row with the same id
+        // existed for any other reason — which is every debug build of the suite, and any device where
+        // the same song arrived as both a file and a stream.
         return ids.mapNotNull { catalog.resolve(it.substringAfter("yandex:"))?.toTrack() }
-            .filter { t -> local.none { it.id == t.id } }
     }
 
     /** Stream ids the user put into a playlist or into favourites; the owner writes this set. */

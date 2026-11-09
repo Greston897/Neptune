@@ -412,6 +412,9 @@ fun ToggleRow(title: String, subtitle: String, checked: Boolean, onChange: (Bool
     val haptic = LocalHaptics.current
     SettingRow(title, subtitle, trailing = {
         Switch(
+            // A switch is its own control: the row's text and the toggle are separate nodes, and the
+            // title is the only stable name a caller (or a test) can address one switch by.
+            modifier = Modifier.testTag("toggle:$title"),
             checked = checked, onCheckedChange = { haptic(); onChange(it) },
             colors = SwitchDefaults.colors(
                 checkedThumbColor = Ne.Black, checkedTrackColor = accent(), checkedBorderColor = accent(),

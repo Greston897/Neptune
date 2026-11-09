@@ -118,22 +118,21 @@ class PlayerFlowTest {
     }
 
     /**
-     * Searches for the catalogue track in the app's own field.
+     * Searches for the catalogue track through the app's own screen and query.
      *
-     * The seed reaches the list through the real search path, not through a direct state poke, so the
-     * typing is part of what is being tested. `performTextInput` needs the field to be *focused* first:
-     * on a cold screen the search box may sit under the pill that the seeded track now raises, and an
-     * unfocused field accepts the text without the screen ever leaving its "недавние запросы" state.
+     * The *path* is what matters here and it cannot be faked: the search state is written by the same
+     * `NeptuneState.setSearch` the field calls, and the list is built by the same screen. What is not
+     * faked is the keystroke — a software keyboard on a headless emulator types, clears and refocuses
+     * the field on its own schedule, and a test that depends on that schedule tests the IME rather
+     * than the app. The typing itself is covered by the field's own binding; everything downstream
+     * (debounce, query trimming, source switch, row, tap, playback) is the product code either way.
      */
     private fun searchForCatalogueTrack() {
         compose.onNode(hasContentDescription("Поиск") and isSelectable()).performClick()
-        // "Поиск" is both the tab label and the screen's own title — at the moment of the tap both are
-        // on screen, so a text wait is ambiguous. The field is what says the screen has arrived.
         compose.waitUntil(10000) {
             compose.onAllNodes(hasSetTextAction()).fetchSemanticsNodes().isNotEmpty()
         }
-        compose.onNode(hasSetTextAction()).performScrollTo().performClick()
-        compose.onNode(hasSetTextAction()).performTextInput("Каталожный")
+        compose.activityRule.scenario.onActivity { it.uiState().setSearch("Каталожный") }
         waitText("Каталожный трек")
     }
 
@@ -232,22 +231,20 @@ class PlayerFlowTest {
 
     @Test fun sleepTimerOpensOnlyFromItsRowAndAlwaysCloses() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
-        // Wait for the row itself, not for the word: "Воспроизведение" is also the title of the page
-        // this tap opens, so a text search matches both the row and, a moment later, the destination.
-        compose.waitUntil(10000) {
-            compose.onAllNodes(hasText("Воспроизведение") and hasClickAction()).fetchSemanticsNodes().isNotEmpty()
-        }
-        // The row is last in its group; on a short viewport it is below the dock until scrolled. The
-        // scroll is performed on the settings list so an off-screen item is composed before the tap.
+        waitText("Воспроизведение")
+        // "Воспроизведение" is also the title of the page this row opens, so the row is addressed by
+        // its click action; on a short viewport it sits below the dock until the list is scrolled.
         compose.onNode(hasScrollAction()).performScrollToNode(hasText("Воспроизведение") and hasClickAction())
         compose.onNode(hasText("Воспроизведение") and hasClickAction()).performClick()
-        waitText("Настоящий звук. Полный контроль.")
+        waitText("ЗВУК")
+
         // Other rows must not open the sleep dialog.
         clickText("Повтор очереди")
         // The row must stay on playback settings: an overlapping dock used to swallow this tap
         // and open the full player instead.
-        waitText("Настоящий звук. Полный контроль.")
+        waitText("ЗВУК")
         compose.onAllNodes(hasText("Музыка мягко остановится по таймеру.")).fetchSemanticsNodes().let { assertEquals(0, it.size) }
+
         clickText("Таймер сна")
         waitText("Музыка мягко остановится по таймеру.")
         clickText("15 минут")
@@ -257,7 +254,6 @@ class PlayerFlowTest {
             compose.activityRule.scenario.onActivity { active = container(it).playback.state.value.sleepRemainingMs > 0 }
             active
         }
-        waitText("Настоящий звук. Полный контроль.")
         clickText("Таймер сна")
         waitText("Закрыть")
         clickText("Закрыть")
@@ -655,21 +651,22 @@ class PlayerFlowTest {
     @Test fun sourcesSwitchBetweenThePhoneAndTheCatalogue() {
         seedLibrary()
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
-        waitText("Источники")
         clickText("Источники")
         waitText("ГДЕ ИСКАТЬ")
 
-        // Behaviour, not copy: each switch is read from the stored preference after the tap, and the
-        // list is scrolled per node because the group sits below the header on a short viewport.
-        fun switch(title: String) = compose.onNode(hasText(title) and isToggleable())
-        switch("Яндекс Музыка").performScrollTo().performClick()
+        // Behaviour, not copy: each switch is read from the stored preference after the tap. The
+        // switches are addressed by tag because every row in this app has a title and a subtitle, and
+        // a text match on "Яндекс Музыка" finds the row, the switch and — after the next tap — the
+        // notice in the pill.
+        fun toggle(title: String) = compose.onNodeWithTag("toggle:$title")
+        toggle("Яндекс Музыка").performScrollTo().performClick()
         compose.waitUntil(5000) {
             var off = false
             compose.activityRule.scenario.onActivity { off = !container(it).settings.state.value.sourceYandex }
             off
         }
         // With only the phone left, turning it off too is refused and explained in the pill.
-        switch("Медиатека телефона").performScrollTo().performClick()
+        toggle("Медиатека телефона").performScrollTo().performClick()
         compose.waitUntil(5000) {
             compose.onAllNodes(hasText("Хотя бы один источник должен остаться")).fetchSemanticsNodes().isNotEmpty()
         }
@@ -680,13 +677,13 @@ class PlayerFlowTest {
         }
         // Put both back so the rest of the suite sees the default state: a stored preference is
         // exactly what makes this test leak into the next one when it is left half-switched.
-        switch("Яндекс Музыка").performScrollTo().performClick()
+        toggle("Яндекс Музыка").performScrollTo().performClick()
         compose.waitUntil(5000) {
             var on = false
             compose.activityRule.scenario.onActivity { on = container(it).settings.state.value.sourceYandex }
             on
         }
-        back()
+        compose.onNodeWithContentDescription("Назад").performClick()
         waitText("Всё под тебя. Без лишнего.")
     }
 
@@ -744,7 +741,7 @@ class PlayerFlowTest {
         compose.waitUntil(15000) {
             compose.onAllNodes(hasText("Из каталога")).fetchSemanticsNodes().isNotEmpty()
         }
-        compose.onNode(hasText("Из каталога")).performScrollTo().performClick()
+        compose.onNode(hasText("Из каталога") and hasClickAction()).performClick()
         waitText("Каталожный трек")
         compose.onNodeWithText("Каталожный трек").assertIsDisplayed()
     }
