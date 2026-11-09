@@ -161,11 +161,33 @@ fun NeChip(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modif
     }
 }
 
+/**
+ * A section caption with an optional trailing action.
+ *
+ * [subtitle] is a count ("20 треков") rather than an action word, because a header that carries both
+ * a number and a "play all" button reads as two competing affordances; the chart and the search
+ * results put the button below the caption instead.
+ */
 @Composable
 fun SectionHeader(
     title: String, modifier: Modifier = Modifier, action: String? = null, onAction: (() -> Unit)? = null,
-    actionTag: String? = null,
+    actionTag: String? = null, subtitle: String? = null,
 ) {
+    if (subtitle != null) {
+        Row(modifier.fillMaxWidth().heightIn(min = 40.dp), verticalAlignment = Alignment.CenterVertically) {
+            NeText(
+                title, Modifier.weight(1f).alignByBaseline(), size = NeType.section, lineHeight = NeType.sectionLine,
+                weight = FontWeight.Bold, tracking = (-0.3).sp, maxLines = 1,
+            )
+            NeText(
+                subtitle, Modifier.alignByBaseline(), size = NeType.caption, lineHeight = NeType.captionLine,
+                color = Ne.Faint, maxLines = 1,
+            )
+        }
+        return
+    }
+    // Two trailing slots in one header would compete for the same edge, so a count and an action
+    // never arrive together. Both are nullable and every caller passes one or the other.
     Row(modifier.fillMaxWidth().heightIn(min = 40.dp), verticalAlignment = Alignment.CenterVertically) {
         NeText(
             title, Modifier.weight(1f).alignByBaseline(), size = NeType.section, lineHeight = NeType.sectionLine,

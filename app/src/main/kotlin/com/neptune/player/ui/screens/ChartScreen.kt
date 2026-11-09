@@ -130,9 +130,11 @@ fun ChartScreen(state: NeptuneState, onBack: () -> Unit) {
                         page.menu.items.forEach { item ->
                             // `selected` from the service is the current chart; the postfix is what a
                             // tap asks for. Both come from the response, neither is guessed.
-                            NeChip(item.title, item.selected || item.postfix == streams.chartPostfix) {
-                                state.loadChart(item.postfix)
-                            }
+                            NeChip(
+                                text = item.title,
+                                selected = item.selected || item.postfix == streams.chartPostfix,
+                                onClick = { state.loadChart(item.postfix) },
+                            )
                         }
                     }
                 }

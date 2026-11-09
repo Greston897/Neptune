@@ -4,6 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -175,7 +178,7 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit, on
 
             // ---- phone --------------------------------------------------------------
             if (settings.sourceLocal && local.isNotEmpty() && (filter == 0 || filter == 1)) {
-                item { SectionHeader("На телефоне", trackCount(local.size)) }
+                item { SectionHeader("На телефоне", subtitle = trackCount(local.size)) }
                 items(local, key = { ListKeys.track(it.id) }) { track ->
                     TrackRow(track, playback.track?.id == track.id, playback.isPlaying, { state.playTrack(track, local); state.submitSearch() }, onMore = { state.contextTrack = track })
                 }
@@ -231,10 +234,7 @@ fun SearchScreen(state: NeptuneState, onCollection: (String, String) -> Unit, on
                 }
                 if (remote.isNotEmpty() && (filter == 0 || filter == 1)) {
                     item {
-                        SectionHeader(
-                            "Яндекс Музыка", trackCount(remote.size),
-                            action = "Слушать всё", onAction = { state.playRemoteAll(remote) },
-                        )
+                        SectionHeader("Яндекс Музыка", subtitle = trackCount(remote.size))
                     }
                     items(remote, key = { ListKeys.track(it.uriId) }) { track ->
                         RemoteTrackRow(
