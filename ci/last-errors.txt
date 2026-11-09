@@ -1,38 +1,37 @@
 == compile errors ==
-e: file:///home/runner/work/Neptune/Neptune/app/src/androidTest/kotlin/com/neptune/player/PlayerFlowTest.kt:182:76 Unresolved reference 'libraryTab'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:13:33 Unresolved reference 'UserData'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:96:34 Unresolved reference 'UserData'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:18 Unresolved reference 'liked'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:31 Unresolved reference 'recent'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:45 Unresolved reference 'playlists'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:63 Unresolved reference 'trackIds'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:65 Unresolved reference 'it'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:13:33 Unresolved reference 'UserData'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:96:34 Unresolved reference 'UserData'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:18 Unresolved reference 'liked'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:31 Unresolved reference 'recent'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:45 Unresolved reference 'playlists'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:63 Unresolved reference 'trackIds'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:65 Unresolved reference 'it'.
 == failures ==
-120:> Task :app:compileDebugAndroidTestKotlin FAILED
-139:BUILD FAILED in 3m 34s
+61:> Task :app:compileReleaseKotlin FAILED
+70:> Task :app:compileDebugKotlin FAILED
+113:BUILD FAILED in 2m 35s
 == tail ==
-> Task :app:compileDebugAndroidTestShaders NO-SOURCE
-> Task :app:generateDebugAndroidTestAssets UP-TO-DATE
-> Task :app:mergeDebugAndroidTestAssets
-> Task :app:compressDebugAndroidTestAssets
-> Task :app:desugarDebugAndroidTestFileDependencies
-> Task :app:mergeDebugAndroidTestResources
-> Task :app:checkDebugAndroidTestDuplicateClasses
-> Task :app:processDebugAndroidTestResources
-> Task :app:lintVitalAnalyzeRelease
-> Task :app:mergeDexRelease
-> Task :app:mergeExtDexDebugAndroidTest
-> Task :app:mergeLibDexDebugAndroidTest
-> Task :app:mergeDebugAndroidTestJniLibFolders
-> Task :app:mergeDebugJniLibFolders
-> Task :app:mergeDebugNativeLibs
-> Task :app:mergeDebugAndroidTestNativeLibs NO-SOURCE
-> Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
-> Task :app:compileReleaseArtProfile
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:45 Unresolved reference 'playlists'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:63 Unresolved reference 'trackIds'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:65 Unresolved reference 'it'.
 
-> Task :app:compileDebugAndroidTestKotlin FAILED
-e: file:///home/runner/work/Neptune/Neptune/app/src/androidTest/kotlin/com/neptune/player/PlayerFlowTest.kt:182:76 Unresolved reference 'libraryTab'.
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794224443119.json
 
-> Task :app:validateSigningDebugAndroidTest
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794223389000.json
+FAILURE: Build completed with 2 failures.
 
-FAILURE: Build failed with an exception.
-
+1: Task failed with an exception.
+-----------
 * What went wrong:
-Execution failed for task ':app:compileDebugAndroidTestKotlin'.
+Execution failed for task ':app:compileReleaseKotlin'.
 > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
    > Compilation error. See log for more details
 
@@ -41,6 +40,21 @@ Execution failed for task ':app:compileDebugAndroidTestKotlin'.
 > Run with --info or --debug option to get more log output.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
+==============================================================================
 
-BUILD FAILED in 3m 34s
-91 actionable tasks: 84 executed, 7 from cache
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 2m 35s
+42 actionable tasks: 38 executed, 4 from cache

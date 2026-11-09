@@ -26,9 +26,9 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:processDebugManifestForPackage
 > Task :app:javaPreCompileDebug
-> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebugUnitTest
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
 > Task :app:generateReleaseBuildConfig
@@ -58,83 +58,57 @@ Daemon will be stopped at the end of the build
 > Task :app:stripReleaseDebugSymbols
 > Task :app:mergeExtDexRelease
 
+> Task :app:compileReleaseKotlin FAILED
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:13:33 Unresolved reference 'UserData'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:96:34 Unresolved reference 'UserData'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:18 Unresolved reference 'liked'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:31 Unresolved reference 'recent'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:45 Unresolved reference 'playlists'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:63 Unresolved reference 'trackIds'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:65 Unresolved reference 'it'.
+
+> Task :app:compileDebugKotlin FAILED
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:13:33 Unresolved reference 'UserData'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:96:34 Unresolved reference 'UserData'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:18 Unresolved reference 'liked'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:31 Unresolved reference 'recent'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:45 Unresolved reference 'playlists'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:63 Unresolved reference 'trackIds'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:65 Unresolved reference 'it'.
+
 > Task :app:stripReleaseDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794224443119.json
 
-> Task :app:compileDebugJavaWithJavac
-> Task :app:processDebugJavaRes
-> Task :app:bundleDebugClassesToCompileJar
-> Task :app:bundleDebugClassesToRuntimeJar
-> Task :app:compileReleaseJavaWithJavac
-> Task :app:compileDebugUnitTestKotlin
-> Task :app:generateReleaseLintVitalReportModel
-> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
-> Task :app:processDebugUnitTestJavaRes
-> Task :app:testDebugUnitTest
-> Task :app:extractReleaseNativeSymbolTables
-> Task :app:dexBuilderRelease
-> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :app:mergeReleaseArtProfile
-> Task :app:mergeReleaseGlobalSynthetics
-> Task :app:mergeReleaseShaders
-> Task :app:compileReleaseShaders NO-SOURCE
-> Task :app:generateReleaseAssets UP-TO-DATE
-> Task :app:mergeReleaseAssets
-> Task :app:compressReleaseAssets
-> Task :app:extractReleaseVersionControlInfo
-> Task :app:processReleaseJavaRes
-> Task :app:mergeReleaseJavaResource
-> Task :app:collectReleaseDependencies
-> Task :app:sdkReleaseDependencyData
-> Task :app:optimizeReleaseResources
-> Task :app:validateSigningRelease
-> Task :app:writeReleaseAppMetadata
-> Task :app:writeReleaseSigningConfigVersions
-> Task :app:preDebugAndroidTestBuild SKIPPED
-> Task :app:processDebugAndroidTestManifest
-> Task :app:generateDebugAndroidTestBuildConfig
-> Task :app:checkDebugAndroidTestAarMetadata
-> Task :app:generateDebugAndroidTestResValues FROM-CACHE
-> Task :app:mapDebugAndroidTestSourceSetPaths
-> Task :app:generateDebugAndroidTestResources
-> Task :app:javaPreCompileDebugAndroidTest FROM-CACHE
-> Task :app:mergeDebugAndroidTestShaders
-> Task :app:compileDebugAndroidTestShaders NO-SOURCE
-> Task :app:generateDebugAndroidTestAssets UP-TO-DATE
-> Task :app:mergeDebugAndroidTestAssets
-> Task :app:compressDebugAndroidTestAssets
-> Task :app:desugarDebugAndroidTestFileDependencies
-> Task :app:mergeDebugAndroidTestResources
-> Task :app:checkDebugAndroidTestDuplicateClasses
-> Task :app:mergeDexRelease
-> Task :app:processDebugAndroidTestResources
-> Task :app:lintVitalAnalyzeRelease
-> Task :app:mergeExtDexDebugAndroidTest
-> Task :app:mergeLibDexDebugAndroidTest
-> Task :app:mergeDebugAndroidTestJniLibFolders
-> Task :app:mergeDebugJniLibFolders
-> Task :app:mergeDebugNativeLibs
-> Task :app:mergeDebugAndroidTestNativeLibs NO-SOURCE
-> Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
-> Task :app:compileReleaseArtProfile
-> Task :app:validateSigningDebugAndroidTest
-> Task :app:writeDebugAndroidTestSigningConfigVersions
-> Task :app:lintVitalReportRelease
-> Task :app:lintVitalRelease
-> Task :app:compileDebugAndroidTestKotlin
-> Task :app:compileDebugAndroidTestJavaWithJavac
-> Task :app:dexBuilderDebugAndroidTest
-> Task :app:mergeDebugAndroidTestGlobalSynthetics
-> Task :app:processDebugAndroidTestJavaRes
-> Task :app:packageRelease
-> Task :app:createReleaseApkListingFileRedirect
-> Task :app:assembleRelease
-> Task :app:mergeDebugAndroidTestJavaResource
-> Task :app:mergeProjectDexDebugAndroidTest
-> Task :app:packageDebugAndroidTest
-> Task :app:createDebugAndroidTestApkListingFileRedirect
-> Task :app:assembleDebugAndroidTest
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794223670568.json
+FAILURE: Build completed with 2 failures.
 
-BUILD SUCCESSFUL in 3m 52s
-104 actionable tasks: 97 executed, 7 from cache
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 2m 35s
+42 actionable tasks: 38 executed, 4 from cache
