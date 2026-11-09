@@ -23,6 +23,16 @@ import org.junit.Test
  */
 class YandexTest {
 
+    /**
+     * The two `%%` characters a Yandex cover template ends with.
+     *
+     * Written this way, and not inside the fixtures, because two percent signs are a single
+     * per-mille token to the Kotlin lexer: a raw string containing them fails to compile at all, and
+     * escaping them inside one does not help. A plain string has no such reading.
+     */
+    private val placeholder = String(charArrayOf('%', '%'))
+
+
     // ---------------------------------------------------------------- signature
 
     /**
@@ -97,9 +107,19 @@ class YandexTest {
 
     // ---------------------------------------------------------------- json
 
+    /**
+     * Escapes, in a raw string, spelled out.
+     *
+     * A raw string has no escapes of its own, so the JSON needs exactly one backslash per escape —
+     * and typing two of them in Kotlin source produces two, which is an escape followed by a literal
+     * backslash, i.e. a broken document. The pieces are therefore built as ordinary strings, where
+     * one escape in the source is exactly one character in the result.
+     */
     @Test fun jsonReaderHandlesEscapesAndNesting() {
-        val value = MiniJson.parse("""{"a":[1,2,{"b":"x\\"y\\n"}],"c":true,"d":null,"e":-1.5}""")
-        val root = MiniJson.obj(value)
+        val quote = "\\\""
+        val newline = "\\n"
+        val body = """{"a":[1,2,{"b":"x${quote}y${newline}"}],"c":true,"d":null,"e":-1.5}"""
+        val root = MiniJson.obj(MiniJson.parse(body))
         assertEquals(2.0, (MiniJson.list(root["a"])[0] as Number).toDouble(), 0.0001)
         assertEquals("x\"y\n", MiniJson.obj(MiniJson.list(root["a"])[2])["b"])
         assertEquals(true, root["c"])
@@ -146,10 +166,10 @@ class YandexTest {
                  "id":123,"title":"Невесомость","durationMs":214000,
                  "artists":[{"id":7,"name":"Neptune Studio"},{"id":8,"name":"гость"}],
                  "albums":[{"id":55,"title":"Ночные сессии","year":2024,
-                            "coverUri":"avatars.yandex.net/get-music-content/1/ab/QQ"}]}}]},
+                            "coverUri":"avatars.yandex.net/get-music-content/1/ab/$placeholder"}]}}]},
              "albums":{"results":[{"id":55,"title":"Ночные сессии","year":2024,
                  "artists":[{"name":"Neptune Studio"}],"trackCount":9,
-                 "coverUri":"avatars.yandex.net/x/QQ"}]},
+                 "coverUri":"avatars.yandex.net/x/$placeholder"}]},
              "artists":{"results":[{"id":7,"name":"Neptune Studio","trackCount":42}]}}
         """.trimIndent()
         val search = YandexMap.search(MiniJson.parse(response))
@@ -163,7 +183,7 @@ class YandexTest {
         assertEquals("55", track.albumId)
         assertEquals("7", track.artistId)
         assertEquals(2024, track.year)
-        // The %% placeholder must be expanded, or Coil requests a URL that 404s.
+        // The placeholder must be expanded, or Coil requests a URL that 404s. See [placeholder].
         assertEquals("https://avatars.yandex.net/get-music-content/1/ab/400x400", track.artworkUri)
         assertEquals(1, search.albums.size)
         assertEquals(9, search.albums.first().trackCount)
