@@ -14,7 +14,6 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.printToString
 import androidx.compose.ui.test.hasAnyAncestor
-import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isToggleable
@@ -232,11 +231,12 @@ class PlayerFlowTest {
 
     @Test fun sleepTimerOpensOnlyFromItsRowAndAlwaysCloses() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
-        // The row is identified by its subtitle, not its title: "Воспроизведение" is also the title of
-        // the page it opens, and a LazyColumn only composes rows near the viewport — the row has to be
-        // scrolled into existence before it can be tapped. The *container* is the tap target: its bounds
-        // are the whole row, while the subtitle is a line of text that can sit half under the dock.
-        val playbackRow = hasClickAction() and hasAnyDescendant(hasText("Скорость, громкость и таймер сна"))
+        // The row is identified by its subtitle, not its title ("Воспроизведение" is also the title of
+        // the page it opens), and by the click itself: `clickable` merges a row's texts into the row's
+        // own node, so matching the subtitle finds the whole 68dp tap target — not a line of text that
+        // can sit half under the dock. A LazyColumn only composes rows near the viewport, hence the
+        // scroll: the row has to exist before it can be tapped.
+        val playbackRow = hasClickAction() and hasText("Скорость, громкость и таймер сна")
         compose.onNode(hasScrollAction()).performScrollToNode(playbackRow)
         compose.onNode(playbackRow).performScrollTo().performClick()
         waitText("ЗВУК")
