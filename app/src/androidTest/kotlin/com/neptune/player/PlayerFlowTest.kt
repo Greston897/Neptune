@@ -27,6 +27,7 @@ import android.Manifest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -241,6 +242,79 @@ class PlayerFlowTest {
             var paused = false
             compose.activityRule.scenario.onActivity { paused = !container(it).playback.state.value.isPlaying }
             paused
+        }
+    }
+
+    /**
+     * The queue finishes itself.
+     *
+     * Two four-second files with repeat off: the first one must end and the second one must start,
+     * on its own, with no tap. This is the behaviour a listener assumes and the one that was missing —
+     * reaching the end of the first track simply stopped, so an album played one song.
+     *
+     * Runs on the *local* files rather than on streams, because the suite has no network; the advance
+     * itself is the same code path for both, and the stream-specific half (a broken row is skipped
+     * rather than stopping the queue) is asserted separately below.
+     */
+    @Test fun theNextTrackStartsByItselfWhenOneEnds() {
+        seedLibrary()
+        var first = ""
+        var second = ""
+        compose.activityRule.scenario.onActivity { activity ->
+            val tracks = container(activity).library.state.value.tracks
+            first = tracks[0].id
+            second = tracks[1].id
+        }
+        compose.activityRule.scenario.onActivity { activity ->
+            val c = container(activity)
+            val tracks = c.library.state.value.tracks
+            c.playback.play(tracks.take(2), 0)
+        }
+        compose.waitUntil(30000) {
+            var advanced = false
+            compose.activityRule.scenario.onActivity { activity ->
+                val p = container(activity).playback.state.value
+                advanced = p.track?.id == second && (p.isPlaying || p.positionMs > 0)
+            }
+            advanced
+        }
+        compose.waitUntil(5000) {
+            var index = -1
+            compose.activityRule.scenario.onActivity { index = container(it).playback.state.value.queueIndex }
+            index == 1
+        }
+        assertNotEquals(first, second)
+    }
+
+    /**
+     * A row that will not open does not end the queue.
+     *
+     * The middle of the queue is a file that does not exist. Playback must skip it, say so in the
+     * pill, and land on the third entry — the failure mode this replaces was silence: the player
+     * stopped on a broken item and the rest of the album was never heard.
+     */
+    @Test fun aBrokenTrackIsSkippedAndTheQueueCarriesOn() {
+        seedLibrary()
+        compose.activityRule.scenario.onActivity { activity ->
+            val c = container(activity)
+            val tracks = c.library.state.value.tracks
+            val broken = tracks[0].copy(
+                id = "broken:1", title = "Битый файл",
+                uri = "file:///data/user/0/${activity.packageName}/files/does-not-exist.mp3",
+            )
+            c.playback.play(listOf(broken, tracks[1]), 0)
+        }
+        compose.waitUntil(30000) {
+            var moved = false
+            compose.activityRule.scenario.onActivity { activity ->
+                val p = container(activity).playback.state.value
+                moved = p.queueIndex == 1 && (p.isPlaying || p.positionMs > 0)
+            }
+            moved
+        }
+        // The skip is announced, not silent — and it names the track, so the user knows what changed.
+        compose.waitUntil(15000) {
+            compose.onAllNodes(hasText("«Битый файл» не открылся — играю дальше")).fetchSemanticsNodes().isNotEmpty()
         }
     }
 

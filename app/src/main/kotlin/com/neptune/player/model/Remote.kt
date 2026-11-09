@@ -53,8 +53,19 @@ data class RemoteTrack(
         /** Custom scheme the playback data source accepts. Never handed to the network as-is. */
         const val SCHEME = "neptune://yandex/"
 
-        fun idOf(track: Track): String? =
-            if (track.source == Track.Source.STREAM) idOfUri(android.net.Uri.parse(track.uri)) else null
+        /**
+         * The track id behind a streamed [Track], read as a string prefix.
+         *
+         * Deliberately not `Uri.parse(...)`: the model is exercised by JVM unit tests, where every
+         * `android.net.Uri` method is an unmocked stub that throws, and a mapping layer that cannot
+         * be tested off-device is a mapping layer nobody tests. [idOfUri] covers the Media3 side,
+         * where a real Uri is what arrives.
+         */
+        fun idOf(track: Track): String? {
+            if (track.source != Track.Source.STREAM) return null
+            if (!track.uri.startsWith(SCHEME)) return null
+            return track.uri.removePrefix(SCHEME).takeIf { it.isNotBlank() }
+        }
 
         /**
          * The track id behind a `neptune://yandex/{id}` handle.

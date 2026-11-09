@@ -50,11 +50,70 @@ class Media3PlaybackBackend(
     private var volumeBeforeFade: Float? = null
     private var lastRemembered: String? = null
     private var restoring = false
+    /**
+     * The entry that failed last.
+     *
+     * A queue where several rows are unplayable would otherwise re-enter the skip path for the entry
+     * it just left — the error arrives again, the player seeks to the same next item, and the two
+     * ping-pong forever. One skip per entry, remembered here, makes a run of failures walk the queue
+     * exactly once and stop at the end.
+     */
+    private var skippedItem: String? = null
     private val listener = object : Player.Listener {
-        override fun onEvents(player: Player, events: Player.Events) { publish(); persist() }
+        override fun onEvents(player: Player, events: Player.Events) {
+            // The queue advance is done here rather than left to Media3's own auto-advance: a next
+            // track that fails to open (an expired link, a dropped connection, a track pulled from
+            // the service) would otherwise end playback silently, because auto-advance from a failed
+            // item is not attempted. Stepping explicitly keeps a broken row in the middle of an album
+            // from killing the rest of it.
+            if (events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)) advanceIfEnded(player)
+            publish()
+            persist()
+        }
         override fun onPlayerError(error: PlaybackException) {
             _state.value = _state.value.copy(isPlaying = false, isBuffering = false, error = failureText(error))
+            controller?.let { advanceAfterFailure(it) }
         }
+    }
+
+    /**
+     * Finishes a queue the way a listener expects: end of a track is end of a track.
+     *
+     * Media3 does this itself when playback simply reaches the end of an item, but the *last* item
+     * sits at [Player.STATE_ENDED], and the transport's play button treats ENDED as "restart this
+     * track" — which is right for a single-track queue and wrong for a queue whose next entry exists.
+     */
+    private fun advanceIfEnded(player: Player) {
+        if (player.playbackState != Player.STATE_ENDED) return
+        if (!player.hasNextMediaItem()) return
+        player.seekToNextMediaItem()
+        player.play()
+    }
+
+    /**
+     * A track that will not open is skipped, not fatal.
+     *
+     * Streaming fails for reasons a local file never does, and the common one — a link that expired
+     * between two tracks of an album — is not a reason to stop listening. The user is told which one
+     * was skipped and the queue carries on; if there is nothing left, the error stays on screen with
+     * its retry button, which is the only case where the message is actionable.
+     *
+     * Guarded by [skipping] so a queue where several entries fail in a row cannot recurse: each skip
+     * is one step, and the run ends when a track plays or the queue does.
+     */
+    private fun advanceAfterFailure(player: Player) {
+        val failed = player.currentMediaItem?.mediaId
+        if (failed != null && failed == skippedItem) return
+        skippedItem = failed
+        if (!player.hasNextMediaItem()) return
+        val title = failed?.let { library.state.value.byId[it]?.title }
+        _state.value = _state.value.copy(
+            error = null,
+            message = if (title != null) "«$title» не открылся — играю дальше" else "Трек не открылся — играю дальше",
+            messageSeq = _state.value.messageSeq + 1,
+        )
+        player.seekToNextMediaItem()
+        player.play()
     }
 
     /**
@@ -167,6 +226,9 @@ class Media3PlaybackBackend(
         val track = c.currentMediaItem?.mediaId?.let(catalog::get)
         if (!restoring && track != null && track.id != lastRemembered) {
             lastRemembered = track.id
+            // Whatever is playing now is working, so the previous failure is history: the same track
+            // failing later (a link expiring mid-album) must be skipped again, not silently ignored.
+            if (skippedItem != null && skippedItem != track.id) skippedItem = null
             users.rememberTrack(track.id)
         }
         _state.value = _state.value.copy(connected = true, track = track,
@@ -179,6 +241,7 @@ class Media3PlaybackBackend(
 
     override fun play(tracks: List<Track>, index: Int, shuffled: Boolean) {
         if (tracks.isEmpty()) return
+        skippedItem = null
         command { c ->
             c.shuffleModeEnabled = shuffled
             c.setMediaItems(tracks.map(::item), index.coerceIn(0, tracks.lastIndex), 0)

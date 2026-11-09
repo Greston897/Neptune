@@ -49,6 +49,15 @@ data class PlaybackState(
     val repeat: Int = 0,
     val sleepRemainingMs: Long = 0,
     val error: String? = null,
+    /**
+     * A one-shot notice from the playback layer — currently "this track did not open, playing on".
+     *
+     * It lives here rather than in the UI because the *player* is what decides to skip; the pill is
+     * only how it is said out loud. [messageSeq] makes it deliverable exactly once: a repeated
+     * message must not be swallowed as "no change", and a recomposition must not re-show it.
+     */
+    val message: String? = null,
+    val messageSeq: Long = 0,
 ) {
     val progress: Float get() = if (durationMs > 0) (positionMs.toFloat() / durationMs).coerceIn(0f, 1f) else 0f
 }

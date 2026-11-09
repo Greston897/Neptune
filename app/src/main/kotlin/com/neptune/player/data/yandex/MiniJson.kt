@@ -108,10 +108,22 @@ object MiniJson {
             }
         }
 
+        /**
+         * A number, stopping at the first character that cannot be part of one.
+         *
+         * The exponent's sign is only legal straight after an `e`, so `[1,2]` and `1,true` do not
+         * swallow the delimiter and the following token — which is what a blanket "digits and any of
+         * .eE+-" does, and it fails as "bad number" on perfectly good JSON.
+         */
         private fun number(): Double {
             val start = i
             if (s[i] == '-') i++
-            while (i < s.length && (s[i].isDigit() || s[i] in ".eE+-")) i++
+            while (i < s.length) {
+                val c = s[i]
+                if (c.isDigit() || c == '.' || c == 'e' || c == 'E') { i++; continue }
+                if ((c == '+' || c == '-') && (s[i - 1] == 'e' || s[i - 1] == 'E')) { i++; continue }
+                break
+            }
             return s.substring(start, i).toDoubleOrNull() ?: throw JsonException("bad number at $start")
         }
 

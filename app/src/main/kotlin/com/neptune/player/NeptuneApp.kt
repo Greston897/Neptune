@@ -113,6 +113,14 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
         avatar = { avatarPicker.launch("image/*") },
         lyricsFile = { lyricsImporter.launch(arrayOf("text/*", "application/octet-stream")) },
     )
+    // The playback layer's own notices ("этот трек не открылся — играю дальше") go to the same pill.
+    // Keyed on the sequence number, not on the text: skipping two broken tracks in a row produces the
+    // same sentence twice, and a text key would swallow the second one.
+    val notice = playback.message
+    val noticeSeq = playback.messageSeq
+    LaunchedEffect(noticeSeq) {
+        if (noticeSeq > 0 && notice != null) state.toast(notice, NeIcon.Next, ToastTone.INFO)
+    }
     // One timer for the pill notice. Keyed on the notice id so a second confirmation restarts the
     // two seconds instead of being cut short by the first one's deadline.
     LaunchedEffect(toast?.id) {

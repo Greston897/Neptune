@@ -107,6 +107,24 @@ class YandexTest {
         assertEquals(-1.5, (root["e"] as Number).toDouble(), 0.0001)
     }
 
+    /**
+     * Regression: a number used to swallow the delimiter after it.
+     *
+     * The scanner consumed digits and any of `.eE+-`, so the `1` in `{"n":1,"b":true}` took the comma
+     * with it and the parse failed as "bad number" — on valid JSON, in the fixture that mirrors the
+     * service's own shapes. The exponent sign is now only accepted straight after an `e`.
+     */
+    @Test fun aNumberStopsAtTheDelimiterInsteadOfSwallowingIt() {
+        val root = MiniJson.obj(MiniJson.parse("""{"n":1,"b":true,"list":[2,-3,4.5e2],"m":-1e-2}"""))
+        assertEquals(1.0, (root["n"] as Number).toDouble(), 0.0001)
+        assertEquals(true, root["b"])
+        val list = MiniJson.list(root["list"])
+        assertEquals(2.0, (list[0] as Number).toDouble(), 0.0001)
+        assertEquals(-3.0, (list[1] as Number).toDouble(), 0.0001)
+        assertEquals(450.0, (list[2] as Number).toDouble(), 0.0001)
+        assertEquals(-0.01, (root["m"] as Number).toDouble(), 0.000001)
+    }
+
     @Test fun jsonReaderRejectsGarbageInsteadOfReturningHalfOfIt() {
         assertTrue(runCatching { MiniJson.parse("{\"a\":}") }.isFailure)
         assertTrue(runCatching { MiniJson.parse("[1,") }.isFailure)
@@ -128,10 +146,10 @@ class YandexTest {
                  "id":123,"title":"Невесомость","durationMs":214000,
                  "artists":[{"id":7,"name":"Neptune Studio"},{"id":8,"name":"гость"}],
                  "albums":[{"id":55,"title":"Ночные сессии","year":2024,
-                            "coverUri":"avatars.yandex.net/get-music-content/1/ab/%%"}]}}]},
+                            "coverUri":"avatars.yandex.net/get-music-content/1/ab/QQ"}]}}]},
              "albums":{"results":[{"id":55,"title":"Ночные сессии","year":2024,
                  "artists":[{"name":"Neptune Studio"}],"trackCount":9,
-                 "coverUri":"avatars.yandex.net/x/%%"}]},
+                 "coverUri":"avatars.yandex.net/x/QQ"}]},
              "artists":{"results":[{"id":7,"name":"Neptune Studio","trackCount":42}]}}
         """.trimIndent()
         val search = YandexMap.search(MiniJson.parse(response))

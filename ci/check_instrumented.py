@@ -41,6 +41,8 @@ REQUIRED = {
     "aCatalogueTrackIsFoundAndPlayedFromTheSameSearch": "4.0: one search field must find and play a catalogue track",
     "aSavedCatalogueTrackAppearsInItsOwnLibraryTab": "4.0: a saved stream must survive the screen it was saved on",
     "theChartScreenOpensFromHomeAndReportsItsState": "4.0: charts must open, and must fail visibly without a network",
+    "theNextTrackStartsByItselfWhenOneEnds": "the queue must advance when a track ends, without a tap",
+    "aBrokenTrackIsSkippedAndTheQueueCarriesOn": "an unplayable row must be skipped, not end the queue",
 }
 
 

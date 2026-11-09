@@ -38,8 +38,10 @@ object YandexMap {
         val artistNodes = MiniJson.list(node["artists"]).map { MiniJson.obj(it) }
         val artists = artistNodes.mapNotNull { a -> a["name"] as? String }.filter { it.isNotBlank() }
         val album = MiniJson.list(node["albums"]).firstOrNull()?.let { MiniJson.obj(it) }
-        val covers = album?.let { MiniJson.obj(it["coverUri"]) as? String }
-            ?: node["coverUri"] as? String
+        // The album's cover first (it is the square one), the track's own as a fallback. Reading it
+        // through `MiniJson.obj()` here would have been a cast of a String to Map: always null, and
+        // every catalogue row would have fallen back to a generated identicon.
+        val covers = album?.get("coverUri") as? String ?: node["coverUri"] as? String
         return RemoteTrack(
             id = id,
             title = title,
