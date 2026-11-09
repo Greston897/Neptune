@@ -1,26 +1,13 @@
 FAIL: 1 instrumented test(s) failed
   sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
-    java.lang.AssertionError: Timed out waiting for 'ЗВУК'. Roots: Printing with useUnmergedTree = 'true'
-Node #6001 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
-|-Node #6234 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
-| IsTraversalGroup = 'true'
-| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
-| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@c500541'
-| Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
-|  |-Node #6238 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
-|  | Text = '[Настройки]'
-|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #6240 at (l=53.0, t=501.0, r=451.0, b=544.0)px
-|  | Text = '[Всё под тебя. Без лишнего.]'
-|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #6242 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
-|  | Focused = 'false'
-|  | Actions = [OnClick, RequestFocus]
-|  | MergeDescendants = 'true'
-|  |  |-Node #6246 at (l=418.0, t=860.0, r=662.0, b=922.0)px
-|  |  | Text = '[Слушатель]'
-|  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |  |-Node #6248 at (l=333.0, t=933.0, r=747.0, b=976.0)px
-|  |    Text = '[Изменить профиль и аватар]'
-|  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #6251 at (l=95.0, t=1102.0, r=277.0, b=11
+    java.lang.AssertionError: Failed to inject touch input.
+Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + EditableText contains 'Скорость, громкость и таймер сна' (ignoreCase: false)) && (hasAnyAncestorThat(OnClick is defined)))
+However, the unmerged tree contains '1' node that matches. Are you missing `useUnmergedNode = true` in your finder?
+
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
+at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
+at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
+at com.neptune.player.PlayerFlowTest.sleepTimerOpensOnlyFromItsRowAndAlwaysCloses(PlayerFlowTest.kt:240)

@@ -32,8 +32,8 @@ Daemon will be stopped at the end of the build
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
 > Task :app:generateReleaseBuildConfig
-> Task :app:generateReleaseResValues FROM-CACHE
 > Task :app:checkReleaseAarMetadata
+> Task :app:generateReleaseResValues FROM-CACHE
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
 > Task :app:processDebugResources
@@ -53,21 +53,20 @@ Daemon will be stopped at the end of the build
 > Task :app:checkReleaseDuplicateClasses
 > Task :app:desugarReleaseFileDependencies
 > Task :app:mergeReleaseStartupProfile
-> Task :app:compileDebugKotlin
-> Task :app:compileReleaseKotlin
-> Task :app:stripReleaseDebugSymbols
-> Task :app:mergeExtDexRelease
 
 > Task :app:stripReleaseDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
 
+> Task :app:compileDebugKotlin
+> Task :app:compileReleaseKotlin
+> Task :app:mergeExtDexRelease
 > Task :app:compileDebugJavaWithJavac
+> Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:processDebugJavaRes
 > Task :app:bundleDebugClassesToCompileJar
-> Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:compileReleaseJavaWithJavac
-> Task :app:generateReleaseLintVitalReportModel
 > Task :app:compileDebugUnitTestKotlin
+> Task :app:generateReleaseLintVitalReportModel
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes
 > Task :app:testDebugUnitTest
@@ -75,17 +74,17 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:dexBuilderRelease
 > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :app:mergeReleaseArtProfile
-> Task :app:mergeReleaseShaders
 > Task :app:mergeReleaseGlobalSynthetics
+> Task :app:mergeReleaseShaders
 > Task :app:compileReleaseShaders NO-SOURCE
 > Task :app:generateReleaseAssets UP-TO-DATE
 > Task :app:mergeReleaseAssets
 > Task :app:compressReleaseAssets
 > Task :app:extractReleaseVersionControlInfo
 > Task :app:processReleaseJavaRes
+> Task :app:optimizeReleaseResources
 > Task :app:mergeReleaseJavaResource
 > Task :app:collectReleaseDependencies
-> Task :app:optimizeReleaseResources
 > Task :app:sdkReleaseDependencyData
 > Task :app:validateSigningRelease
 > Task :app:writeReleaseAppMetadata
@@ -107,11 +106,9 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:mergeDebugAndroidTestResources
 > Task :app:checkDebugAndroidTestDuplicateClasses
 > Task :app:processDebugAndroidTestResources
-> Task :app:mergeDexRelease
 > Task :app:lintVitalAnalyzeRelease
+> Task :app:mergeDexRelease
 > Task :app:mergeExtDexDebugAndroidTest
-> Task :app:lintVitalReportRelease
-> Task :app:lintVitalRelease
 > Task :app:mergeLibDexDebugAndroidTest
 > Task :app:mergeDebugAndroidTestJniLibFolders
 > Task :app:mergeDebugJniLibFolders
@@ -121,20 +118,22 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:compileReleaseArtProfile
 > Task :app:validateSigningDebugAndroidTest
 > Task :app:writeDebugAndroidTestSigningConfigVersions
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
 > Task :app:packageRelease
 > Task :app:createReleaseApkListingFileRedirect
 > Task :app:assembleRelease
 > Task :app:compileDebugAndroidTestKotlin
 > Task :app:compileDebugAndroidTestJavaWithJavac
 > Task :app:dexBuilderDebugAndroidTest
-> Task :app:processDebugAndroidTestJavaRes
 > Task :app:mergeDebugAndroidTestGlobalSynthetics
+> Task :app:processDebugAndroidTestJavaRes
 > Task :app:mergeProjectDexDebugAndroidTest
 > Task :app:mergeDebugAndroidTestJavaResource
 > Task :app:packageDebugAndroidTest
 > Task :app:createDebugAndroidTestApkListingFileRedirect
 > Task :app:assembleDebugAndroidTest
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794225743441.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794226473639.json
 
-BUILD SUCCESSFUL in 4m 24s
+BUILD SUCCESSFUL in 4m 19s
 104 actionable tasks: 97 executed, 7 from cache
