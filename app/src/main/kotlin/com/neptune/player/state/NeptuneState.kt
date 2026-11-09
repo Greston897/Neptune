@@ -46,19 +46,22 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
      * the bottom of the screen sits on top of the transport and far from the object it describes.
      */
     val toast = ToastHostState()
-    var search by mutableStateOf("")
-        private set
 
     /**
-     * The only writer of [search].
+     * The query the user typed.
      *
-     * A delegated property cannot carry a custom setter in Kotlin, and the old code assigned the field
-     * from three places in the UI — which is exactly how the remote search would have been started for
-     * some edits and not others. One function, one behaviour: typing starts a (debounced, sequenced)
-     * request, and clearing the field cancels the one in flight.
+     * Backed by a state object rather than exposed as a mutable `var`: a delegated property cannot
+     * carry a custom setter, and a `var` with `private set` plus a `fun setSearch` is a JVM-signature
+     * clash (both compile to `setSearch(String)`). A read-only property with [setSearch] as the only
+     * writer gives one behaviour — typing starts a debounced, sequenced request, clearing cancels the
+     * one in flight — and keeps call sites reading `state.search`.
      */
+    private var searchQuery by mutableStateOf("")
+    val search: String get() = searchQuery
+
+    /** The only writer of [search]. */
     fun setSearch(text: String) {
-        search = text
+        searchQuery = text
         if (sources.yandex) container.yandex.search(text) else container.yandex.search("")
     }
 
