@@ -231,14 +231,14 @@ class PlayerFlowTest {
 
     @Test fun sleepTimerOpensOnlyFromItsRowAndAlwaysCloses() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
+        // Scroll to the end of the list, not to the row: the row is already composed, and a scroll that
+        // only asks for "visible" leaves it under the dock, where the dock — not the row — gets the
+        // tap. At the bottom of the list the row sits well above the dock.
+        compose.onNode(hasScrollAction()).performScrollToNode(hasText("Настройки сохраняются автоматически"))
         // The row is identified by its subtitle, not its title ("Воспроизведение" is also the title of
-        // the page it opens), and by the click itself: `clickable` merges a row's texts into the row's
-        // own node, so matching the subtitle finds the whole 68dp tap target — not a line of text that
-        // can sit half under the dock. A LazyColumn only composes rows near the viewport, hence the
-        // scroll: the row has to exist before it can be tapped.
-        val playbackRow = hasClickAction() and hasText("Скорость, громкость и таймер сна")
-        compose.onNode(hasScrollAction()).performScrollToNode(playbackRow)
-        compose.onNode(playbackRow).performScrollTo().performClick()
+        // the page it opens); `clickable` merges a row's texts into the row's own node, so the subtitle
+        // addresses the whole tap target.
+        compose.onNode(hasClickAction() and hasText("Скорость, громкость и таймер сна")).performClick()
         waitText("ЗВУК")
 
         // Other rows must not open the sleep dialog.
