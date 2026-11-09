@@ -73,8 +73,11 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
             }
         }
         item {
+            // The chips are tall enough for a finger, and the row keeps the scroll: five labels do not
+            // fit on a phone, and a chip that is half off-screen is a tab the user cannot reach — the
+            // catalogue tab was exactly that, and the only way to it was a drag nobody performs.
             Row(
-                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(vertical = NeSpace.sm),
+                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(vertical = NeSpace.xs),
                 horizontalArrangement = Arrangement.spacedBy(NeSpace.sm),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -82,7 +85,7 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                 // into "Треки", because they behave differently (they need a network or a download,
                 // and they cannot be deleted from the device).
                 listOf("Треки", "Альбомы", "Артисты", "Плейлисты", "Из каталога").forEachIndexed { i, title ->
-                    NeChip(title, state.libraryTab == i, { state.libraryTab = i })
+                    NeChip(title, state.libraryTab == i, { state.libraryTab = i }, Modifier.heightIn(min = NeTouch.min))
                 }
             }
         }
@@ -102,7 +105,16 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                     { state.playTrack(track, tracks) }, onMore = { state.contextTrack = track }) }
             }
             1 -> {
+                // The shelf is albums, not some albums: with none, say so instead of showing an empty
+                // grid, which reads as a screen that failed to load.
                 val albums = LibraryLogic.albums(library.tracks)
+                if (albums.isEmpty()) item {
+                    EmptyState(
+                        NeIcon.Disc, "Альбомов пока нет",
+                        "Теги альбома появляются из файлов. Треки без альбома — во вкладке «Треки».",
+                        action = "Обновить медиатеку", onAction = state::refreshLibrary,
+                    )
+                }
                 items(albums.chunked(2), key = { ListKeys.album(it.first().first.first, it.first().first.second) }) { row ->
                     Row(Modifier.fillMaxWidth().padding(vertical = NeSpace.sm),
                         horizontalArrangement = Arrangement.spacedBy(NeSpace.md),

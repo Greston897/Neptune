@@ -98,15 +98,21 @@ class Media3PlaybackBackend(
      * was skipped and the queue carries on; if there is nothing left, the error stays on screen with
      * its retry button, which is the only case where the message is actionable.
      *
-     * Guarded by [skipping] so a queue where several entries fail in a row cannot recurse: each skip
-     * is one step, and the run ends when a track plays or the queue does.
+     * Guarded by [skippedItem] so a queue where several entries fail in a row cannot recurse: each
+     * skip is one step, and the run ends when a track plays or the queue does. The guard is cleared by
+     * the next successful transition, so a link that expires later in the same album is still skipped
+     * rather than treated as already handled.
      */
     private fun advanceAfterFailure(player: Player) {
         val failed = player.currentMediaItem?.mediaId
         if (failed != null && failed == skippedItem) return
         skippedItem = failed
         if (!player.hasNextMediaItem()) return
-        val title = failed?.let { library.state.value.byId[it]?.title }
+        // The queue item already carries the title it was built with. Looking it up in the library
+        // instead returned null for exactly the rows that fail most often — a file that is gone, a
+        // track the user just removed — and the notice then could not name the track.
+        val title = player.currentMediaItem?.mediaMetadata?.title?.toString()?.ifBlank { null }
+            ?: failed?.let { library.state.value.byId[it]?.title }
         _state.value = _state.value.copy(
             error = null,
             message = if (title != null) "«$title» не открылся — играю дальше" else "Трек не открылся — играю дальше",

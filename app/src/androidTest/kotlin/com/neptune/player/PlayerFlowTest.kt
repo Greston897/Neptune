@@ -127,7 +127,6 @@ class PlayerFlowTest {
      */
     private fun searchForCatalogueTrack() {
         compose.onNode(hasContentDescription("Поиск") and isSelectable()).performClick()
-        waitText("Поиск")
         compose.waitUntil(10000) {
             compose.onAllNodes(hasSetTextAction()).fetchSemanticsNodes().isNotEmpty()
         }
@@ -173,9 +172,16 @@ class PlayerFlowTest {
         compose.waitUntil(20000) {
             compose.onAllNodes(hasTestTag("homeList")).fetchSemanticsNodes().isNotEmpty()
         }
+        // The shelf header exists only once there is an album to show, and it can sit below the fold:
+        // scroll to it, and let the action tag prove the row rather than a search for the word, which
+        // also appears in the chip row of the destination.
         compose.onNodeWithTag("homeList").performScrollToNode(hasTestTag("homeAlbumsAction"))
         compose.onNodeWithTag("homeAlbumsAction").performClick()
-        waitText("Альбомы")
+        compose.waitUntil(15000) {
+            var tab = -1
+            compose.activityRule.scenario.onActivity { tab = container(it).libraryTab }
+            tab == 1
+        }
         compose.onNode(hasContentDescription("Медиатека") and isSelectable()).assertIsSelected()
         // The albums tab proves its own selection with a filter chip and the grid's own labels; the
         // tab index itself lives in the ViewModel, which this rule cannot reach.
@@ -213,8 +219,13 @@ class PlayerFlowTest {
 
     @Test fun sleepTimerOpensOnlyFromItsRowAndAlwaysCloses() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
-        waitText("Воспроизведение")
-        clickText("Воспроизведение")
+        // Wait for the row itself, not for the word: "Воспроизведение" is also the title of the page
+        // this tap opens, so a text search matches both the row and, a moment later, the destination.
+        compose.waitUntil(10000) {
+            compose.onAllNodes(hasText("Воспроизведение") and hasClickAction()).fetchSemanticsNodes().isNotEmpty()
+        }
+        // The row is last in its group; on a short viewport it is below the dock until scrolled.
+        compose.onNode(hasText("Воспроизведение") and hasClickAction()).performScrollTo().performClick()
         waitText("Настоящий звук. Полный контроль.")
         // Other rows must not open the sleep dialog.
         clickText("Повтор очереди")
@@ -632,7 +643,7 @@ class PlayerFlowTest {
         waitText("Источники")
         clickText("Источники")
         waitText("ГДЕ ИСКАТЬ")
-        compose.onNodeWithText("Медиатека и Яндекс Музыка").assertIsDisplayed()
+        compose.onNodeWithText("Медиатека и Яндекс Музыка").performScrollTo().assertIsDisplayed()
 
         // Turning the catalogue off must be possible, and must survive leaving the screen: this is a
         // stored preference, not a per-session toggle.
@@ -709,8 +720,10 @@ class PlayerFlowTest {
         clickText("В любимое")
         // The sheet closes on the action, so the search screen is back; the library is one tab away.
         compose.onNode(hasContentDescription("Медиатека") and isSelectable()).performClick()
-        waitText("Из каталога")
-        clickText("Из каталога")
+        compose.waitUntil(15000) {
+            compose.onAllNodes(hasText("Из каталога")).fetchSemanticsNodes().isNotEmpty()
+        }
+        compose.onNode(hasText("Из каталога")).performScrollTo().performClick()
         waitText("Каталожный трек")
         compose.onNodeWithText("Каталожный трек").assertIsDisplayed()
     }
