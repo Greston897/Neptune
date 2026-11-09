@@ -84,34 +84,19 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 47 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 2/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 6/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 10/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 14/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 19/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 23/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 27/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 29/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 31/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 3/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 7/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 12/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 16/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 20/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 25/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 28/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 30/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 32/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 33/47 completed. (0 skipped) (0 failed)
-
-> Task :app:connectedDebugAndroidTest
-
-com.neptune.player.PlayerFlowTest > aCatalogueTrackIsFoundAndPlayedFromTheSameSearch[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Поиск' (ignoreCase: false))
-	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
-
-emulator-5554 - 15 Tests 35/47 completed. (0 skipped) (1 failed)
-
-> Task :app:connectedDebugAndroidTest
-
-com.neptune.player.PlayerFlowTest > aBrokenTrackIsSkippedAndTheQueueCarriesOn[emulator-5554 - 15] [31mFAILED [0m
-	androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
-	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
-
-emulator-5554 - 15 Tests 36/47 completed. (0 skipped) (2 failed)
-emulator-5554 - 15 Tests 38/47 completed. (0 skipped) (2 failed)
+emulator-5554 - 15 Tests 34/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 35/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 37/47 completed. (0 skipped) (0 failed)
 
 > Task :app:connectedDebugAndroidTest
 
@@ -119,36 +104,41 @@ com.neptune.player.PlayerFlowTest > albumShelfActionOpensTheLibraryAlbumsTab[emu
 	java.lang.AssertionError: No node found that matches TestTag = 'homeAlbumsAction' in scrollable container
 	Semantics of the node:
 
-com.neptune.player.PlayerFlowTest > aSavedCatalogueTrackAppearsInItsOwnLibraryTab[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Поиск' (ignoreCase: false))
-	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+emulator-5554 - 15 Tests 39/47 completed. (0 skipped) (1 failed)
 
-emulator-5554 - 15 Tests 40/47 completed. (0 skipped) (4 failed)
-emulator-5554 - 15 Tests 41/47 completed. (0 skipped) (4 failed)
+> Task :app:connectedDebugAndroidTest
+
+com.neptune.player.PlayerFlowTest > aSavedCatalogueTrackAppearsInItsOwnLibraryTab[emulator-5554 - 15] [31mFAILED [0m
+	java.lang.AssertionError: Timed out waiting for 'Каталожный трек'. Roots: Printing with useUnmergedTree = 'true'
+	Node #4861 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+
+emulator-5554 - 15 Tests 40/47 completed. (0 skipped) (2 failed)
+emulator-5554 - 15 Tests 41/47 completed. (0 skipped) (2 failed)
 
 > Task :app:connectedDebugAndroidTest
 
 com.neptune.player.PlayerFlowTest > sleepTimerOpensOnlyFromItsRowAndAlwaysCloses[emulator-5554 - 15] [31mFAILED [0m
 	java.lang.AssertionError: Timed out waiting for 'Настоящий звук. Полный контроль.'. Roots: Printing with useUnmergedTree = 'true'
-	Node #5123 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+	Node #5623 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
 
-emulator-5554 - 15 Tests 42/47 completed. (0 skipped) (5 failed)
-emulator-5554 - 15 Tests 44/47 completed. (0 skipped) (5 failed)
+emulator-5554 - 15 Tests 42/47 completed. (0 skipped) (3 failed)
+emulator-5554 - 15 Tests 43/47 completed. (0 skipped) (3 failed)
+emulator-5554 - 15 Tests 45/47 completed. (0 skipped) (3 failed)
 
 > Task :app:connectedDebugAndroidTest
 
 com.neptune.player.PlayerFlowTest > sourcesSwitchBetweenThePhoneAndTheCatalogue[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Assert failed: The component is not displayed!
-	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	java.lang.AssertionError: Action performScrollTo() failed.
+	Reason: Expected exactly '1' node but could not find any node that satisfies: (Text + EditableText contains 'Медиатека и Яндекс Музыка' (ignoreCase: false))
 
-emulator-5554 - 15 Tests 46/47 completed. (0 skipped) (6 failed)
+emulator-5554 - 15 Tests 46/47 completed. (0 skipped) (4 failed)
 Finished 47 tests on emulator-5554 - 15
 
 > Task :app:connectedDebugAndroidTest
-Tests on emulator-5554 - 15 failed: There was 6 failure(s).
+Tests on emulator-5554 - 15 failed: There was 4 failure(s).
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794222264104.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794223990641.json
 
 FAILURE: Build failed with an exception.
 
@@ -162,74 +152,87 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 5m 13s
+BUILD FAILED in 5m 52s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
-FAIL: 6 instrumented test(s) failed
-  aCatalogueTrackIsFoundAndPlayedFromTheSameSearch
-    java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Поиск' (ignoreCase: false))
-at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
-at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:359)
-at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:33)
-at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:68)
-at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:57)
-at com.neptune.player.PlayerFlowTest.searchForCatalogueTrack(PlayerFlowTest.kt:130)
-at com.neptune.player.PlayerFlowTest.aCatalogueTrackIsFoundAndPlayedFromTheSameSearch(PlayerFlowTest.kt:682)
-  aBrokenTrackIsSkippedAndTheQueueCarriesOn
-    androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
-at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
-at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
-at com.neptune.player.PlayerFlowTest.aBrokenTrackIsSkippedAndTheQueueCarriesOn(PlayerFlowTest.kt:345)
+FAIL: 4 instrumented test(s) failed
   albumShelfActionOpensTheLibraryAlbumsTab
     java.lang.AssertionError: No node found that matches TestTag = 'homeAlbumsAction' in scrollable container
 Semantics of the node:
-Node #4479 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px, Tag: 'homeList'
+Node #4640 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px, Tag: 'homeList'
 IsTraversalGroup = 'true'
-VerticalScrollAxisRange = 'ScrollAxisRange(value=2038.0, maxValue=2038.0, reverseScrolling=false)'
-CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@b9033d4'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=2230.0, maxValue=2230.0, reverseScrolling=false)'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@fea5f13'
 Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
-Has 18 children, 6 siblings
+Has 13 children, 6 siblings
 Selector used: (TestTag = 'homeList')
 
 at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:264)
-at com.neptune.player.PlayerFlowTest.albumShelfActionOpensTheLibraryAlbumsTab(PlayerFlowTest.kt:176)
+at com.neptune.player.PlayerFlowTest.albumShelfActionOpensTheLibraryAlbumsTab(PlayerFlowTest.kt:180)
   aSavedCatalogueTrackAppearsInItsOwnLibraryTab
-    java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (Text + EditableText contains 'Поиск' (ignoreCase: false))
-at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
-at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:359)
-at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:33)
-at com.neptune.player.PlayerFlowTest.waitText(PlayerFlowTest.kt:68)
-at com.neptune.player.PlayerFlowTest.waitText$default(PlayerFlowTest.kt:57)
-at com.neptune.player.PlayerFlowTest.searchForCatalogueTrack(PlayerFlowTest.kt:130)
-at com.neptune.player.PlayerFlowTest.aSavedCatalogueTrackAppearsInItsOwnLibraryTab(PlayerFlowTest.kt:706)
-  sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
-    java.lang.AssertionError: Timed out waiting for 'Настоящий звук. Полный контроль.'. Roots: Printing with useUnmergedTree = 'true'
-Node #5123 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
-|-Node #5339 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
+    java.lang.AssertionError: Timed out waiting for 'Каталожный трек'. Roots: Printing with useUnmergedTree = 'true'
+Node #4861 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #5309 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
 | IsTraversalGroup = 'true'
-| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
-| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@45e5ab5'
+| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@88cdca2'
 | Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
-|  |-Node #5343 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
-|  | Text = '[Настройки]'
+|  |-Node #5312 at (l=53.0, t=373.0, r=775.0, b=460.0)px
+|  | Text = '[Медиатека]'
 |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #5345 at (l=53.0, t=501.0, r=451.0, b=544.0)px
-|  | Text = '[Всё под тебя. Без лишнего.]'
-|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #5347 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
+|  |-Node #5313 at (l=775.0, t=354.0, r=901.0, b=480.0)px
+|  | ContentDescription = '[Создать плейлист]'
+|  | Role = 'Button'
 |  | Focused = 'false'
 |  | Actions = [OnClick, RequestFocus]
 |  | MergeDescendants = 'true'
-|  |  |-Node #5351 at (l=418.0, t=860.0, r=662.0, b=922.0)px
+|  |-Node #5316 at (l=901.0, t=354.0, r=1027.0, b=480.0)px
+|  | ContentDescription = '[Сортировка]'
+|  | Role = 'Button'
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |-Node #5319 at (l=53.0, t=490.0, r=1027.0, b=628.0)px
+|  | IsTraversalGroup = 'true'
+|  | HorizontalScrollAxisRange = 'ScrollAxisRange(value=228.0, maxValue=228.0, reverseScrolling=false)'
+|  | Actions = [ScrollBy, ScrollByOffset]
+|  |  |-Node #5320 at (l=-175.0, t=501.0, r=-3.0, b=617.0)px
+|  |  | Role = 'Button'
+|  |  | Focused = 'false'
+|  |  | Actions = [OnClick,
+  sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
+    java.lang.AssertionError: Timed out waiting for 'Настоящий звук. Полный контроль.'. Roots: Printing with useUnmergedTree = 'true'
+Node #5623 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #5856 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
+| IsTraversalGroup = 'true'
+| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
+| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@cd1ca42'
+| Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
+|  |-Node #5860 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
+|  | Text = '[Настройки]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5862 at (l=53.0, t=501.0, r=451.0, b=544.0)px
+|  | Text = '[Всё под тебя. Без лишнего.]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5864 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |  |-Node #5868 at (l=418.0, t=860.0, r=662.0, b=922.0)px
 |  |  | Text = '[Слушатель]'
 |  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |  |-Node #5353 at (l=333.0, t=933.0, r=747.0, b=976.0)px
+|  |  |-Node #5870 at (l=333.0, t=933.0, r=747.0, b=976.0)px
 |  |    Text = '[Изменить профиль и аватар]'
 |  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #5356 at (l=9
+|  |-Node #5873 at (l=9
   sourcesSwitchBetweenThePhoneAndTheCatalogue
-    java.lang.AssertionError: Assert failed: The component is not displayed!
-at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
-at com.neptune.player.PlayerFlowTest.sourcesSwitchBetweenThePhoneAndTheCatalogue(PlayerFlowTest.kt:635)
+    java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (Text + EditableText contains 'Медиатека и Яндекс Музыка' (ignoreCase: false))
+
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:76)
+at com.neptune.player.PlayerFlowTest.sourcesSwitchBetweenThePhoneAndTheCatalogue(PlayerFlowTest.kt:648)
 instrumented suite exit status: 1
