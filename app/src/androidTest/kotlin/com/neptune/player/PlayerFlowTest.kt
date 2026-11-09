@@ -691,6 +691,40 @@ class PlayerFlowTest {
     }
 
     /**
+     * Signing in is a window with a way out, not a screen that swallows the app.
+     *
+     * The emulator may or may not reach oauth.yandex.ru, and the test is written for both: whether the
+     * answer is a code or an error, the window says what it is doing and "Отмена" returns to exactly the
+     * screen underneath. What it must never do is leave a spinner with no exit, or start a poll nobody
+     * can stop — that is the regression this guards.
+     */
+    @Test fun signInWindowOpensAndClosesWithoutSigningIn() {
+        compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
+        clickText("Источники")
+        waitText("ГДЕ ИСКАТЬ")
+        compose.onNode(hasScrollAction()).performScrollToNode(hasText("Войти"))
+        compose.onNode(hasText("Войти") and hasClickAction()).performClick()
+        waitText("Вход в Яндекс Музыку")
+        // The window is its own surface, so the list underneath must stop answering taps. (The list's
+        // tag is not asserted away: a dialog is a second window and the semantics tree still contains
+        // what it covers — what matters is that the tap below this line lands in the dialog.)
+        compose.waitUntil(20000) {
+            // Either the code arrived (a reachable network) or the flow already failed with a sentence:
+            // both are finished states of this window, and neither is a spinner without an exit.
+            compose.onAllNodes(hasTestTag("deviceCode")).fetchSemanticsNodes().isNotEmpty() ||
+                compose.onAllNodes(hasText("Войти")).fetchSemanticsNodes().isEmpty()
+        }
+        clickText("Отмена")
+        waitText("ГДЕ ИСКАТЬ")
+        // Nothing was stored: an account only exists when the service confirmed the token.
+        compose.activityRule.scenario.onActivity { activity ->
+            assertEquals(null, container(activity).yandex.state.value.account.token)
+        }
+        compose.onNodeWithContentDescription("Назад").performClick()
+        waitText("Всё под тебя. Без лишнего.")
+    }
+
+    /**
      * A catalogue track is searchable and playable through exactly the same field as a file.
      *
      * The regression this guards is the tempting shortcut of a second search screen for the service:
