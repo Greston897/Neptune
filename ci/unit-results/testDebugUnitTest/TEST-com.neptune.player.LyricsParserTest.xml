@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.neptune.player.LyricsParserTest" tests="21" skipped="0" failures="0" errors="0" timestamp="2026-11-09T12:29:42" hostname="runnervmwuk1x" time="0.04">
+<testsuite name="com.neptune.player.LyricsParserTest" tests="21" skipped="0" failures="0" errors="0" timestamp="2026-11-09T12:34:23" hostname="runnervmwuk1x" time="0.043">
   <properties/>
-  <testcase name="vorbisLyricsKeyIsRead" classname="com.neptune.player.LyricsParserTest" time="0.014"/>
-  <testcase name="lineProgressIsBoundedAndMonotonic" classname="com.neptune.player.LyricsParserTest" time="0.001"/>
+  <testcase name="vorbisLyricsKeyIsRead" classname="com.neptune.player.LyricsParserTest" time="0.017"/>
+  <testcase name="lineProgressIsBoundedAndMonotonic" classname="com.neptune.player.LyricsParserTest" time="0.002"/>
   <testcase name="beforeTheFirstLineNothingIsHighlighted" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
   <testcase name="outOfOrderStampsFallBackToUnsynchronised" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
   <testcase name="activeLineFollowsPositionExactly" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
   <testcase name="truncatedOrForeignBytesProduceNullInsteadOfThrowing" classname="com.neptune.player.LyricsParserTest" time="0.001"/>
-  <testcase name="savedTextWinsAsSource" classname="com.neptune.player.LyricsParserTest" time="0.003"/>
+  <testcase name="savedTextWinsAsSource" classname="com.neptune.player.LyricsParserTest" time="0.004"/>
   <testcase name="blankTextIsRejectedInsteadOfStored" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
-  <testcase name="id3UsltFrameIsRead" classname="com.neptune.player.LyricsParserTest" time="0.002"/>
-  <testcase name="mp4AtomWithoutDataChildIsIgnored" classname="com.neptune.player.LyricsParserTest" time="0.001"/>
+  <testcase name="id3UsltFrameIsRead" classname="com.neptune.player.LyricsParserTest" time="0.005"/>
+  <testcase name="mp4AtomWithoutDataChildIsIgnored" classname="com.neptune.player.LyricsParserTest" time="0.002"/>
   <testcase name="binaryPayloadIsNotPrintedAsMojibake" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
   <testcase name="lrcAcceptsColonFractionsAndThreeDigitMillis" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
-  <testcase name="mp4AtomClaimingTwoGigabytesDoesNotAllocate" classname="com.neptune.player.LyricsParserTest" time="0.001"/>
-  <testcase name="unsynchronisedTextIsNotMarkedAsKaraoke" classname="com.neptune.player.LyricsParserTest" time="0.002"/>
+  <testcase name="mp4AtomClaimingTwoGigabytesDoesNotAllocate" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
+  <testcase name="unsynchronisedTextIsNotMarkedAsKaraoke" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
   <testcase name="plainLrcFileIsReadAsText" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
-  <testcase name="frameSizeLargerThanTagIsIgnoredNotOverRead" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
-  <testcase name="windows1251LrcFileIsNotDropped" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
+  <testcase name="frameSizeLargerThanTagIsIgnoredNotOverRead" classname="com.neptune.player.LyricsParserTest" time="0.001"/>
+  <testcase name="windows1251LrcFileIsNotDropped" classname="com.neptune.player.LyricsParserTest" time="0.001"/>
   <testcase name="repeatedChorusStampsAreAllKept" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
   <testcase name="mp4WithStampedTextBecomesKaraoke" classname="com.neptune.player.LyricsParserTest" time="0.001"/>
-  <testcase name="mp4LyricAtomIsRead" classname="com.neptune.player.LyricsParserTest" time="0.006"/>
-  <testcase name="lrcTimestampsBecomeMilliseconds" classname="com.neptune.player.LyricsParserTest" time="0.0"/>
+  <testcase name="mp4LyricAtomIsRead" classname="com.neptune.player.LyricsParserTest" time="0.005"/>
+  <testcase name="lrcTimestampsBecomeMilliseconds" classname="com.neptune.player.LyricsParserTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

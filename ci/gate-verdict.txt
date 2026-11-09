@@ -1,13 +1,14 @@
 FAIL: 1 instrumented test(s) failed
   sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
-    java.lang.AssertionError: Failed to inject touch input.
-Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + EditableText contains 'Скорость, громкость и таймер сна' (ignoreCase: false)) && (hasAnyAncestorThat(OnClick is defined)))
-However, the unmerged tree contains '1' node that matches. Are you missing `useUnmergedNode = true` in your finder?
+    java.lang.AssertionError: No node found that matches (OnClick is defined) && (hasAnyDescendantThat(Text + EditableText contains 'Скорость, громкость и таймер сна' (ignoreCase: false))) in scrollable container
+Semantics of the node:
+Node #6151 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=1028.0, maxValue=1028.0, reverseScrolling=false)'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@a205410'
+Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
+Has 11 children, 6 siblings
+Selector used: (ScrollBy is defined)
 
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
-at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
-at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
-at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
+at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:264)
 at com.neptune.player.PlayerFlowTest.sleepTimerOpensOnlyFromItsRowAndAlwaysCloses(PlayerFlowTest.kt:240)
