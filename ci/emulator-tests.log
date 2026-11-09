@@ -74,9 +74,9 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
 > Task :app:validateSigningDebugAndroidTest UP-TO-DATE
 > Task :app:writeDebugAndroidTestSigningConfigVersions UP-TO-DATE
+> Task :app:mergeExtDexDebug
 > Task :app:packageDebugAndroidTest UP-TO-DATE
 > Task :app:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
-> Task :app:mergeExtDexDebug
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect
 [EmulatorConsole]: Failed to start Emulator console for 5554
@@ -84,21 +84,18 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 47 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 3/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 6/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 10/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 14/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 18/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 4/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 8/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 13/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 17/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 22/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 26/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 29/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 27/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 30/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 31/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 32/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 34/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 35/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 36/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 38/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 37/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 39/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 40/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 41/47 completed. (0 skipped) (0 failed)
@@ -106,8 +103,8 @@ emulator-5554 - 15 Tests 41/47 completed. (0 skipped) (0 failed)
 > Task :app:connectedDebugAndroidTest
 
 com.neptune.player.PlayerFlowTest > sleepTimerOpensOnlyFromItsRowAndAlwaysCloses[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: No node found that matches (OnClick is defined) && (hasAnyDescendantThat(Text + EditableText contains 'Скорость, громкость и таймер сна' (ignoreCase: false))) in scrollable container
-	Semantics of the node:
+	java.lang.AssertionError: Timed out waiting for 'ЗВУК'. Roots: Printing with useUnmergedTree = 'true'
+	Node #5724 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
 
 emulator-5554 - 15 Tests 42/47 completed. (0 skipped) (1 failed)
 emulator-5554 - 15 Tests 44/47 completed. (0 skipped) (1 failed)
@@ -119,7 +116,7 @@ Finished 47 tests on emulator-5554 - 15
 Tests on emulator-5554 - 15 failed: There was 1 failure(s).
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794227850529.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794228576941.json
 
 FAILURE: Build failed with an exception.
 
@@ -133,22 +130,34 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 5m 11s
+BUILD FAILED in 4m 41s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
 FAIL: 1 instrumented test(s) failed
   sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
-    java.lang.AssertionError: No node found that matches (OnClick is defined) && (hasAnyDescendantThat(Text + EditableText contains 'Скорость, громкость и таймер сна' (ignoreCase: false))) in scrollable container
-Semantics of the node:
-Node #6151 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
-IsTraversalGroup = 'true'
-VerticalScrollAxisRange = 'ScrollAxisRange(value=1028.0, maxValue=1028.0, reverseScrolling=false)'
-CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@a205410'
-Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
-Has 11 children, 6 siblings
-Selector used: (ScrollBy is defined)
-
-at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:264)
-at com.neptune.player.PlayerFlowTest.sleepTimerOpensOnlyFromItsRowAndAlwaysCloses(PlayerFlowTest.kt:240)
+    java.lang.AssertionError: Timed out waiting for 'ЗВУК'. Roots: Printing with useUnmergedTree = 'true'
+Node #5724 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #5957 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
+| IsTraversalGroup = 'true'
+| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
+| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@28749ed'
+| Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
+|  |-Node #5961 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
+|  | Text = '[Настройки]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5963 at (l=53.0, t=501.0, r=451.0, b=544.0)px
+|  | Text = '[Всё под тебя. Без лишнего.]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5965 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |  |-Node #5969 at (l=418.0, t=860.0, r=662.0, b=922.0)px
+|  |  | Text = '[Слушатель]'
+|  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |  |-Node #5971 at (l=333.0, t=933.0, r=747.0, b=976.0)px
+|  |    Text = '[Изменить профиль и аватар]'
+|  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5974 at (l=95.0, t=1102.0, r=277.0, b=11
 instrumented suite exit status: 1
