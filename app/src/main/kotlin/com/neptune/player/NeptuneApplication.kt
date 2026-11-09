@@ -94,7 +94,7 @@ class AppContainer(application: Application) {
          * to nothing, which is exactly the blank row this wiring exists to prevent.
          */
         fun savedStreamIds(data: UserData): List<String> =
-            data.liked + data.recent + data.playlists.flatMap { it.trackIds }
+            data.liked.toList() + data.recent + data.playlists.flatMap { it.trackIds }
 
         library.rememberSavedStream(savedStreamIds(users.state.value))
         scope.launch {
