@@ -1,1 +1,81 @@
-OK: 41 instrumented tests ran, 0 failures (declared 41)
+FAIL: 6 instrumented test(s) failed
+  aCatalogueTrackIsFoundAndPlayedFromTheSameSearch
+    androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
+at com.neptune.player.PlayerFlowTest.waitForCatalogTrack(PlayerFlowTest.kt:109)
+at com.neptune.player.PlayerFlowTest.aCatalogueTrackIsFoundAndPlayedFromTheSameSearch(PlayerFlowTest.kt:637)
+  aBrokenTrackIsSkippedAndTheQueueCarriesOn
+    androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
+at com.neptune.player.PlayerFlowTest.aBrokenTrackIsSkippedAndTheQueueCarriesOn(PlayerFlowTest.kt:316)
+  albumShelfActionOpensTheLibraryAlbumsTab
+    java.lang.AssertionError: Timed out waiting for 'Альбомы'. Roots: Printing with useUnmergedTree = 'true'
+Node #4474 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #4690 at (l=0.0, t=128.0, r=1080.0, b=2337.0)px
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [ScrollBy, ScrollByOffset]
+|-Node #4692 at (l=63.0, t=139.0, r=189.0, b=265.0)px
+| ContentDescription = '[Вернуться назад]'
+| Role = 'Button'
+| Focused = 'false'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #4695 at (l=346.0, t=157.0, r=609.0, b=198.0)px
+| Text = '[СЕЙЧАС ИГРАЕТ]'
+| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #4697 at (l=280.0, t=203.0, r=675.0, b=246.0)px
+| Text = '[Импортированная музыка]'
+| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|-Node #4698 at (l=765.0, t=139.0, r=891.0, b=265.0)px
+| ContentDescription = '[Текст трека]'
+| Role = 'Button'
+| Focused = 'false'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #4700 at (l=891.0, t=139.0, r=1017.0, b=265.0)px
+| ContentDescription = '[Действия с треком]'
+| Role = 'Button'
+| Focused = 'false'
+| Actions = [OnClick, RequestFocus]
+| MergeDescendants = 'true'
+|-Node #4709 at (l=63.0, t=1345.0, r=470.0, b=1432.0)px
+| Text = '[Без названия]'
+| Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, G
+  aSavedCatalogueTrackAppearsInItsOwnLibraryTab
+    androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
+at com.neptune.player.PlayerFlowTest.waitForCatalogTrack(PlayerFlowTest.kt:109)
+at com.neptune.player.PlayerFlowTest.aSavedCatalogueTrackAppearsInItsOwnLibraryTab(PlayerFlowTest.kt:664)
+  sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
+    java.lang.AssertionError: Timed out waiting for 'Настоящий звук. Полный контроль.'. Roots: Printing with useUnmergedTree = 'true'
+Node #5174 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #5390 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
+| IsTraversalGroup = 'true'
+| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
+| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@8bf5cc6'
+| Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
+|  |-Node #5394 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
+|  | Text = '[Настройки]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5396 at (l=53.0, t=501.0, r=451.0, b=544.0)px
+|  | Text = '[Всё под тебя. Без лишнего.]'
+|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5398 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
+|  | Focused = 'false'
+|  | Actions = [OnClick, RequestFocus]
+|  | MergeDescendants = 'true'
+|  |  |-Node #5402 at (l=418.0, t=860.0, r=662.0, b=922.0)px
+|  |  | Text = '[Слушатель]'
+|  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |  |-Node #5404 at (l=333.0, t=933.0, r=747.0, b=976.0)px
+|  |    Text = '[Изменить профиль и аватар]'
+|  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+|  |-Node #5407 at (l=9
+  sourcesSwitchBetweenThePhoneAndTheCatalogue
+    java.lang.AssertionError: Assert failed: The component is not displayed!
+at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+at com.neptune.player.PlayerFlowTest.sourcesSwitchBetweenThePhoneAndTheCatalogue(PlayerFlowTest.kt:598)

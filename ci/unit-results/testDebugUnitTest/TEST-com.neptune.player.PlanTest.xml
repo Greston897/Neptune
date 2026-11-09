@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.neptune.player.PlanTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-08T21:15:18" hostname="runnervmwuk1x" time="0.006">
+<testsuite name="com.neptune.player.PlanTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-09T04:22:27" hostname="runnervmwuk1x" time="0.011">
   <properties/>
-  <testcase name="freeAndPaidPartitionTheFeatureList" classname="com.neptune.player.PlanTest" time="0.002"/>
+  <testcase name="freeAndPaidPartitionTheFeatureList" classname="com.neptune.player.PlanTest" time="0.004"/>
   <testcase name="thePlayerItselfIsNeverPaid" classname="com.neptune.player.PlanTest" time="0.0"/>
-  <testcase name="thePaywallOpensOnceAndOnlyOnce" classname="com.neptune.player.PlanTest" time="0.0"/>
-  <testcase name="endingAPlanDropsOnlyWhatWasPaidFor" classname="com.neptune.player.PlanTest" time="0.001"/>
+  <testcase name="thePaywallOpensOnceAndOnlyOnce" classname="com.neptune.player.PlanTest" time="0.004"/>
+  <testcase name="endingAPlanDropsOnlyWhatWasPaidFor" classname="com.neptune.player.PlanTest" time="0.0"/>
   <testcase name="pricesAreInternallyConsistent" classname="com.neptune.player.PlanTest" time="0.0"/>
   <testcase name="avatarPhotoNameAndZoomAreSanitized" classname="com.neptune.player.PlanTest" time="0.0"/>
-  <testcase name="everyLockedFeatureIsAnnouncedAndEveryFreeOneIsNot" classname="com.neptune.player.PlanTest" time="0.0"/>
+  <testcase name="everyLockedFeatureIsAnnouncedAndEveryFreeOneIsNot" classname="com.neptune.player.PlanTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
