@@ -729,6 +729,16 @@ class PlayerFlowTest {
         compose.onNodeWithContentDescription("Действия с Каталожный трек").performClick()
         waitText("В любимое")
         clickText("В любимое")
+        // The save is only half the promise: the id has to resolve back into a row. Asserting that in
+        // state *before* walking to the screen keeps this test about the wiring rather than about how
+        // far a list happens to be scrolled when the assertion runs.
+        compose.waitUntil(15000) {
+            var resolved = false
+            compose.activityRule.scenario.onActivity { activity ->
+                resolved = container(activity).library.state.value.saved.any { it.id == "yandex:test-catalog" }
+            }
+            resolved
+        }
         // The sheet closes on the action, so the search screen is back; the library is one tab away.
         compose.onNode(hasContentDescription("Медиатека") and isSelectable()).performClick()
         compose.waitUntil(15000) {

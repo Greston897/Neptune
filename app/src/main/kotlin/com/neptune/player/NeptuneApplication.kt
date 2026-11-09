@@ -6,11 +6,11 @@ import com.neptune.player.data.LyricsRepository
 import com.neptune.player.data.PlanStore
 import com.neptune.player.data.RemoteCatalog
 import com.neptune.player.data.SettingsStore
+import com.neptune.player.data.UserData
 import com.neptune.player.data.UserStore
 import com.neptune.player.data.yandex.YandexMusicApi
 import com.neptune.player.data.yandex.YandexMusicRepository
 import com.neptune.player.model.PlanFeature
-import com.neptune.player.model.UserData
 import com.neptune.player.playback.Media3PlaybackBackend
 import com.neptune.player.playback.PlaybackBackend
 import kotlinx.coroutines.CoroutineScope
