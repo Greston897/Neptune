@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.neptune.player.YandexTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2026-11-09T04:22:27" hostname="runnervmwuk1x" time="0.066">
+<testsuite name="com.neptune.player.YandexTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2026-11-09T11:01:24" hostname="runnervmwuk1x" time="0.036">
   <properties/>
-  <testcase name="jsonReaderRejectsGarbageInsteadOfReturningHalfOfIt" classname="com.neptune.player.YandexTest" time="0.006"/>
-  <testcase name="aTrackWithoutATitleIsSkippedRatherThanShownBlank" classname="com.neptune.player.YandexTest" time="0.005"/>
-  <testcase name="aSearchResponseBecomesRemoteTracks" classname="com.neptune.player.YandexTest" time="0.008"/>
+  <testcase name="jsonReaderRejectsGarbageInsteadOfReturningHalfOfIt" classname="com.neptune.player.YandexTest" time="0.004"/>
+  <testcase name="aTrackWithoutATitleIsSkippedRatherThanShownBlank" classname="com.neptune.player.YandexTest" time="0.002"/>
+  <testcase name="aSearchResponseBecomesRemoteTracks" classname="com.neptune.player.YandexTest" time="0.004"/>
   <testcase name="previewsAreVisibleOnTheModel" classname="com.neptune.player.YandexTest" time="0.001"/>
-  <testcase name="theSpellingCorrectionIsOnlyOfferedWhenItDiffers" classname="com.neptune.player.YandexTest" time="0.001"/>
-  <testcase name="accountStatusCarriesNameAndPlus" classname="com.neptune.player.YandexTest" time="0.005"/>
+  <testcase name="theSpellingCorrectionIsOnlyOfferedWhenItDiffers" classname="com.neptune.player.YandexTest" time="0.0"/>
+  <testcase name="accountStatusCarriesNameAndPlus" classname="com.neptune.player.YandexTest" time="0.001"/>
   <testcase name="jsonWriterRoundTripsTheCatalogue" classname="com.neptune.player.YandexTest" time="0.0"/>
-  <testcase name="downloadLinkIsSignedWithTheFixedSalt" classname="com.neptune.player.YandexTest" time="0.012"/>
+  <testcase name="downloadLinkIsSignedWithTheFixedSalt" classname="com.neptune.player.YandexTest" time="0.006"/>
   <testcase name="aPathWithoutLeadingSlashIsNotMangled" classname="com.neptune.player.YandexTest" time="0.001"/>
-  <testcase name="aChartWithNoPlayableRowsIsTreatedAsAnError" classname="com.neptune.player.YandexTest" time="0.003"/>
-  <testcase name="ticketXmlIsReadAndMissingFieldsAreRejected" classname="com.neptune.player.YandexTest" time="0.001"/>
+  <testcase name="aChartWithNoPlayableRowsIsTreatedAsAnError" classname="com.neptune.player.YandexTest" time="0.001"/>
+  <testcase name="ticketXmlIsReadAndMissingFieldsAreRejected" classname="com.neptune.player.YandexTest" time="0.0"/>
   <testcase name="theSaltIsTheDocumentedConstant" classname="com.neptune.player.YandexTest" time="0.0"/>
-  <testcase name="theBestVariantPrefersMp3ThenBitrate" classname="com.neptune.player.YandexTest" time="0.001"/>
+  <testcase name="theBestVariantPrefersMp3ThenBitrate" classname="com.neptune.player.YandexTest" time="0.004"/>
   <testcase name="aNumberStopsAtTheDelimiterInsteadOfSwallowingIt" classname="com.neptune.player.YandexTest" time="0.0"/>
-  <testcase name="aStreamBecomesAStableHandleThatIsRecognised" classname="com.neptune.player.YandexTest" time="0.0"/>
-  <testcase name="theLastSourceCannotBeTurnedOff" classname="com.neptune.player.YandexTest" time="0.006"/>
-  <testcase name="aChartResponseKeepsPositionsMenuAndListeners" classname="com.neptune.player.YandexTest" time="0.002"/>
+  <testcase name="aStreamBecomesAStableHandleThatIsRecognised" classname="com.neptune.player.YandexTest" time="0.001"/>
+  <testcase name="theLastSourceCannotBeTurnedOff" classname="com.neptune.player.YandexTest" time="0.0"/>
+  <testcase name="aChartResponseKeepsPositionsMenuAndListeners" classname="com.neptune.player.YandexTest" time="0.004"/>
   <testcase name="jsonReaderHandlesEscapesAndNesting" classname="com.neptune.player.YandexTest" time="0.001"/>
-  <testcase name="searchOrderingPutsFilesFirst" classname="com.neptune.player.YandexTest" time="0.001"/>
+  <testcase name="searchOrderingPutsFilesFirst" classname="com.neptune.player.YandexTest" time="0.002"/>
   <testcase name="downloadInfoIsReadFromEitherEnvelope" classname="com.neptune.player.YandexTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
