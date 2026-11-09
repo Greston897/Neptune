@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.neptune.player.AccentColorTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-09T11:30:36" hostname="runnervmwuk1x" time="0.067">
+<testsuite name="com.neptune.player.AccentColorTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-09T11:51:24" hostname="runnervmwuk1x" time="0.084">
   <properties/>
-  <testcase name="hexFormattingIsSixDigitsAndUppercase" classname="com.neptune.player.AccentColorTest" time="0.002"/>
+  <testcase name="hexFormattingIsSixDigitsAndUppercase" classname="com.neptune.player.AccentColorTest" time="0.006"/>
   <testcase name="primaryColoursMapToTheirCanonicalHues" classname="com.neptune.player.AccentColorTest" time="0.0"/>
-  <testcase name="ensureVisibleIsIdempotentAndAlwaysOpaque" classname="com.neptune.player.AccentColorTest" time="0.021"/>
-  <testcase name="brightPicksAreLeftExactlyAsChosen" classname="com.neptune.player.AccentColorTest" time="0.0"/>
-  <testcase name="hexParsingAcceptsShortLongAndBareForms" classname="com.neptune.player.AccentColorTest" time="0.029"/>
+  <testcase name="ensureVisibleIsIdempotentAndAlwaysOpaque" classname="com.neptune.player.AccentColorTest" time="0.035"/>
+  <testcase name="brightPicksAreLeftExactlyAsChosen" classname="com.neptune.player.AccentColorTest" time="0.003"/>
+  <testcase name="hexParsingAcceptsShortLongAndBareForms" classname="com.neptune.player.AccentColorTest" time="0.024"/>
   <testcase name="darkPicksAreLiftedWithoutChangingHue" classname="com.neptune.player.AccentColorTest" time="0.0"/>
-  <testcase name="hexParsingRejectsJunkInsteadOfGuessing" classname="com.neptune.player.AccentColorTest" time="0.005"/>
-  <testcase name="resetAppearanceTurnsTheCustomColourOff" classname="com.neptune.player.AccentColorTest" time="0.004"/>
-  <testcase name="validationClampsAnUnreadableStoredColour" classname="com.neptune.player.AccentColorTest" time="0.003"/>
+  <testcase name="hexParsingRejectsJunkInsteadOfGuessing" classname="com.neptune.player.AccentColorTest" time="0.007"/>
+  <testcase name="resetAppearanceTurnsTheCustomColourOff" classname="com.neptune.player.AccentColorTest" time="0.002"/>
+  <testcase name="validationClampsAnUnreadableStoredColour" classname="com.neptune.player.AccentColorTest" time="0.002"/>
   <testcase name="settingsResolveCustomAccentOnlyWhenEnabled" classname="com.neptune.player.AccentColorTest" time="0.0"/>
-  <testcase name="hsvRoundTripPreservesEveryPreset" classname="com.neptune.player.AccentColorTest" time="0.0"/>
+  <testcase name="hsvRoundTripPreservesEveryPreset" classname="com.neptune.player.AccentColorTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

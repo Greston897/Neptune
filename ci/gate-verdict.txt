@@ -1,79 +1,40 @@
-FAIL: 4 instrumented test(s) failed
-  albumShelfActionOpensTheLibraryAlbumsTab
-    java.lang.AssertionError: No node found that matches TestTag = 'homeAlbumsAction' in scrollable container
-Semantics of the node:
-Node #4640 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px, Tag: 'homeList'
-IsTraversalGroup = 'true'
-VerticalScrollAxisRange = 'ScrollAxisRange(value=2230.0, maxValue=2230.0, reverseScrolling=false)'
-CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@fea5f13'
-Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
-Has 13 children, 6 siblings
-Selector used: (TestTag = 'homeList')
-
-at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:264)
-at com.neptune.player.PlayerFlowTest.albumShelfActionOpensTheLibraryAlbumsTab(PlayerFlowTest.kt:180)
+FAIL: 3 instrumented test(s) failed
   aSavedCatalogueTrackAppearsInItsOwnLibraryTab
-    java.lang.AssertionError: Timed out waiting for 'Каталожный трек'. Roots: Printing with useUnmergedTree = 'true'
-Node #4861 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
-|-Node #5309 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
-| IsTraversalGroup = 'true'
-| VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
-| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@88cdca2'
-| Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
-|  |-Node #5312 at (l=53.0, t=373.0, r=775.0, b=460.0)px
-|  | Text = '[Медиатека]'
-|  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #5313 at (l=775.0, t=354.0, r=901.0, b=480.0)px
-|  | ContentDescription = '[Создать плейлист]'
-|  | Role = 'Button'
-|  | Focused = 'false'
-|  | Actions = [OnClick, RequestFocus]
-|  | MergeDescendants = 'true'
-|  |-Node #5316 at (l=901.0, t=354.0, r=1027.0, b=480.0)px
-|  | ContentDescription = '[Сортировка]'
-|  | Role = 'Button'
-|  | Focused = 'false'
-|  | Actions = [OnClick, RequestFocus]
-|  | MergeDescendants = 'true'
-|  |-Node #5319 at (l=53.0, t=490.0, r=1027.0, b=628.0)px
-|  | IsTraversalGroup = 'true'
-|  | HorizontalScrollAxisRange = 'ScrollAxisRange(value=228.0, maxValue=228.0, reverseScrolling=false)'
-|  | Actions = [ScrollBy, ScrollByOffset]
-|  |  |-Node #5320 at (l=-175.0, t=501.0, r=-3.0, b=617.0)px
-|  |  | Role = 'Button'
-|  |  | Focused = 'false'
-|  |  | Actions = [OnClick,
+    androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
+at com.neptune.player.PlayerFlowTest.aSavedCatalogueTrackAppearsInItsOwnLibraryTab(PlayerFlowTest.kt:735)
   sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
     java.lang.AssertionError: Timed out waiting for 'Настоящий звук. Полный контроль.'. Roots: Printing with useUnmergedTree = 'true'
-Node #5623 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
-|-Node #5856 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
+Node #5899 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #6132 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
 | IsTraversalGroup = 'true'
 | VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
-| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@cd1ca42'
+| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@7a99d1b'
 | Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
-|  |-Node #5860 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
+|  |-Node #6136 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
 |  | Text = '[Настройки]'
 |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #5862 at (l=53.0, t=501.0, r=451.0, b=544.0)px
+|  |-Node #6138 at (l=53.0, t=501.0, r=451.0, b=544.0)px
 |  | Text = '[Всё под тебя. Без лишнего.]'
 |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #5864 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
+|  |-Node #6140 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
 |  | Focused = 'false'
 |  | Actions = [OnClick, RequestFocus]
 |  | MergeDescendants = 'true'
-|  |  |-Node #5868 at (l=418.0, t=860.0, r=662.0, b=922.0)px
+|  |  |-Node #6144 at (l=418.0, t=860.0, r=662.0, b=922.0)px
 |  |  | Text = '[Слушатель]'
 |  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |  |-Node #5870 at (l=333.0, t=933.0, r=747.0, b=976.0)px
+|  |  |-Node #6146 at (l=333.0, t=933.0, r=747.0, b=976.0)px
 |  |    Text = '[Изменить профиль и аватар]'
 |  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #5873 at (l=9
+|  |-Node #6149 at (l=9
   sourcesSwitchBetweenThePhoneAndTheCatalogue
     java.lang.AssertionError: Action performScrollTo() failed.
-Reason: Expected exactly '1' node but could not find any node that satisfies: (Text + EditableText contains 'Медиатека и Яндекс Музыка' (ignoreCase: false))
+Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + EditableText contains 'Яндекс Музыка' (ignoreCase: false)) && (ToggleableState is defined))
 
 at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
 at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
 at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
 at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:76)
-at com.neptune.player.PlayerFlowTest.sourcesSwitchBetweenThePhoneAndTheCatalogue(PlayerFlowTest.kt:648)
+at com.neptune.player.PlayerFlowTest.sourcesSwitchBetweenThePhoneAndTheCatalogue(PlayerFlowTest.kt:665)
