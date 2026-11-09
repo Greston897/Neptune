@@ -182,6 +182,7 @@ APK: `app/build/outputs/apk/release/app-release.apk`. Готовая сборк�
 ## Структура
 
 - `data/` — настройки, пользовательские данные, MediaStore и SAF-импорт.
+- `data/yandex/` — клиент Яндекс Музыки: `YandexMusicApi` (эндпоинты и заголовки клиента), `YandexSign` (подпись ссылки из `download-info`), `YandexMap` (разбор ответов, включая `previewDurationMs` и опечатку в запросе), `YandexMusicRepository` (чарт, поиск, аккаунт, офлайн-файлы в `filesDir/streams`), `MiniJson` (свой разборщик без зависимостей).
 - `playback/` — граница аудиобэкенда, Media3-контроллер и медиасессия.
 - `state/` — координация UI и репозиториев.
 - `ui/` — токены размеров, тема, liquid-glass панели, векторные иконки, компоненты и экраны Compose.
