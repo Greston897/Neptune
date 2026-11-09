@@ -1,56 +1,49 @@
 == compile errors ==
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApp.kt:239:62 Argument type mismatch: actual type is 'com.neptune.player.model.RemoteTrack', but 'com.neptune.player.model.RemoteAlbum' was expected.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMap.kt:121:13 No parameter with name 'corrected' found.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicApi.kt:59:53 Unresolved reference 'ChartPage'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicApi.kt:65:59 Unresolved reference 'RemoteTrack'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicApi.kt:70:9 Argument type mismatch: actual type is 'kotlin.collections.List<R>', but 'kotlin.collections.List<ERROR CLASS: Symbol not found for RemoteTrack>' was expected.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicApi.kt:74:61 Unresolved reference 'RemoteTrack'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicApi.kt:76:9 Argument type mismatch: actual type is 'kotlin.collections.List<R>', but 'kotlin.collections.List<ERROR CLASS: Symbol not found for RemoteTrack>' was expected.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicApi.kt:185:47 Unresolved reference 'RemoteTrack'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:22:16 Unresolved reference 'ChartPage'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:28:18 Unresolved reference 'RemoteSearch'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:28:33 Unresolved reference 'RemoteSearch'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:53:30 Unresolved reference 'ChartEntry'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:53:57 Unresolved reference 'entries'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:53:68 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:115:32 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:115:32 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:116:31 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:117:35 Unresolved reference 'entries'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:117:47 Unresolved reference 'track'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:117:49 Unresolved reference 'it'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:136:47 Unresolved reference 'RemoteSearch'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:153:32 Unresolved reference 'corrected'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/data/yandex/YandexMusicRepository.kt:153:94 Unresolved reference 'corrected'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/state/NeptuneState.kt:432:88 Unresolved reference 'tracks'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/Components.kt:297:13 Unresolved reference 'AsyncImage'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/Components.kt:299:37 Unresolved reference 'fillMaxSize'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:77:23 Unresolved reference 'title'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:78:23 Unresolved reference 'description'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:123:22 Unresolved reference 'menu'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:123:33 Function invocation 'size(...)' expected.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:123:38 'operator' modifier is required on 'FirNamedFunctionSymbol kotlin/compareTo' in 'compareTo'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:130:30 Unresolved reference 'menu'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:130:41 Overload resolution ambiguity between candidates:
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:130:51 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:133:29 @Composable invocations can only happen from the context of a @Composable function
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:133:41 Unresolved reference 'title'.
+e: The daemon has terminated unexpectedly on startup attempt #1 with error code: 0. The daemon process output:
 e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:133:48 No value passed for parameter 'onClick'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:133:53 Unresolved reference 'selected'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:133:70 Unresolved reference 'postfix'.
 e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:133:103 Argument type mismatch: actual type is 'kotlin.Function0<kotlin.Unit>', but 'com.neptune.player.ui.NeIcon?' was expected.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:178:53 Argument type mismatch: actual type is 'kotlin.String', but 'androidx.compose.ui.Modifier' was expected.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:235:46 Argument type mismatch: actual type is 'kotlin.String', but 'androidx.compose.ui.Modifier' was expected.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:302:69 Unresolved reference 'size'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:304:9 Unresolved reference 'Column'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:305:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:316:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:316:29 Unresolved reference 'height'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:317:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:353:69 Unresolved reference 'size'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:355:9 Unresolved reference 'Column'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:356:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:357:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:357:29 Unresolved reference 'height'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:358:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:133:48 No value passed for parameter 'onClick'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/ChartScreen.kt:133:103 Argument type mismatch: actual type is 'kotlin.Function0<kotlin.Unit>', but 'com.neptune.player.ui.NeIcon?' was expected.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:178:53 Argument type mismatch: actual type is 'kotlin.String', but 'androidx.compose.ui.Modifier' was expected.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:235:46 Argument type mismatch: actual type is 'kotlin.String', but 'androidx.compose.ui.Modifier' was expected.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:302:69 Unresolved reference 'size'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:304:9 Unresolved reference 'Column'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:305:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:316:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:316:29 Unresolved reference 'height'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:317:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:353:69 Unresolved reference 'size'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:355:9 Unresolved reference 'Column'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:356:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:357:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:357:29 Unresolved reference 'height'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:358:13 @Composable invocations can only happen from the context of a @Composable function
 == failures ==
-61:> Task :app:compileDebugKotlin FAILED
-260:> Task :app:compileReleaseKotlin FAILED
-293:BUILD FAILED in 2m 34s
+88:> Task :app:compileDebugKotlin FAILED
+90:> Task :app:compileReleaseKotlin FAILED
+139:BUILD FAILED in 2m 49s
 == tail ==
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SourcesScreen.kt:77:51 Smart cast to 'TypeVariable(K)?' is impossible, because 'chart' is a delegated property.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SourcesScreen.kt:77:67 Unresolved reference 'title'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SourcesScreen.kt:77:78 Smart cast to 'TypeVariable(K)?' is impossible, because 'chart' is a delegated property.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SourcesScreen.kt:77:94 Unresolved reference 'entries'.
-
-> Task :app:compileReleaseKotlin FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794195657580.json
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:353:69 Unresolved reference 'size'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:355:9 Unresolved reference 'Column'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:356:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:357:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:357:29 Unresolved reference 'height'.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/ui/screens/SearchScreen.kt:358:13 @Composable invocations can only happen from the context of a @Composable function
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794195910791.json
 
 FAILURE: Build completed with 2 failures.
 
@@ -82,5 +75,5 @@ Execution failed for task ':app:compileReleaseKotlin'.
 > Get more help at https://help.gradle.org.
 ==============================================================================
 
-BUILD FAILED in 2m 34s
-42 actionable tasks: 38 executed, 4 from cache
+BUILD FAILED in 2m 49s
+43 actionable tasks: 38 executed, 5 from cache
