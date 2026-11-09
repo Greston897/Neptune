@@ -118,6 +118,25 @@ class PlayerFlowTest {
     }
 
     /**
+     * Searches for the catalogue track in the app's own field.
+     *
+     * The seed reaches the list through the real search path, not through a direct state poke, so the
+     * typing is part of what is being tested. `performTextInput` needs the field to be *focused* first:
+     * on a cold screen the search box may sit under the pill that the seeded track now raises, and an
+     * unfocused field accepts the text without the screen ever leaving its "недавние запросы" state.
+     */
+    private fun searchForCatalogueTrack() {
+        compose.onNode(hasContentDescription("Поиск") and isSelectable()).performClick()
+        waitText("Поиск")
+        compose.waitUntil(10000) {
+            compose.onAllNodes(hasSetTextAction()).fetchSemanticsNodes().isNotEmpty()
+        }
+        compose.onNode(hasSetTextAction()).performScrollTo().performClick()
+        compose.onNode(hasSetTextAction()).performTextInput("Каталожный")
+        waitText("Каталожный трек")
+    }
+
+    /**
      * Regression: opening ANY collection used to crash the app.
      *
      * The collection header's back button carried `Modifier.padding(start = -8.dp)`. Compose's
@@ -321,6 +340,16 @@ class PlayerFlowTest {
             moved
         }
         // The skip is announced, not silent — and it names the track, so the user knows what changed.
+        // Read from the state first: the message is carried by the pill, and the pill only exists
+        // once something is playing, which is the very thing this test just caused.
+        compose.waitUntil(15000) {
+            var announced = false
+            compose.activityRule.scenario.onActivity { activity ->
+                announced = container(activity).playback.state.value.message?.contains("Битый файл") == true
+            }
+            announced
+        }
+        // ...and it reaches the screen: same sentence, in the app's own notice surface.
         compose.waitUntil(15000) {
             compose.onAllNodes(hasText("«Битый файл» не открылся — играю дальше")).fetchSemanticsNodes().isNotEmpty()
         }
@@ -650,10 +679,7 @@ class PlayerFlowTest {
     @Test fun aCatalogueTrackIsFoundAndPlayedFromTheSameSearch() {
         seedLibrary()
         waitForCatalogTrack()
-        compose.onNode(hasContentDescription("Поиск") and isSelectable()).performClick()
-        waitText("Поиск")
-        compose.onNode(hasSetTextAction()).performTextInput("Каталожный")
-        waitText("Каталожный трек")
+        searchForCatalogueTrack()
         // The row says where it comes from; that badge is what keeps "удалить с устройства" from ever
         // being offered for it.
         compose.onNodeWithText("Каталожный трек").performClick()
@@ -677,10 +703,7 @@ class PlayerFlowTest {
     @Test fun aSavedCatalogueTrackAppearsInItsOwnLibraryTab() {
         seedLibrary()
         waitForCatalogTrack()
-        compose.onNode(hasContentDescription("Поиск") and isSelectable()).performClick()
-        waitText("Поиск")
-        compose.onNode(hasSetTextAction()).performTextInput("Каталожный")
-        waitText("Каталожный трек")
+        searchForCatalogueTrack()
         compose.onNodeWithContentDescription("Действия с Каталожный трек").performClick()
         waitText("В любимое")
         clickText("В любимое")

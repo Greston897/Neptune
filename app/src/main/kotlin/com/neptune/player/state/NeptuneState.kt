@@ -541,21 +541,21 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
                 val tracks = container.library.state.value.tracks
                 if (tracks.isNotEmpty()) {
                     val source = tracks.firstOrNull { it.source == Track.Source.IMPORTED } ?: tracks.first()
-                    val seeded = RemoteTrack(
+                    val remote = RemoteTrack(
                         id = SYNTHETIC_CATALOG_ID,
                         title = "Каталожный трек",
                         artists = "Neptune Каталог",
                         album = "Проверка",
                         durationMs = source.durationMs,
                         artworkUri = null,
-                    ).toTrack()
+                    )
+                    // The catalogue, not only the library: "Из каталога" resolves a saved id through
+                    // it, and an id the cache has never seen renders as a blank row.
+                    container.remote.remember(listOf(remote))
                     // The row must be playable, so it keeps the real file behind the catalogue
                     // metadata: a `neptune://` handle would need the service, which this suite has no
                     // way to reach.
-                    // The catalogue, not only the library: "Из каталога" resolves a saved id through
-                    // it, and an id the cache has never seen renders as a blank row.
-                    container.remote.remember(listOf(seeded))
-                    container.library.seedSynthetic(seeded.copy(uri = source.uri))
+                    container.library.seedSynthetic(remote.toTrack().copy(uri = source.uri))
                     return@launch
                 }
                 delay(250)
