@@ -82,7 +82,7 @@ fun TrackArtwork(track: Track, modifier: Modifier = Modifier, corner: Dp = 12.dp
  * glyph itself stays exactly the launcher mark, so missing art still looks deliberate.
  */
 @Composable
-private fun BrandCover(seed: Int, animated: Boolean) {
+fun BrandCover(seed: Int, animated: Boolean) {
     val tint = accent()
     Box(Modifier.fillMaxSize().background(Color(0xFF0A0A0A)), contentAlignment = Alignment.Center) {
         Canvas(Modifier.fillMaxSize()) {

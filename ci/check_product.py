@@ -248,6 +248,86 @@ def check_lyrics_are_time_driven() -> None:
             fail(f"{ROOT / 'model/Lyrics.kt'}: missing {needed} — the extractor lost a source")
 
 
+def check_streaming_layer() -> None:
+    """4.0: the catalogue is free, sandboxed in the data layer, and never stored as a signed link.
+
+    Four promises that are each one careless edit away from breaking silently:
+
+    1. **Streaming is not a plan feature.** The product rule since 3.0 is that nothing which makes the
+       player usable is paid. Search, charts and playback of the catalogue are not exceptions — and the
+       free tier on the service side is what makes that true. A `PlanFeature.Stream` row would be the
+       first step back to selling access to music.
+    2. **One file mints links.** The download signature lives in `data/yandex/YandexSign.kt` only; a
+       second copy under another name would drift from the constant the service actually expects.
+    3. **A queue entry is a handle, not a URL.** Signed links expire in about a minute; storing one in
+       the queue would make yesterday's queue unplayable and impossible to debug.
+    4. **Downloads live in files, not in the cache.** Android clears the cache first under pressure,
+       and a download that vanishes is worse than no download feature at all.
+    """
+    plan = ROOT / "model/Plan.kt"
+    source = text(plan)
+    for name in ("Stream", "Yandex", "Catalog", "Download"):
+        if re.search(rf"\b{name}\w*\(", source):
+            # `Download` is not currently a feature; if one is added, this gate says why it must not be.
+            fail(
+                f"{plan}: a plan feature named {name}… appeared. Streaming the catalogue is free on the "
+                "service's own free tier — gating it here would charge for something the user can already do."
+            )
+    sign = ROOT / "data/yandex/YandexSign.kt"
+    if not sign.is_file():
+        fail(f"{sign}: the download signature is missing — nothing can resolve a stream")
+        return
+    if 'const val SALT = "XGRlBW9FXlekgbPrRHuSiA"' not in text(sign):
+        fail(
+            f"{sign}: the fixed download salt changed. The service signs links with one constant; "
+            "a different string produces URLs that 403 with no way to explain why."
+        )
+    # The signature exists once, in that file. A copy elsewhere (or a copy of the md5 of the salt
+    # concatenation) means two implementations that can disagree.
+    for other in sorted(ROOT.rglob("*.kt")):
+        if other == sign:
+            continue
+        body = text(other)
+        if "XGRlBW9FXlekgbPrRHuSiA" in body:
+            fail(f"{other}: a second copy of the download salt — keep it in {sign.name} only")
+    # Network code belongs to the data layer; a screen that opens a socket freezes a frame.
+    for path in sorted((ROOT / "ui").rglob("*.kt")) + [ROOT / "state/NeptuneState.kt"]:
+        body = text(path)
+        for api in ("HttpURLConnection", "java.net.URL("):
+            if api in body:
+                fail(f"{path}: {api} in the UI/state layer — network work belongs to a repository")
+    returns = text(ROOT / "model/Remote.kt")
+    if 'const val SCHEME = "neptune://yandex/"' not in returns:
+        fail(
+            f"{returns}: the stream handle changed. A queue entry must be a stable `neptune://yandex/` id, "
+            "not a signed URL: those expire in about a minute."
+        )
+    source_file = text(ROOT / "model/Track.kt")
+    if "enum class Source { DEVICE, IMPORTED, STREAM }" not in source_file:
+        fail(f"{source_file}: the STREAM source must stay explicit — it is what stops 'удалить с устройства' "
+             "being offered for a track that only exists on a server")
+    repository = text(ROOT / "data/yandex/YandexMusicRepository.kt")
+    if "File(app.filesDir, \"streams\")" not in repository or "cacheDir" in repository:
+        fail(f"{repository}: saved tracks must live under filesDir, not cacheDir — the cache is reclaimed first")
+    store = text(ROOT / "data/SettingsStore.kt")
+    for key in ("sourceLocal", "sourceYandex"):
+        if key not in store:
+            fail(f"{store}: the {key} switch must be persisted, or it resets on every launch")
+    sources = text(ROOT / "ui/screens/SourcesScreen.kt")
+    if "Хотя бы один источник должен остаться" not in text(ROOT / "state/NeptuneState.kt"):
+        fail(
+            f"{ROOT / 'state/NeptuneState.kt'}: turning off the last source must be refused *and* explained. "
+            "A switch that silently springs back reads as a bug."
+        )
+    if "ToggleRow" not in sources or "sourceLocal" not in text(ROOT / "model/Settings.kt"):
+        fail(f"{sources}: the sources screen must offer both sources as real switches")
+    # One search field. The tempting shortcut when a second catalogue arrives is a second screen; the
+    # design decision is one field whose results are the union.
+    search = text(ROOT / "ui/screens/SearchScreen.kt")
+    if search.count("BasicTextField(") != 1:
+        fail(f"{search}: exactly one search field — files and the catalogue share one query")
+
+
 def main() -> int:
     check_no_row_fill()
     check_avatar_has_no_colour_setting()
@@ -257,6 +337,7 @@ def main() -> int:
     check_deletion_requires_confirmation()
     check_plan_gating_is_central()
     check_lyrics_are_time_driven()
+    check_streaming_layer()
     if FAILS:
         print("PRODUCT INVARIANTS FAILED")
         for row in FAILS:
@@ -264,7 +345,7 @@ def main() -> int:
         return 1
     print(
         "OK: product invariants hold (no row plate, no avatar palette, pill notices everywhere, "
-        "one opaque paywall, confirmed deletion, free player, timed lyrics)"
+        "one opaque paywall, confirmed deletion, free player, timed lyrics, free catalogue)"
     )
     return 0
 

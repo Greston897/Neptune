@@ -76,7 +76,7 @@ fun ScreenTitle(title: String, onBack: (() -> Unit)? = null, subtitle: String? =
 @Composable
 fun SettingsScreen(
     state: NeptuneState, onProfile: () -> Unit, onAppearance: () -> Unit, onPlayback: () -> Unit,
-    onData: () -> Unit, onAbout: () -> Unit, onSubscription: () -> Unit = {},
+    onData: () -> Unit, onAbout: () -> Unit, onSubscription: () -> Unit = {}, onSources: () -> Unit = {},
 ) {
     val settings = LocalSettings.current
     val tier by state.plan.collectAsStateWithLifecycle()
@@ -102,6 +102,12 @@ fun SettingsScreen(
                 NeIcon.Sparkle, onClick = onSubscription,
             )
         } }
+        item { SettingsGroup("МУЗЫКА") {
+            // Its own group, above the app's own settings: where the music comes from is the most
+            // consequential switch in 4.0, and burying it under "Приложение" would hide the fact that
+            // the phone and the catalogue are two separate sources.
+            SettingRow("Источники", sourcesSummary(), NeIcon.Globe, onClick = onSources)
+        } }
         item { SettingsGroup("ПРИЛОЖЕНИЕ") {
             SettingRow("Внешний вид", "Цвета, форма, движение и размер текста", NeIcon.Palette, onClick = onAppearance)
             SettingRow("Воспроизведение", "Скорость, громкость и таймер сна", NeIcon.Wave, onClick = onPlayback)
@@ -109,6 +115,18 @@ fun SettingsScreen(
             SettingRow("О Neptune", "Версия ${BuildConfig.VERSION_NAME} · локальный плеер", NeIcon.Info, onClick = onAbout)
         } }
         item { NeText("Настройки сохраняются автоматически", Modifier.fillMaxWidth().padding(top = NeSpace.xxl), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint, align = TextAlign.Center, maxLines = 2) }
+    }
+}
+
+/** "Медиатека и Яндекс Музыка" / "Только медиатека" / "Только Яндекс Музыка". */
+@Composable
+private fun sourcesSummary(): String {
+    val s = LocalSettings.current
+    return when {
+        s.sourceLocal && s.sourceYandex -> "Медиатека и Яндекс Музыка"
+        s.sourceYandex -> "Только Яндекс Музыка"
+        s.sourceLocal -> "Только медиатека телефона"
+        else -> "Источники выключены"
     }
 }
 

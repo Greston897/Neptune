@@ -30,6 +30,19 @@ data class UserData(
     fun removeFromPlaylist(id: String, trackId: String) = copy(playlists = playlists.map {
         if (it.id == id) it.copy(trackIds = it.trackIds - trackId) else it
     })
+
+    /**
+     * Forgets a track everywhere: favourites, every playlist, and the recent list.
+     *
+     * Needed for streamed tracks, which have no library record to delete — the only places they are
+     * stored are these three. Doing it in one place keeps "убрать из приложения" from leaving a copy
+     * behind in a playlist the user has to hunt down.
+     */
+    fun removeEverywhere(trackId: String) = copy(
+        liked = liked - trackId,
+        recent = recent - trackId,
+        playlists = playlists.map { p -> if (trackId in p.trackIds) p.copy(trackIds = p.trackIds - trackId) else p },
+    )
 }
 
 class UserStore(context: Context) {
@@ -57,6 +70,7 @@ class UserStore(context: Context) {
     fun deletePlaylist(id: String) = edit { it.copy(playlists = it.playlists.filterNot { p -> p.id == id }) }
     fun addToPlaylist(id: String, trackId: String) = edit { it.addToPlaylist(id, trackId) }
     fun removeFromPlaylist(id: String, trackId: String) = edit { it.removeFromPlaylist(id, trackId) }
+    fun removeEverywhere(trackId: String) = edit { it.removeEverywhere(trackId) }
 
     companion object {
         fun encode(d: UserData): String = JSONObject().apply {

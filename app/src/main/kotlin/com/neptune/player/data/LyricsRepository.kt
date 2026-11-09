@@ -50,6 +50,14 @@ class LyricsRepository(private val context: Context, private val scope: Coroutin
      */
     fun request(trackId: String, uri: String) {
         if (isKnown(trackId)) return
+        // A streamed track has no file and no tags: opening its handle as a content:// uri would throw
+        // and be cached as "нет текста", which is fine, but it also costs an IO hop on every track the
+        // user merely glances at. The service's own lyrics endpoint needs a token and is not part of
+        // what this app fetches, so the screen simply says the text is not available.
+        if (!uri.startsWith("content://") && !uri.startsWith("file://")) {
+            cache.update { it + (trackId to LyricsDoc.None) }
+            return
+        }
         synchronized(inFlight) { if (!inFlight.add(trackId)) return }
         scope.launch {
             val doc = withContext(Dispatchers.IO) { extract(uri) }

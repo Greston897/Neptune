@@ -19,6 +19,58 @@ import kotlin.math.sin
  * files would both be "Без названия" and every `Действия с <title>` node would be ambiguous.
  */
 object AudioFixture {
+    /**
+     * A second file, for tests that need *two* resolvable entries.
+     *
+     * It is written with an ID3v1 tag so the two tracks do not share the title "Без названия": a bare
+     * WAV has no metadata, and two identical names make every `Действия с …` node ambiguous. The tag
+     * is the last 128 bytes of the file and needs no extra dependency to write.
+     */
+    fun writeSecond(context: Context): Uri {
+        val file = File(context.cacheDir, "fixture-second.wav")
+        val frames = SAMPLE_RATE * 4
+        val dataBytes = frames * 2
+        RandomAccessFile(file, "rw").use { out ->
+            out.setLength(0)
+            fun ascii(text: String) = out.write(text.toByteArray(Charsets.US_ASCII))
+            fun le32(value: Int) {
+                out.write(value and 0xFF); out.write((value ushr 8) and 0xFF)
+                out.write((value ushr 16) and 0xFF); out.write((value ushr 24) and 0xFF)
+            }
+            fun le16(value: Int) { out.write(value and 0xFF); out.write((value ushr 8) and 0xFF) }
+            ascii("RIFF"); le32(36 + dataBytes); ascii("WAVE")
+            ascii("fmt "); le32(16); le16(1); le16(1)
+            le32(SAMPLE_RATE); le32(SAMPLE_RATE * 2); le16(2); le16(16)
+            ascii("data"); le32(dataBytes)
+            val buffer = ByteArray(8192)
+            var written = 0
+            while (written < frames) {
+                val chunk = minOf(frames - written, buffer.size / 2)
+                for (i in 0 until chunk) {
+                    val t = (written + i).toDouble() / SAMPLE_RATE
+                    val sample = (0.2 * sin(2 * PI * 294.0 * t) * Short.MAX_VALUE).toInt().toShort()
+                    buffer[i * 2] = (sample.toInt() and 0xFF).toByte()
+                    buffer[i * 2 + 1] = ((sample.toInt() ushr 8) and 0xFF).toByte()
+                }
+                out.write(buffer, 0, chunk * 2)
+                written += chunk
+            }
+            // ID3v1: "TAG" + title(30) + artist(30) + album(30) + year(4) + comment(30) + genre(1)
+            fun fixed(text: String, size: Int) {
+                val bytes = text.toByteArray(Charsets.ISO_8859_1).copyOf(size)
+                out.write(bytes)
+            }
+            ascii("TAG")
+            fixed("Проверка каталога", 30)
+            fixed("Neptune", 30)
+            fixed("Тест", 30)
+            fixed("2026", 4)
+            fixed("", 30)
+            out.write(12)
+        }
+        return Uri.fromFile(file)
+    }
+
     private const val SAMPLE_RATE = 22050
     private const val SECONDS = 12
 

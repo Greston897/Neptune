@@ -56,18 +56,20 @@ import java.util.Calendar
 @Composable
 fun HomeScreen(
     state: NeptuneState, onCollection: (String, String) -> Unit, onPlayer: () -> Unit,
-    onProfile: () -> Unit, onSettings: () -> Unit, onAlbums: () -> Unit = {},
+    onProfile: () -> Unit, onSettings: () -> Unit, onAlbums: () -> Unit = {}, onCharts: () -> Unit = {},
 ) {
     val library by state.library.collectAsStateWithLifecycle()
     val users by state.users.collectAsStateWithLifecycle()
     val playback by state.playback.collectAsStateWithLifecycle()
     val settings = LocalSettings.current
     val actions = LocalLibraryActions.current
-    val recent = remember(users.recent, library.tracks) { val map = library.byId; users.recent.mapNotNull(map::get) }
+    // Resolved through the union of files and saved streams: a recent song that is a saved stream must
+    // keep its title here, and `library.tracks` alone would drop it silently.
+    val recent = remember(users.recent, library.tracks, library.saved) { val map = library.byId; users.recent.mapNotNull(map::get) }
     val albums = remember(library.tracks) { LibraryLogic.albums(library.tracks) }
     // Count what actually resolves, not how many ids are stored: favourites saved against the demo
     // catalogue removed in 2.9 would otherwise inflate the tile above an empty collection.
-    val likedCount = remember(users.liked, library.tracks) { library.tracks.count { it.id in users.liked } }
+    val likedCount = remember(users.liked, library.tracks, library.saved) { (library.tracks + library.saved).distinctBy { it.id }.count { it.id in users.liked } }
     val greeting = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
         in 5..11 -> "Доброе утро"; in 12..17 -> "Добрый день"; in 18..22 -> "Добрый вечер"; else -> "Доброй ночи"
     }
@@ -133,6 +135,31 @@ fun HomeScreen(
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(NeSpace.sm)) {
                 QuickCollection("Любимое", trackCount(likedCount), NeIcon.HeartFill, Modifier.weight(1f)) { onCollection("liked", "") }
                 QuickCollection("Недавнее", trackCount(recent.size), NeIcon.Clock, Modifier.weight(1f)) { onCollection("recent", "") }
+            }
+        }
+        // Charts live one tap from Home rather than inside Settings: they are content, not a
+        // preference. The row says where the chart comes from, because the first thing the catalogue
+        // does on a cold, offline device is fail — and it has to fail visibly.
+        if (settings.sourceYandex) {
+            item {
+                GlassPanel(Modifier.fillMaxWidth().clickable(onClick = onCharts)) {
+                    Row(
+                        Modifier.fillMaxWidth().padding(horizontal = NeSpace.lg, vertical = NeSpace.md),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        NeIconView(NeIcon.Trending, NeIconSize.lg, accent())
+                        Spacer(Modifier.width(NeSpace.md))
+                        Column(Modifier.weight(1f)) {
+                            NeText("Чарты", size = NeType.label, lineHeight = NeType.labelLine, weight = FontWeight.SemiBold, maxLines = 1)
+                            Spacer(Modifier.height(NeSpace.xxs))
+                            NeText(
+                                "Что слушают сейчас — Яндекс Музыка",
+                                size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 1,
+                            )
+                        }
+                        NeIconView(NeIcon.ChevronRight, NeIconSize.xs, Ne.Whisper)
+                    }
+                }
             }
         }
         if (featured != null) {

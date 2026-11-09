@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
 import org.json.JSONArray
 
@@ -52,8 +53,26 @@ class Media3PlaybackBackend(
     private val listener = object : Player.Listener {
         override fun onEvents(player: Player, events: Player.Events) { publish(); persist() }
         override fun onPlayerError(error: PlaybackException) {
-            _state.value = _state.value.copy(isPlaying = false, isBuffering = false,
-                error = "Не удалось воспроизвести файл. Проверьте доступ к хранилищу и повторите.")
+            _state.value = _state.value.copy(isPlaying = false, isBuffering = false, error = failureText(error))
+        }
+    }
+
+    /**
+     * One sentence that fits the cause.
+     *
+     * A stream fails for reasons a local file never does (no network, the link expired mid-track, the
+     * licensing region), and telling the user to "проверить доступ к хранилищу" for all of them sends
+     * them looking in the wrong place. The current item is inspected, not the exception, because the
+     * exception is a stack of IO wrappers by the time it gets here.
+     */
+    private fun failureText(error: PlaybackException): String {
+        val streaming = _state.value.track?.source == Track.Source.STREAM
+        if (!streaming) return "Не удалось воспроизвести файл. Проверьте доступ к хранилищу и повторите."
+        return when (error.errorCode) {
+            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
+            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT -> "Нет связи с Яндекс Музыкой. Проверьте интернет."
+            PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS -> "Файл больше не отдаётся: ссылка устарела или трек снят."
+            else -> "Трек не воспроизвёлся. Попробуйте ещё раз или выберите локальный файл."
         }
     }
 

@@ -6,6 +6,11 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Streaming from the Yandex Music catalogue is the only networked part of the app. Declared
+         explicitly rather than relying on ACCESS_NETWORK_STATE being pulled in by a dependency, so
+         the permission list reads as what the app actually does. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:name=".NeptuneApplication"
         android:allowBackup="true"

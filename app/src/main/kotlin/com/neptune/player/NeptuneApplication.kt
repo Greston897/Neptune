@@ -3,15 +3,19 @@ package com.neptune.player
 import android.app.Application
 import com.neptune.player.data.LibraryRepository
 import com.neptune.player.data.LyricsRepository
+import com.neptune.player.data.RemoteCatalog
 import com.neptune.player.data.PlanStore
 import com.neptune.player.data.SettingsStore
 import com.neptune.player.model.PlanFeature
 import com.neptune.player.data.UserStore
+import com.neptune.player.data.yandex.YandexMusicApi
+import com.neptune.player.data.yandex.YandexMusicRepository
 import com.neptune.player.playback.Media3PlaybackBackend
 import com.neptune.player.playback.PlaybackBackend
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class NeptuneApplication : Application() {
     lateinit var container: AppContainer private set
@@ -57,6 +61,40 @@ class AppContainer(application: Application) {
     val plan = PlanStore(application)
     val lyrics = LyricsRepository(application, scope)
     val library = LibraryRepository(application, scope)
+
+    /**
+     * The streaming side (4.0).
+     *
+     * The API reads its token through the repository at call time, and the repository is the one
+     * object the UI talks to — so a token pasted in settings takes effect on the next request without
+     * anything being rebuilt.
+     */
+    val remote = RemoteCatalog(application)
+    val yandex = YandexMusicRepository(application, scope, YandexMusicApi(token = { remoteToken() }))
     val playback: PlaybackBackend = Media3PlaybackBackend(application, library, settings, users, scope)
-    init { library.refresh() }
+
+    init {
+        // One wiring point: the library answers "what is yandex:1234" through the catalogue, and the
+        // user store's saved ids are what it resolves. Doing this in the constructor of either class
+        // would leave one of them holding a half-initialised reference.
+        library.remote = remote
+        // Whatever the catalogue shows becomes resolvable by id; the library is told so a saved track
+        // can appear in "Из каталога" the moment it is saved, without a restart.
+        yandex.onTracks = { tracks ->
+            remote.remember(tracks)
+            library.refreshStreams()
+        }
+        users.state.value.let { data ->
+            library.rememberSavedStream(data.liked + data.playlists.flatMap { it.trackIds })
+        }
+        scope.launch {
+            users.state.collect { data ->
+                library.rememberSavedStream(data.liked + data.playlists.flatMap { it.trackIds })
+            }
+        }
+        library.refresh()
+    }
+
+    /** Read *after* construction; the lambda is only called from a network request. */
+    private fun remoteToken(): String? = yandex.state.value.account.token
 }

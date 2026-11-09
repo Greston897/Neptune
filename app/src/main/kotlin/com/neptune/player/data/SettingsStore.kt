@@ -29,6 +29,8 @@ class SettingsStore(context: Context) {
             glassEnabled = prefs.getBoolean("glassEnabled", true), glassBlur = prefs.getFloat("glassBlur", 40f),
             glassTint = prefs.getFloat("glassTint", 0.38f), glassRim = prefs.getFloat("glassRim", 0.85f),
             ambientGlow = prefs.getBoolean("ambientGlow", true), accentGlow = prefs.getBoolean("accentGlow", true),
+            sourceLocal = prefs.getBoolean("sourceLocal", true), sourceYandex = prefs.getBoolean("sourceYandex", true),
+            syntheticCatalogOn = prefs.getBoolean("syntheticCatalogOn", false),
         ).validated()
     }.getOrDefault(Settings()).let { loaded ->
         // One-time migration to the stronger black-glass recipe. V3 raises the blur radius and
@@ -76,7 +78,9 @@ class SettingsStore(context: Context) {
                 .putBoolean("skipSilence", s.skipSilence).putBoolean("sleepFade", s.sleepFade)
                 .putBoolean("glassEnabled", s.glassEnabled).putFloat("glassBlur", s.glassBlur)
                 .putFloat("glassTint", s.glassTint).putFloat("glassRim", s.glassRim)
-                .putBoolean("ambientGlow", s.ambientGlow).putBoolean("accentGlow", s.accentGlow).apply()
+                .putBoolean("ambientGlow", s.ambientGlow).putBoolean("accentGlow", s.accentGlow)
+                .putBoolean("sourceLocal", s.sourceLocal).putBoolean("sourceYandex", s.sourceYandex)
+                .putBoolean("syntheticCatalogOn", s.syntheticCatalogOn).apply()
             s
         }
     }

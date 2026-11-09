@@ -37,6 +37,10 @@ REQUIRED = {
     "planPageIsOnePageAndClosesInOneTap": "the plan page stacked copies of itself into a blurred smear",
     "customAccentOpensThePlanPageWithoutMergingWithTheOneUnderIt": "the plan page showed the appearance screen through itself",
     "pillAndItsNoticesFollowTheUserIntoSubScreens": "the pill (and every toast) vanished in Settings sub-screens",
+    "sourcesSwitchBetweenThePhoneAndTheCatalogue": "4.0: the phone and the catalogue must both be addressable",
+    "aCatalogueTrackIsFoundAndPlayedFromTheSameSearch": "4.0: one search field must find and play a catalogue track",
+    "aSavedCatalogueTrackAppearsInItsOwnLibraryTab": "4.0: a saved stream must survive the screen it was saved on",
+    "theChartScreenOpensFromHomeAndReportsItsState": "4.0: charts must open, and must fail visibly without a network",
 }
 
 

@@ -19,6 +19,10 @@ object ListKeys {
     fun artist(name: String) = "artist:$name"
     fun playlist(id: String) = "playlist:$id"
 
+    /** A streamed album/artist tile: its own domain, so a numeric id cannot collide with a local name. */
+    fun remoteAlbum(id: String) = "yalbum:$id"
+    fun remoteArtist(id: String) = "yartist:$id"
+
     /**
      * The queue may hold the same track twice, so identity alone is not a key here — the position is
      * part of it. NUL-separated so a track id containing "-" or digits cannot alias another slot

@@ -12,14 +12,24 @@ data class Track(
     val source: Source = Source.IMPORTED,
     val year: Int? = null,
     val artSeed: Int = 0,
+    /**
+     * Length of the preview the catalogue offers instead of a whole file, or 0 for a full track.
+     *
+     * Only meaningful for [Source.STREAM]. A preview is playable, and the row says so with "30 сек"
+     * rather than letting the audio stop on its own mid-verse.
+     */
+    val previewMs: Long = 0L,
 ) {
     /**
      * Where a track came from.
      *
-     * `DEMO` was removed in 2.9: the app no longer ships audio, so every track is either picked by
-     * the user through the document picker or found by the MediaStore scan they enabled.
+     * `DEMO` was removed in 2.9: the app ships no audio. [STREAM] arrived in 4.0 with the Yandex
+     * Music catalogue: such a track has no file of its own, and its `uri` is the `neptune://yandex/`
+     * handle that the playback data source expands into a signed link at open time. Everything that
+     * needs a *file* (lyrics from tags, "убрать из приложения", sharing) must therefore check the
+     * source instead of assuming a content:// URL.
      */
-    enum class Source { DEVICE, IMPORTED }
+    enum class Source { DEVICE, IMPORTED, STREAM }
 }
 
 data class Playlist(val id: String, val name: String, val trackIds: List<String> = emptyList())

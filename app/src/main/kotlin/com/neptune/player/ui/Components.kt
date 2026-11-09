@@ -221,11 +221,24 @@ fun TrackRow(
         TrackThumb(track, (if (compact) NeRow.thumbCompact else NeRow.thumb) * settings.thumbScale, 14.dp)
         Spacer(Modifier.width(NeSpace.md))
         Column(Modifier.weight(1f)) {
-            NeText(
-                track.title, size = NeType.body, lineHeight = NeType.bodyLine,
-                weight = if (current) FontWeight.Bold else FontWeight.SemiBold,
-                color = if (current) tint else Ne.Text, maxLines = 1,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                NeText(
+                    track.title, Modifier.weight(1f, fill = false), size = NeType.body, lineHeight = NeType.bodyLine,
+                    weight = if (current) FontWeight.Bold else FontWeight.SemiBold,
+                    color = if (current) tint else Ne.Text, maxLines = 1,
+                )
+                // A streamed track carries no file: the row says where it comes from, so "убрать из
+                // приложения" and "удалить с устройства" are never offered for it and the user is not
+                // surprised when it needs a network.
+                if (track.source == Track.Source.STREAM) {
+                    Spacer(Modifier.width(NeSpace.sm))
+                    StreamBadge()
+                }
+                if (track.previewMs > 0) {
+                    Spacer(Modifier.width(NeSpace.xs))
+                    NeText("30 сек", size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Faint, maxLines = 1)
+                }
+            }
             Spacer(Modifier.height(NeSpace.xxs))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (current) {
@@ -252,6 +265,38 @@ fun TrackRow(
             NeIconButton(
                 NeIcon.More, "Действия с ${track.title}", onMore,
                 size = NeTouch.min, iconSize = NeIconSize.sm, color = Ne.Dim,
+            )
+        }
+    }
+}
+
+/**
+ * The one mark that says "this plays from the catalogue, not from your phone".
+ *
+ * Deliberately quiet: a small icon rather than a coloured chip, because a search result mixing files
+ * and streams should not look like two different products.
+ */
+@Composable
+fun StreamBadge(modifier: Modifier = Modifier) {
+    NeIconView(NeIcon.Globe, NeIconSize.xs, Ne.Faint, modifier = modifier)
+}
+
+/**
+ * A cover for something that has no local file behind it — a streamed track, album or artist.
+ *
+ * Takes a URL instead of a Track because there may be no track yet: three of the call sites are
+ * identicons for an album row, and one of them runs before anything has been fetched. The brand mark
+ * is drawn underneath, so a missing cover, a dead link and a slow load all degrade to the same shape
+ * the rest of the app uses instead of an empty rectangle.
+ */
+@Composable
+fun RemoteCover(coverUri: String?, seed: Int, modifier: Modifier = Modifier, corner: Dp = 12.dp) {
+    Box(modifier.clip(artShape(corner))) {
+        BrandCover(seed = seed, animated = false)
+        if (coverUri != null) {
+            AsyncImage(
+                model = coverUri, contentDescription = null,
+                modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop,
             )
         }
     }

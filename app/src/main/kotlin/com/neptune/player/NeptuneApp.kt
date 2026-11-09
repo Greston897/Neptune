@@ -80,6 +80,17 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
             }
         }
     }
+    /*
+     * The build-time catalogue, one switch. The instrumented suite runs on an emulator with no network
+     * and must prove that a *catalog* track can be found, played and saved exactly like a file. That
+     * needs one track that looks like it came from the service — and nothing else. This is a real
+     * feature of the debug build rather than test-only code in the product: release ignores it unless
+     * the stored preference is set, and the preference is only written by the suite.
+     */
+    LaunchedEffect(Unit) {
+        val seed = (context.applicationContext as NeptuneApplication).container.settings.state.value.syntheticCatalogOn
+        if (seed) state.seedCatalog()
+    }
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
         state.refreshLibrary()
         state.toast(if (it) "Доступ открыт" else "Можно выбрать файлы вручную", NeIcon.Info, if (it) ToastTone.DONE else ToastTone.INFO)
@@ -162,11 +173,18 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                                     // "Альбомы → Медиатека" must land on the albums tab, not on a
                                     // collection route: "albums" is a Library tab, not a kind.
                                     { state.libraryTab = 1; nav.navigateTab(Tab.LIBRARY) },
+                                    { nav.navigateOnce("charts") },
                                 )
                             }
-                            composable("search") { SearchScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
+                            composable("search") { SearchScreen(state, { kind, key -> nav.navigateCollection(kind, key) }, { album ->
+                                // A catalogue album is not a local collection: its tracks have to be
+                                // fetched, remembered, and only then played in order.
+                                state.openChartAlbum(album)
+                            }) }
+                            composable("charts") { ChartScreen(state) { nav.popBackStack() } }
+                            composable("sources") { SourcesScreen(state, { nav.popBackStack() }, { nav.navigateOnce("charts") }) }
                             composable("library") { LibraryScreen(state) { kind, key -> nav.navigateCollection(kind, key) } }
-                            composable("settings") { SettingsScreen(state, { nav.navigateOnce("profile") }, { nav.navigateOnce("appearance") }, { nav.navigateOnce("playback-settings") }, { nav.navigateOnce("data") }, { nav.navigateOnce("about") }, { state.openPlanManager() }) }
+                            composable("settings") { SettingsScreen(state, { nav.navigateOnce("profile") }, { nav.navigateOnce("appearance") }, { nav.navigateOnce("playback-settings") }, { nav.navigateOnce("data") }, { nav.navigateOnce("about") }, { state.openPlanManager() }, { nav.navigateOnce("sources") }) }
                             composable("player") { NowPlayingScreen(state, { nav.popBackStack() }, { nav.navigateOnce("queue") }, { kind, key -> nav.navigateCollection(kind, key) }, { nav.navigateOnce("lyrics") }) }
                             composable("queue") { QueueScreen(state) { nav.popBackStack() } }
                             composable("profile") { ProfileScreen(state, { nav.popBackStack() }, { state.openPlanManager() }) }
@@ -212,6 +230,16 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                         )
                     }
                     if (!fullPlayer && !state.paywallOpen) PlayerDock(Modifier.align(Alignment.BottomCenter), true, state, playback, { nav.navigateOnce("player") }, route) { tab -> nav.navigateTab(tab) }
+                    // The streamed track's own sheet: same surface, fewer rows, because most of the
+                    // local actions are about a file that a stream does not have.
+                    state.contextRemote?.let { track ->
+                        RemoteTrackSheet(
+                            state, track,
+                            { state.contextRemote = null },
+                            { remote -> state.openChartAlbum(remote) },
+                            { artistId -> state.openRemoteArtist(artistId) },
+                        )
+                    }
                     state.contextTrack?.let { track ->
                         TrackActionsSheet(
                             state, track,

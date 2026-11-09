@@ -41,10 +41,10 @@ fun CollectionScreen(state: NeptuneState, kind: String, key: String, onBack: () 
     val users by state.users.collectAsStateWithLifecycle()
     val playback by state.playback.collectAsStateWithLifecycle()
     val playlist = users.playlists.find { it.id == key }
-    val tracks = remember(library.tracks, users, kind, key) {
+    val tracks = remember(library.tracks, library.saved, users, kind, key) {
         val map = library.byId
         when (kind) {
-            "liked" -> library.tracks.filter { it.id in users.liked }
+            "liked" -> (library.tracks + library.saved).distinctBy { it.id }.filter { it.id in users.liked }
             "recent" -> users.recent.mapNotNull(map::get)
             "album" -> library.tracks.filter { "${it.artist}\u0000${it.album}" == key }
             "artist" -> library.tracks.filter { it.artist == key }

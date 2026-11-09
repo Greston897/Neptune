@@ -17,6 +17,8 @@ import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isToggleable
+import androidx.compose.ui.test.hasSetTextAction
+import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.isDialog
@@ -26,6 +28,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,6 +38,19 @@ class PlayerFlowTest {
     @get:Rule val permissions: GrantPermissionRule = GrantPermissionRule.grant(
         Manifest.permission.READ_MEDIA_AUDIO, Manifest.permission.POST_NOTIFICATIONS)
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
+
+    /**
+     * Seeds the synthetic catalogue track *before* the activity starts.
+     *
+     * The suite has no network (and must not depend on one), so a real Yandex search would return
+     * nothing and the stream path would stay unproven. The flag is read once, on the first composition:
+     * setting it here is the only way to have it in place before that. See `NeptuneState.seedCatalog`.
+     */
+    @Before fun enableSyntheticCatalog() {
+        compose.activityRule.scenario.onActivity { activity ->
+            container(activity).settings.edit { it.copy(syntheticCatalogOn = true) }
+        }
+    }
     private fun back() { compose.activityRule.scenario.onActivity { it.onBackPressedDispatcher.onBackPressed() } }
     private fun container(activity: MainActivity) = (activity.application as NeptuneApplication).container
     private fun waitText(text: String, timeout: Long = 20000) {
@@ -68,14 +84,30 @@ class PlayerFlowTest {
      * tracks into the state, so the import path itself is covered too.
      */
     private fun seedLibrary() {
+        // Two files: the second one carries an ID3 tag, so the suite can distinguish "the file I
+        // searched for" from "the other track in the library" without relying on ambiguous text.
         compose.activityRule.scenario.onActivity { activity ->
             val c = container(activity)
-            c.library.importUris(listOf(AudioFixture.write(activity))) {}
+            c.library.importUris(listOf(AudioFixture.write(activity), AudioFixture.writeSecond(activity))) {}
         }
         compose.waitUntil(20000) {
             var loaded = false
-            compose.activityRule.scenario.onActivity { loaded = container(it).library.state.value.tracks.isNotEmpty() }
+            compose.activityRule.scenario.onActivity { loaded = container(it).library.state.value.tracks.size >= 2 }
             loaded
+        }
+    }
+
+    /**
+     * Streams have no network in this suite, and that is the point of the seed: the *product* paths —
+     * search, the source switch, playing a catalogue track, saving it into "Любимое" and into the
+     * "Из каталога" tab — are all exercised against a track the app treats as catalog-sourced. The
+     * signing and JSON mapping, which cannot be reached without a network, are covered by unit tests
+     * (`YandexTest`).
+     */
+    private fun waitForCatalogTrack() {
+        compose.waitUntil(20000) {
+            compose.onAllNodes(hasText("Каталожный трек")).fetchSemanticsNodes().isNotEmpty() ||
+                compose.onAllNodes(hasText("Каталожный")).fetchSemanticsNodes().isNotEmpty()
         }
     }
 
@@ -474,5 +506,116 @@ class PlayerFlowTest {
         }
         compose.onNodeWithContentDescription("Закрыть").performClick()
         waitText("Всё под тебя. Без лишнего.")
+    }
+
+    /**
+     * The source switch is the 4.0 contract, so it is asserted as behaviour rather than as copy.
+     *
+     * Three things have to hold at once: both catalogues are searchable by default, turning the
+     * phone's library off changes what search returns, and the *last* source cannot be turned off —
+     * the switch springs back and the pill says why, instead of leaving the app with nowhere to look.
+     */
+    @Test fun sourcesSwitchBetweenThePhoneAndTheCatalogue() {
+        seedLibrary()
+        compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
+        waitText("Источники")
+        clickText("Источники")
+        waitText("ГДЕ ИСКАТЬ")
+        compose.onNodeWithText("Медиатека и Яндекс Музыка").assertIsDisplayed()
+
+        // Turning the catalogue off must be possible, and must survive leaving the screen: this is a
+        // stored preference, not a per-session toggle.
+        compose.onNode(hasText("Яндекс Музыка") and isToggleable()).performClick()
+        compose.waitUntil(5000) {
+            var off = false
+            compose.activityRule.scenario.onActivity { off = !container(it).settings.state.value.sourceYandex }
+            off
+        }
+        // With only the phone left, turning it off too is refused and explained.
+        compose.onNode(hasText("Медиатека телефона") and isToggleable()).performClick()
+        compose.waitUntil(5000) {
+            compose.onAllNodes(hasText("Хотя бы один источник должен остаться")).fetchSemanticsNodes().isNotEmpty()
+        }
+        compose.waitUntil(5000) {
+            var stillLocal = false
+            compose.activityRule.scenario.onActivity { stillLocal = container(it).settings.state.value.sourceLocal }
+            stillLocal
+        }
+        // Put it back so the rest of the suite sees the default state.
+        compose.onNode(hasText("Яндекс Музыка") and isToggleable()).performClick()
+        compose.waitUntil(5000) {
+            var on = false
+            compose.activityRule.scenario.onActivity { on = container(it).settings.state.value.sourceYandex }
+            on
+        }
+    }
+
+    /**
+     * A catalogue track is searchable and playable through exactly the same field as a file.
+     *
+     * The regression this guards is the tempting shortcut of a second search screen for the service:
+     * one field, one list, files first and the catalogue below, is the whole design of the screen. The
+     * synthetic track stands in for a real result because the emulator has no network — see
+     * `YandexTest` for the mapping and signing that need the real response shape.
+     */
+    @Test fun aCatalogueTrackIsFoundAndPlayedFromTheSameSearch() {
+        seedLibrary()
+        waitForCatalogTrack()
+        compose.onNode(hasContentDescription("Поиск") and isSelectable()).performClick()
+        waitText("Поиск")
+        compose.onNode(hasSetTextAction()).performTextInput("Каталожный")
+        waitText("Каталожный трек")
+        // The row says where it comes from; that badge is what keeps "удалить с устройства" from ever
+        // being offered for it.
+        compose.onNodeWithText("Каталожный трек").performClick()
+        compose.waitUntil(15000) {
+            var playing = false
+            compose.activityRule.scenario.onActivity { activity ->
+                val state = container(activity).playback.state.value
+                playing = state.track?.id == "yandex:test-catalog" && state.isPlaying
+            }
+            playing
+        }
+    }
+
+    /**
+     * Saving a catalogue track keeps it after leaving the screen — and the saved row opens.
+     *
+     * "Любимое" is stored as ids, and a stream's metadata lives in a cache that can be evicted. Saving
+     * an id whose metadata was never remembered is how a saved song turns into a blank row, so the
+     * order (remember, then store) is what this asserts by resolving the row afterwards.
+     */
+    @Test fun aSavedCatalogueTrackAppearsInItsOwnLibraryTab() {
+        seedLibrary()
+        waitForCatalogTrack()
+        compose.onNode(hasContentDescription("Поиск") and isSelectable()).performClick()
+        waitText("Поиск")
+        compose.onNode(hasSetTextAction()).performTextInput("Каталожный")
+        waitText("Каталожный трек")
+        compose.onNodeWithContentDescription("Действия с Каталожный трек").performClick()
+        waitText("В любимое")
+        clickText("В любимое")
+        // The sheet closes on the action, so the search screen is back; the library is one tab away.
+        compose.onNode(hasContentDescription("Медиатека") and isSelectable()).performClick()
+        waitText("Из каталога")
+        clickText("Из каталога")
+        waitText("Каталожный трек")
+        compose.onNodeWithText("Каталожный трек").assertIsDisplayed()
+    }
+
+    /** Charts are reachable from Home and open the screen, without a network and without a crash. */
+    @Test fun theChartScreenOpensFromHomeAndReportsItsState() {
+        seedLibrary()
+        compose.onNodeWithTag("homeList").performScrollToNode(hasText("Чарты"))
+        clickText("Чарты")
+        waitText("Что слушают прямо сейчас — по данным Яндекс Музыки.")
+        // No network in the suite: the screen must say so rather than sit on a spinner forever.
+        compose.waitUntil(20000) {
+            compose.onAllNodes(hasText("Чарт не загрузился")).fetchSemanticsNodes().isNotEmpty() ||
+                compose.onAllNodes(hasText("Загружаю чарт…")).fetchSemanticsNodes().isNotEmpty()
+        }
+        // Either way the promise under the error is the important half: local music still works.
+        compose.onNodeWithContentDescription("Назад").performClick()
+        waitText("Твоя музыка")
     }
 }

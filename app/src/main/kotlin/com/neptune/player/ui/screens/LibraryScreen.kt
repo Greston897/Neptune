@@ -44,12 +44,18 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
     val library by state.library.collectAsStateWithLifecycle()
     val users by state.users.collectAsStateWithLifecycle()
     val playback by state.playback.collectAsStateWithLifecycle()
+    // Hoisted: a LazyListScope lambda is not a composable context, so the stream state has to be read
+    // here and closed over by the items.
+    val streams by state.streams.collectAsStateWithLifecycle()
     val actions = LocalLibraryActions.current
     var create by remember { mutableStateOf(false) }
     var sortMenu by remember { mutableStateOf(false) }
+    // The tracks tab lists the phone's files. Saved streams are reachable through «Любимое» and
+    // playlists, and through the dedicated "Из каталога" tab below — adding them to this list would
+    // make "Медиатека" mean two different things depending on where a song came from.
     val tracks = remember(library.tracks, state.librarySort) { state.sorted(library.tracks) }
     // Same rule as Home: count resolvable tracks so a stale id cannot inflate the subtitle.
-    val likedCount = remember(users.liked, library.tracks) { library.tracks.count { it.id in users.liked } }
+    val likedCount = remember(users.liked, library.tracks, library.saved) { library.all.distinctBy { it.id }.count { it.id in users.liked } }
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(start = NeSpace.screen, end = NeSpace.screen, top = NeSpace.md + LocalTopInset.current, bottom = LocalBottomInset.current)) {
         item {
             Row(Modifier.fillMaxWidth().heightIn(min = NeRow.header), verticalAlignment = Alignment.CenterVertically) {
@@ -72,7 +78,12 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(NeSpace.sm),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                listOf("Треки", "Альбомы", "Артисты", "Плейлисты").forEachIndexed { i, title -> NeChip(title, state.libraryTab == i, { state.libraryTab = i }) }
+                // Five chips: the catalogue's saved tracks get their own tab instead of being mixed
+                // into "Треки", because they behave differently (they need a network or a download,
+                // and they cannot be deleted from the device).
+                listOf("Треки", "Альбомы", "Артисты", "Плейлисты", "Из каталога").forEachIndexed { i, title ->
+                    NeChip(title, state.libraryTab == i, { state.libraryTab = i })
+                }
             }
         }
         if (!library.permission) item {
@@ -91,7 +102,7 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                     { state.playTrack(track, tracks) }, onMore = { state.contextTrack = track }) }
             }
             1 -> {
-                val albums = LibraryLogic.albums(tracks)
+                val albums = LibraryLogic.albums(library.tracks)
                 items(albums.chunked(2), key = { ListKeys.album(it.first().first.first, it.first().first.second) }) { row ->
                     Row(Modifier.fillMaxWidth().padding(vertical = NeSpace.sm),
                         horizontalArrangement = Arrangement.spacedBy(NeSpace.md),
@@ -102,7 +113,7 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                     }
                 }
             }
-            2 -> items(LibraryLogic.artists(tracks), key = { ListKeys.artist(it.first) }) { (artist, list) ->
+            2 -> items(LibraryLogic.artists(library.tracks), key = { ListKeys.artist(it.first) }) { (artist, list) ->
                 Row(Modifier.fillMaxWidth().heightIn(min = NeRow.compact).clip(RoundedCornerShape(12.dp))
                     .clickable { onCollection("artist", artist) }.padding(vertical = NeSpace.sm, horizontal = NeSpace.xs),
                     verticalAlignment = Alignment.CenterVertically) {
@@ -116,13 +127,41 @@ fun LibraryScreen(state: NeptuneState, onCollection: (String, String) -> Unit) {
                     Spacer(Modifier.width(NeSpace.sm)); NeIconView(NeIcon.ChevronRight, NeIconSize.xs, Ne.Whisper)
                 }
             }
+            4 -> {
+                item {
+                    NeText(
+                        if (library.saved.isEmpty()) "Здесь появятся треки из Яндекс Музыки, которые ты сохранил в любимое или в плейлист."
+                        else "${library.saved.size} сохранено из каталога · ${streams.downloads.size} скачано для офлайна",
+                        Modifier.padding(vertical = NeSpace.sm),
+                        size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint, maxLines = 3,
+                    )
+                }
+                items(library.saved, key = { ListKeys.track(it.id) }) { track ->
+                    TrackRow(
+                        track, playback.track?.id == track.id, playback.isPlaying,
+                        { state.playTrack(track, library.saved) },
+                        onMore = { state.contextTrack = track },
+                        trailing = {
+                            // Offline state lives on the row: this is the one screen where "will it
+                            // play in the metro" is the question the user is asking.
+                            if (streams.isDownloaded(track.id)) NeIconView(NeIcon.Check, NeIconSize.sm, accent())
+                        },
+                    )
+                }
+                if (library.saved.isEmpty()) item {
+                    EmptyState(
+                        NeIcon.Globe, "Пока пусто",
+                        "Найди трек в поиске или открой чарты — сохранённое появится здесь и сыграет без сети, если скачать.",
+                    )
+                }
+            }
             else -> {
                 item { CollectionLink("Любимые треки", trackCount(likedCount), NeIcon.HeartFill) { onCollection("liked", "") } }
                 items(users.playlists, key = { ListKeys.playlist(it.id) }) { p -> CollectionLink(p.name, trackCount(p.trackIds.size), NeIcon.Music) { onCollection("playlist", p.id) } }
                 item { NeButton("Новый плейлист", { create = true }, Modifier.fillMaxWidth().padding(top = NeSpace.lg), NeIcon.Plus, primary = false) }
             }
         }
-        if (!library.loading && library.tracks.isEmpty() && state.libraryTab != 3) item {
+        if (!library.loading && library.tracks.isEmpty() && state.libraryTab != 3 && state.libraryTab != 4) item {
             EmptyState(
                 NeIcon.Music, "Медиатека пуста",
                 "Выбери один или несколько аудиофайлов — либо разреши доступ, чтобы найти музыку на устройстве.",

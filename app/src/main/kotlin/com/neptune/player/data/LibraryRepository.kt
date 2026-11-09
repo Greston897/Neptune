@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.core.content.ContextCompat
+import com.neptune.player.model.RemoteTrack
 import com.neptune.player.model.Track
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,9 +25,21 @@ data class LibraryState(
     val loading: Boolean = true,
     val permission: Boolean = false,
     val error: String? = null,
+    /**
+     * Streamed tracks the user saved (favourites, playlists), as metadata.
+     *
+     * They live here rather than in a second list the UI has to remember to join: every screen
+     * already resolves ids through [byId], so folding them in makes a saved Yandex track behave
+     * exactly like a file everywhere — in the queue, in a playlist, in "Любимое".
+     */
+    val saved: List<Track> = emptyList(),
 ) {
-    val byId get() = tracks.associateBy { it.id }
+    /** Everything the app can resolve, local files and saved streams alike. */
+    val byId get() = (tracks + saved).associateBy { it.id }
     val localCount get() = tracks.count { it.source == Track.Source.DEVICE }
+    val streamCount get() = saved.size
+    /** The whole catalogue, in the order every screen wants it: own files first, then streams. */
+    val all get() = tracks + saved.filter { s -> tracks.none { it.id == s.id } }
 }
 
 /**
@@ -38,6 +51,15 @@ data class LibraryState(
  * showing somebody else's audio.
  */
 class LibraryRepository(private val context: Context, private val scope: CoroutineScope) {
+
+    /**
+     * Metadata for streams the user saved. Set by the container after construction, because the
+     * catalog needs nothing from the library and a constructor cycle would only make both harder to
+     * test. Null means "no streaming in this build" and every stream path degrades to "unknown".
+     */
+    var remote: RemoteCatalog? = null
+        set(value) { field = value; refreshRemote() }
+
     private val prefs = context.getSharedPreferences("neptune.v2.sources", Context.MODE_PRIVATE)
     private val _state = MutableStateFlow(LibraryState(permission = hasPermission()))
     val state = _state
@@ -63,8 +85,53 @@ class LibraryRepository(private val context: Context, private val scope: Corouti
                 LibraryState(tracks.distinctBy { it.id }.sortedBy { it.title.lowercase() },
                     false, hasPermission(), error)
             }
-            _state.value = result
+            _state.value = result.copy(saved = resolveSaved(result.tracks))
         }
+    }
+
+    /**
+     * Stream ids stored by favourites and playlists, turned back into queue-ready tracks.
+     *
+     * Resolved against [remote], so a saved stream survives a restart with its title, artist and
+     * cover. An id the catalog has forgotten is simply left out: showing a row called "yandex:1234"
+     * would be worse than not showing it.
+     */
+    private fun resolveSaved(local: List<Track>): List<Track> {
+        val catalog = remote ?: return emptyList()
+        val ids = linkedSetOf<String>()
+        ids += savedStreamIds
+        return ids.mapNotNull { catalog.resolve(it.substringAfter("yandex:"))?.toTrack() }
+            .filter { t -> local.none { it.id == t.id } }
+    }
+
+    /** Stream ids the user put into a playlist or into favourites; the owner writes this set. */
+    private val savedStreamIds = linkedSetOf<String>()
+
+    fun rememberSavedStream(ids: Collection<String>) {
+        savedStreamIds.clear()
+        savedStreamIds += ids.filter { it.startsWith("yandex:") }
+        _state.update { it.copy(saved = resolveSaved(it.tracks)) }
+    }
+
+    private fun refreshRemote() {
+        _state.update { it.copy(saved = resolveSaved(it.tracks)) }
+    }
+
+    /** Rebuilds [LibraryState.saved] after the catalog learned a new track. */
+    fun refreshStreams() = refreshRemote()
+
+    /**
+     * Adds a track to the *local* library by reference — the build-time catalogue row the release
+     * build replaces with nothing.
+     *
+     * Only the Debug source set calls this: it seeds a searchable, playable "catalog" track so the
+     * instrumented suite can prove search, playback and saving for a stream without a network. It is
+     * deliberately a *file* uri rather than a `neptune://` handle, so the test exercises the real
+     * search/save/queue path and not the signing code, which is covered by unit tests.
+     */
+    fun seedSynthetic(track: Track) {
+        if (_state.value.tracks.any { it.id == track.id }) return
+        _state.update { it.copy(tracks = (it.tracks + track).sortedBy { t -> t.title.lowercase() }) }
     }
 
     private fun scanDevice(): List<Track> {
@@ -141,6 +208,9 @@ class LibraryRepository(private val context: Context, private val scope: Corouti
      * instead of pretending the deletion worked.
      */
     fun forget(track: Track): Boolean {
+        // A stream is not stored here at all: it is in favourites or a playlist, and "убрать из
+        // приложения" would have to edit that list. Returning false keeps the two paths honest
+        // instead of pretending a file was released.
         if (track.source != Track.Source.IMPORTED) return false
         val existing = importedUris().toMutableSet()
         if (!existing.remove(track.uri)) return false

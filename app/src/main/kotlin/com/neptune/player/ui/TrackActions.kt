@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.neptune.player.model.RemoteTrack
 import com.neptune.player.model.Track
 import com.neptune.player.model.trackCount
 import com.neptune.player.state.NeptuneState
@@ -75,9 +76,18 @@ fun TrackActionsSheet(
                 val send = Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, "${track.title} — ${track.artist}"), "Поделиться музыкой")
                 context.startActivity(send); close()
             }
+            // A streamed track has no file at all, so it never reaches the two destructive rows below:
+            // offering "удалить с устройства" for something that only exists on a server would be a
+            // lie, and "убрать из приложения" does not apply either (it was never in the library).
+            // Its own sheet is [RemoteTrackSheet].
+
             // Destructive actions live at the bottom of the sheet, below everything that adds, and
             // both open a confirmation that names the consequence.
-            if (track.source == Track.Source.IMPORTED) {
+            if (track.source == Track.Source.STREAM) {
+                SettingRow(
+                    "Убрать из приложения", "Из любимого и плейлистов; в каталоге трек остаётся", NeIcon.Trash,
+                ) { removeTrack = true }
+            } else if (track.source == Track.Source.IMPORTED) {
                 SettingRow(
                     "Убрать из приложения", "Файл останется на устройстве", NeIcon.Trash,
                 ) { removeTrack = true }
@@ -120,4 +130,131 @@ fun TrackActionsSheet(
     if (createPlaylist) NameDialog("Новый плейлист", "Название", "", { createPlaylist = false }) {
         val p = state.createPlaylist(it); state.addToPlaylist(p.id, track); createPlaylist = false; close()
     }
+}
+
+/**
+ * The sheet for a track that plays from the catalogue.
+ *
+ * Deliberately shorter than the local sheet, because most of the local actions are about a *file*:
+ * reading tags, deleting from the device, forgetting an import. What is left is what a stream can
+ * actually do — play it, queue it, save it, look at the album it came from, share it, or find more by
+ * the same artist.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RemoteTrackSheet(
+    state: NeptuneState,
+    track: RemoteTrack,
+    onDismiss: () -> Unit,
+    onAlbum: (RemoteTrack) -> Unit = {},
+    onArtist: (String) -> Unit = {},
+) {
+    val users by state.users.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val liked = track.uriId in users.liked
+    val downloads by state.streams.collectAsStateWithLifecycle()
+    var playlistPicker by remember { mutableStateOf(false) }
+    var createPlaylist by remember { mutableStateOf(false) }
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        containerColor = Ne.Ink, dragHandle = null,
+    ) {
+        Column(Modifier.fillMaxWidth().navigationBarsPadding().padding(bottom = 16.dp)) {
+            Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 22.dp), verticalAlignment = Alignment.CenterVertically) {
+                RemoteCover(track.artworkUri, track.id.hashCode(), Modifier.width(NeRow.thumb).height(NeRow.thumb), 10.dp)
+                Spacer(Modifier.width(NeSpace.md))
+                Column(Modifier.weight(1f)) {
+                    NeText(track.title, size = NeType.section, lineHeight = NeType.sectionLine, weight = FontWeight.Bold, maxLines = 2)
+                    Spacer(Modifier.height(NeSpace.xs))
+                    NeText(
+                        listOfNotNull(track.artists, track.album.ifBlank { null }).joinToString(" · "),
+                        size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 2,
+                    )
+                }
+            }
+            SettingRow("Играть", "Из Яндекс Музыки", NeIcon.Play) { state.playRemote(track); onDismiss() }
+            SettingRow(if (liked) "Убрать из любимого" else "В любимое", icon = if (liked) NeIcon.HeartFill else NeIcon.Heart) {
+                state.likeRemote(track); onDismiss()
+            }
+            val saved = downloads.isDownloaded(track.uriId)
+            val progress = downloads.downloading[track.uriId]
+            SettingRow(
+                when {
+                    progress != null -> "Скачиваю"
+                    saved -> "Удалить скачанное"
+                    else -> "Скачать для офлайна"
+                },
+                when {
+                    progress != null && progress >= 0 -> "${(progress * 100).toInt()}%"
+                    progress != null -> "Начинаю…"
+                    saved -> "${downloadSize(downloads.downloads.getValue(track.uriId).bytes)} на устройстве"
+                    else -> "Трек останется на телефоне и сыграет без сети"
+                },
+                if (saved) NeIcon.Trash else NeIcon.Download,
+            ) {
+                if (saved) state.removeDownload(track) else if (progress == null) state.download(track)
+                onDismiss()
+            }
+            SettingRow("Играть следующим", icon = NeIcon.Next) { state.playNextRemote(track); onDismiss() }
+            SettingRow("В очередь", icon = NeIcon.Queue) { state.enqueueRemote(track); onDismiss() }
+            SettingRow("В плейлист", icon = NeIcon.Music) { playlistPicker = true }
+            if (track.albumId != null) {
+                SettingRow("Об альбоме", track.album, NeIcon.Disc) { onDismiss(); onAlbum(track) }
+            }
+            if (track.artistId != null) {
+                SettingRow("Все треки исполнителя", track.artists, NeIcon.Artist) { onDismiss(); onArtist(track.artistId) }
+            }
+            SettingRow("Поделиться", "Название и исполнитель", NeIcon.Share) {
+                val send = Intent.createChooser(
+                    Intent(Intent.ACTION_SEND).setType("text/plain")
+                        .putExtra(Intent.EXTRA_TEXT, "${track.title} — ${track.artists}"),
+                    "Поделиться музыкой",
+                )
+                context.startActivity(send); onDismiss()
+            }
+            NeText(
+                if (track.preview > 0) "Сервис отдаёт этот трек как 30-секундный фрагмент — полной версии для него нет или она доступна только по подписке сервиса."
+                else "Трек играет напрямую из Яндекс Музыки: нужен интернет, файл на устройство не сохраняется.",
+                Modifier.padding(horizontal = 24.dp, vertical = NeSpace.md),
+                size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint, maxLines = 3,
+            )
+        }
+    }
+    // Same playlist flow as the local sheet, minus "убрать из этого плейлиста": a stream reaches the
+    // sheet from search or a chart, never from inside a playlist.
+    if (playlistPicker) AlertDialog(
+        onDismissRequest = { playlistPicker = false }, containerColor = Ne.Elevated,
+        title = { NeText("В плейлист", size = NeType.title, lineHeight = NeType.titleLine, weight = FontWeight.Bold) },
+        text = {
+            Column {
+                SettingRow("Новый плейлист", icon = NeIcon.Plus) { playlistPicker = false; createPlaylist = true }
+                users.playlists.forEach { p ->
+                    SettingRow(p.name, trackCount(p.trackIds.size), if (track.uriId in p.trackIds) NeIcon.Check else NeIcon.Music) {
+                        state.saveRemoteToPlaylist(track, p.id); playlistPicker = false; onDismiss()
+                    }
+                }
+                if (users.playlists.isEmpty()) {
+                    NeText(
+                        "Создай первый плейлист — сохранённый трек появится в нём рядом с файлами.",
+                        Modifier.padding(NeSpace.lg), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Dim, maxLines = 3,
+                    )
+                }
+            }
+        },
+        confirmButton = {},
+    )
+    if (createPlaylist) NameDialog("Новый плейлист", "Название", "", { createPlaylist = false }) {
+        val p = state.createPlaylist(it)
+        state.saveRemoteToPlaylist(track, p.id)
+        createPlaylist = false
+        onDismiss()
+    }
+}
+
+/** "12,4 МБ" — the same rounding for every saved track. */
+private fun downloadSize(bytes: Long): String = when {
+    bytes >= 1024L * 1024L -> "%.1f МБ".format(bytes / (1024.0 * 1024.0)).replace('.', ',')
+    bytes >= 1024L -> "${bytes / 1024} КБ"
+    else -> "$bytes Б"
 }

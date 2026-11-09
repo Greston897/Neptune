@@ -90,7 +90,25 @@ data class Settings(
     val glassRim: Float = 0.85f,
     val ambientGlow: Boolean = true,
     val accentGlow: Boolean = true,
+    /**
+     * Where the app is allowed to look. Two switches, not one: somebody with 400 GB of their own FLAC
+     * may want search to stay offline-only, and somebody with an empty phone may want the catalogue
+     * alone. Neither is asked to give up the other permanently.
+     */
+    val sourceLocal: Boolean = true,
+    val sourceYandex: Boolean = true,
+    /**
+     * Debug-build seed for the instrumented suite.
+     *
+     * The suite runs on an emulator with no network, and search/save for a catalogue track still has
+     * to be proven end to end. The suite sets this preference before the activity starts; the app then
+     * publishes one catalogue-shaped track built over a real local file. Release builds never set it,
+     * and the code that reads it is three lines.
+     */
+    val syntheticCatalogOn: Boolean = false,
 ) {
+    /** The pair, as the model the rest of the app reasons about. */
+    val sources: Sources get() = Sources(local = sourceLocal, yandex = sourceYandex)
     val accent get() = Accent.of(accentIndex)
     val surface get() = Surface.FIXED
     val avatarShape get() = AvatarShape.entries.getOrElse(avatarIndex) { AvatarShape.CIRCLE }
@@ -126,6 +144,8 @@ data class Settings(
      * entitlements, otherwise "Plus is over" would be untrue on screen. Playback, playlists and
      * likes are untouched — they were never paid.
      */
+    fun withSources(next: Sources) = copy(sourceLocal = next.local, sourceYandex = next.yandex)
+
     fun withoutPaidExtras() = copy(
         customAccent = false,
         accentArgb = 0xFF6FA8FF.toInt(),

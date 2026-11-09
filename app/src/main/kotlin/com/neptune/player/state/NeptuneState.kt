@@ -15,7 +15,11 @@ import com.neptune.player.model.LyricsDoc
 import com.neptune.player.model.PlanFeature
 import com.neptune.player.model.PlanTier
 import com.neptune.player.model.Pricing
+import com.neptune.player.model.RemoteAlbum
+
+import com.neptune.player.model.RemoteTrack
 import com.neptune.player.model.Settings
+import com.neptune.player.model.Sources
 import com.neptune.player.model.Track
 import com.neptune.player.ui.NeIcon
 import com.neptune.player.ui.ToastHostState
@@ -31,6 +35,12 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
     val plan = container.plan.tier
     val annualPlan = container.plan.annual
 
+    /** Charts, remote search and the Yandex account, as one observable state. */
+    val streams = container.yandex.state
+
+    /** Metadata for streams, so a saved one keeps its title after a restart. */
+    val remoteCatalog get() = container.remote
+
     /**
      * The single confirmation surface. Every "Добавлено…", "Сохранено", "Убрано" goes through here
      * and appears inside the now-playing pill; the old snackbar channel is gone, because a notice at
@@ -38,9 +48,44 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
      */
     val toast = ToastHostState()
     var search by mutableStateOf("")
+        private set
+
+    /**
+     * The only writer of [search].
+     *
+     * A delegated property cannot carry a custom setter in Kotlin, and the old code assigned the field
+     * from three places in the UI — which is exactly how the remote search would have been started for
+     * some edits and not others. One function, one behaviour: typing starts a (debounced, sequenced)
+     * request, and clearing the field cancels the one in flight.
+     */
+    fun setSearch(text: String) {
+        search = text
+        if (sources.yandex) container.yandex.search(text) else container.yandex.search("")
+    }
+
+    /** What the app searches and lists: the user's files, the catalogue, or both. */
+    val sources: Sources get() = settings.value.sources
+
+    /**
+     * Id → track for everything the app can resolve, files *and* saved streams.
+     *
+     * Screens that resolve an id they were handed (the queue, a playlist, "недавнее") must use this
+     * rather than `library.value.byId`: a streamed track saved into a playlist is stored by id only,
+     * and looking it up in the local scan alone is how a saved song turns into a blank row.
+     */
+    val byId get() = library.value.byId
     var libraryTab by mutableStateOf(0)
     var librarySort by mutableStateOf(0)
     var contextTrack by mutableStateOf<Track?>(null)
+
+    /**
+     * A streamed track whose sheet is open.
+     *
+     * Separate from [contextTrack] because the sheet's actions genuinely differ: a stream cannot be
+     * removed from the phone, has no file to delete and no tags to read lyrics from. Keeping it in its
+     * own field means neither sheet has to branch on the source mid-list.
+     */
+    var contextRemote by mutableStateOf<RemoteTrack?>(null)
     var contextPlaylist by mutableStateOf<String?>(null)
 
     /** Paywall destination requested by a gated control; the host opens the subscription screen. */
@@ -243,6 +288,16 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
     fun seek(fraction: Float) = container.playback.seek(fraction)
     fun like(track: Track) = container.users.toggleLike(track.id)
     fun submitSearch() = container.users.rememberSearch(search)
+
+    /**
+     * Re-runs the remote half of the current query.
+     *
+     * Separate from [setSearch] because the value does not change: assigning the same string would not
+     * even notify observers, so a "Повторить" button wired to `setSearch(search)` would look dead.
+     */
+    fun retrySearch() {
+        if (sources.yandex) container.yandex.search(search, immediate = true)
+    }
     fun clearSearches() = container.users.clearSearches()
     fun clearHistory() { container.users.clearHistory(); toast("История очищена", NeIcon.Check) }
     fun createPlaylist(name: String) = container.users.createPlaylist(name).also {
@@ -268,6 +323,17 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
      * says so for device ones.
      */
     fun removeTrack(track: Track) {
+        // A saved stream has no file to forget, so "убрать" means taking it out of the lists that
+        // hold it: favourites and every playlist. Both stores are written before the queue is
+        // touched, so a failure cannot leave the row visible after the entry is gone.
+        val streamId = RemoteTrack.idOf(track)
+        if (streamId != null || track.source == Track.Source.STREAM) {
+            val id = track.id
+            container.users.removeEverywhere(id)
+            container.playback.dropTrack(id)
+            toast("Трек убран из приложения", NeIcon.Trash)
+            return
+        }
         container.library.forget(track)
         container.playback.dropTrack(track.id)
         toast("Трек убран из приложения", NeIcon.Trash)
@@ -351,7 +417,188 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
         2 -> tracks.sortedByDescending { it.durationMs }
         else -> tracks.sortedBy { it.title.lowercase() }
     }
+
+    /** The user's own files, matched locally. Unaffected by the network. */
     fun search(tracks: List<Track>) = LibraryLogic.search(tracks, search)
+
+    /**
+     * The whole search: files first, then the catalogue.
+     *
+     * Files come first because they always answer instantly and never fail; the catalogue result is
+     * appended as it arrives. That ordering is also what makes the screen honest — a user with the
+     * network off still sees their own matches, with the remote half saying it could not look.
+     */
+    fun localResults(): List<Track> = if (sources.local) search(library.value.tracks) else emptyList()
+    fun remoteResults(): List<RemoteTrack> = if (sources.yandex) streams.value.results.tracks else emptyList()
+
+    /**
+     * Plays a streamed track, remembering its metadata first.
+     *
+     * The catalog write has to happen *before* the queue is built: the player resolves a queue entry
+     * through the library, and an id the catalog has never seen would play but render as nothing.
+     */
+    fun playRemote(track: RemoteTrack, context: List<RemoteTrack> = listOf(track)) {
+        container.remote.remember(context + track)
+        val queue = (context + track).distinctBy { it.id }.map { it.toTrack() }
+        val index = queue.indexOfFirst { it.id == track.uriId }.coerceAtLeast(0)
+        container.playback.play(queue, index)
+    }
+
+    fun playRemoteAll(tracks: List<RemoteTrack>) {
+        if (tracks.isEmpty()) return
+        container.remote.remember(tracks)
+        container.playback.play(tracks.map { it.toTrack() })
+    }
+
+    fun enqueueRemote(track: RemoteTrack) {
+        container.remote.remember(listOf(track))
+        container.playback.enqueue(track.toTrack())
+        toast("Добавлено в очередь", NeIcon.Queue)
+    }
+
+    fun playNextRemote(track: RemoteTrack) {
+        container.remote.remember(listOf(track))
+        container.playback.playNext(track.toTrack())
+        toast("Будет играть следующим", NeIcon.Next)
+    }
+
+    /**
+     * Saves a track for offline listening.
+     *
+     * Free, like streaming itself: the file is what the service already gives the app, kept on the
+     * device instead of discarded after playback. Nothing here asks for a plan.
+     */
+    fun download(track: RemoteTrack) {
+        container.remote.remember(listOf(track))
+        container.yandex.download(track)
+        toast("Скачиваю «${track.title}»", NeIcon.Download, ToastTone.INFO)
+    }
+
+    fun removeDownload(track: RemoteTrack) {
+        container.yandex.removeDownload(track.uriId)
+        toast("Скачанное удалено", NeIcon.Trash)
+    }
+
+    /** A streamed track cannot be un-liked into a file, but it can be saved: same path as a file. */
+    fun likeRemote(track: RemoteTrack) {
+        container.remote.remember(listOf(track))
+        container.users.toggleLike(track.uriId)
+        toast(
+            if (track.uriId in users.value.liked) "Добавлено в любимое" else "Убрано из любимого",
+            NeIcon.Heart,
+        )
+    }
+
+    fun likedRemote(track: RemoteTrack): Boolean = track.uriId in users.value.liked
+
+    /**
+     * Saves a stream into a playlist.
+     *
+     * Order matters: the catalogue must know the metadata *before* the id is stored, otherwise the
+     * playlist row shows an id instead of a song for as long as the app lives. Storing the id first
+     * and remembering later is exactly the bug this ordering avoids.
+     */
+    fun saveRemoteToPlaylist(track: RemoteTrack, playlistId: String) {
+        container.remote.remember(listOf(track))
+        container.users.addToPlaylist(playlistId, track.uriId)
+        container.library.refreshStreams()
+        toast("Добавлено в плейлист", NeIcon.Check)
+    }
+
+    fun rememberRemote(tracks: List<RemoteTrack>) {
+        container.remote.remember(tracks)
+        container.library.refreshStreams()
+    }
+
+    /**
+     * Seeds the synthetic catalogue track used by the instrumented suite.
+     *
+     * See [com.neptune.player.NeptuneApp] for why this exists at all: an emulator without network
+     * cannot reach the real service, and search/save/queue for a streamed track still have to be
+     * proven end to end. The track is an ordinary file with a catalogue-style id, so the code under
+     * test is the product code, not a mock.
+     */
+    fun seedCatalog() {
+        val tracks = container.library.state.value.tracks
+        val source = tracks.firstOrNull { it.source == Track.Source.IMPORTED } ?: tracks.firstOrNull() ?: return
+        container.library.seedSynthetic(
+            Track(
+                id = "yandex:test-catalog",
+                title = "Каталожный трек",
+                artist = "Neptune Каталог",
+                album = "Проверка",
+                durationMs = source.durationMs,
+                uri = source.uri,
+                artworkUri = source.artworkUri,
+                source = Track.Source.STREAM,
+                artSeed = 7,
+            ),
+        )
+    }
+
+    /** Charts: opened when the user asks for them, never on app start (it is a network call). */
+    fun loadChart(postfix: String = streams.value.chartPostfix, force: Boolean = false) {
+        if (!sources.yandex) {
+            toast("Яндекс Музыка выключена в источниках", NeIcon.Info, ToastTone.WARN)
+            return
+        }
+        container.yandex.loadChart(postfix, force)
+    }
+
+    fun openChartAlbum(album: RemoteAlbum) {
+        container.yandex.albumTracks(album.id) { tracks ->
+            if (tracks.isEmpty()) toast("Альбом не открылся", NeIcon.Info, ToastTone.WARN)
+            else { rememberRemote(tracks); playRemoteAll(tracks) }
+        }
+    }
+
+    /**
+     * Opens an artist's catalogue.
+     *
+     * The tracks are remembered and *shown in search* rather than played blind: the user asked to see
+     * what this artist has, and starting playback of fifty tracks they have not looked at would be a
+     * different action than the one they tapped.
+     */
+    fun openRemoteArtist(artistId: String) {
+        container.yandex.artistTracks(artistId) { tracks ->
+            if (tracks.isEmpty()) {
+                toast("У исполнителя нет треков", NeIcon.Info, ToastTone.WARN)
+                return@artistTracks
+            }
+            rememberRemote(tracks)
+            setSearch(tracks.first().artists)
+            toast("Показываю треки исполнителя", NeIcon.Artist, ToastTone.INFO)
+        }
+    }
+
+    fun setSource(local: Boolean, on: Boolean) {
+        val next = Sources.toggle(sources, local, on)
+        if (next == sources) {
+            // Refused, and said out loud: turning both off would leave search with nowhere to look and
+            // no explanation on screen.
+            toast("Хотя бы один источник должен остаться", NeIcon.Info, ToastTone.WARN)
+            return
+        }
+        edit { it.withSources(next) }
+        if (next.yandex) container.yandex.loadChart(streams.value.chartPostfix)
+        toast(
+            if (on) "${if (local) "Медиатека телефона" else "Яндекс Музыка"} включена"
+            else "${if (local) "Медиатека телефона" else "Яндекс Музыка"} выключена",
+            NeIcon.Check,
+            if (on) ToastTone.DONE else ToastTone.INFO,
+        )
+    }
+
+    fun setYandexToken(token: String?) {
+        container.yandex.setToken(token) { ok ->
+            toast(
+                if (token.isNullOrBlank()) "Аккаунт отключён"
+                else if (ok) "Яндекс Музыка подключена" else "Токен не подошёл",
+                if (ok) NeIcon.Check else NeIcon.Info,
+                if (ok) ToastTone.DONE else ToastTone.WARN,
+            )
+        }
+    }
     fun playbackJump(index: Int) = container.playback.jumpTo(index)
     fun moveQueue(from: Int, to: Int) = container.playback.move(from, to)
     fun removeQueue(index: Int) = container.playback.remove(index)

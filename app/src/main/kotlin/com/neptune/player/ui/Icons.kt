@@ -66,4 +66,12 @@ enum class NeIcon(@DrawableRes val res: Int, @DrawableRes val boldRes: Int = res
     Logout(R.drawable.ne_logout),
     /** Brand mark: the same orbit glyph the launcher icon uses. */
     Orbit(R.drawable.ne_orbit),
+    /** Charts: a rising line, the one glyph that reads as "positions" at 16dp. */
+    Trending(R.drawable.ne_trending_up),
+    /** A streamed track: the catalogue is online, so the globe says more than a cloud would. */
+    Globe(R.drawable.ne_globe),
+    /** Download for offline listening. */
+    Download(R.drawable.ne_cloud_download),
+    /** The account row: paste a token / connect. */
+    Login(R.drawable.ne_log_in),
 }
