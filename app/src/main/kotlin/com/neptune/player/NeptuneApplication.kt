@@ -3,13 +3,14 @@ package com.neptune.player
 import android.app.Application
 import com.neptune.player.data.LibraryRepository
 import com.neptune.player.data.LyricsRepository
-import com.neptune.player.data.RemoteCatalog
 import com.neptune.player.data.PlanStore
+import com.neptune.player.data.RemoteCatalog
 import com.neptune.player.data.SettingsStore
-import com.neptune.player.model.PlanFeature
 import com.neptune.player.data.UserStore
 import com.neptune.player.data.yandex.YandexMusicApi
 import com.neptune.player.data.yandex.YandexMusicRepository
+import com.neptune.player.model.PlanFeature
+import com.neptune.player.model.UserData
 import com.neptune.player.playback.Media3PlaybackBackend
 import com.neptune.player.playback.PlaybackBackend
 import kotlinx.coroutines.CoroutineScope
@@ -84,13 +85,20 @@ class AppContainer(application: Application) {
             remote.remember(tracks)
             library.refreshStreams()
         }
-        users.state.value.let { data ->
-            library.rememberSavedStream(data.liked + data.playlists.flatMap { it.trackIds })
-        }
+        /**
+         * Everything the user store holds that may be a stream: favourites and every playlist.
+         *
+         * The queue's own history is included, and that is not a detail. Following the user from
+         * "Любимое" to "Из каталога" means the saved row must resolve on the *first* frame after the
+         * write, not on the next restart — and a saved id whose metadata has not arrived yet resolves
+         * to nothing, which is exactly the blank row this wiring exists to prevent.
+         */
+        fun savedStreamIds(data: UserData): List<String> =
+            data.liked + data.recent + data.playlists.flatMap { it.trackIds }
+
+        library.rememberSavedStream(savedStreamIds(users.state.value))
         scope.launch {
-            users.state.collect { data ->
-                library.rememberSavedStream(data.liked + data.playlists.flatMap { it.trackIds })
-            }
+            users.state.collect { data -> library.rememberSavedStream(savedStreamIds(data)) }
         }
         library.refresh()
     }
