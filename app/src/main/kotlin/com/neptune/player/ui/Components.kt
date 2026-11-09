@@ -171,7 +171,7 @@ fun NeChip(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modif
 @Composable
 fun SectionHeader(
     title: String, modifier: Modifier = Modifier, action: String? = null, onAction: (() -> Unit)? = null,
-    actionTag: String? = null, subtitle: String? = null,
+    actionTag: String? = null, subtitle: String? = null, onTitleClick: (() -> Unit)? = null,
 ) {
     if (subtitle != null) {
         Row(modifier.fillMaxWidth().heightIn(min = 40.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -180,8 +180,13 @@ fun SectionHeader(
                 weight = FontWeight.Bold, tracking = (-0.3).sp, maxLines = 1,
             )
             NeText(
-                subtitle, Modifier.alignByBaseline(), size = NeType.caption, lineHeight = NeType.captionLine,
-                color = Ne.Faint, maxLines = 1,
+                subtitle,
+                Modifier.alignByBaseline()
+                    .then(if (onTitleClick != null) Modifier.clip(CircleShape).clickable(onClick = onTitleClick) else Modifier)
+                    .padding(start = NeSpace.sm, top = 6.dp, bottom = 6.dp),
+                size = NeType.caption, lineHeight = NeType.captionLine,
+                color = if (onTitleClick != null) accent() else Ne.Faint, maxLines = 1,
+                weight = if (onTitleClick != null) FontWeight.Bold else FontWeight.Normal,
             )
         }
         return

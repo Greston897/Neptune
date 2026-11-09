@@ -6,6 +6,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import com.neptune.player.AppContainer
 import com.neptune.player.NeptuneApplication
 import com.neptune.player.data.AvatarStore
@@ -76,6 +79,12 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
      * and looking it up in the local scan alone is how a saved song turns into a blank row.
      */
     val byId get() = library.value.byId
+    private var catalogSeedJob: kotlinx.coroutines.Job? = null
+
+    private companion object {
+        /** The id the debug catalogue track is seeded under. One name, so the suite cannot drift. */
+        const val SYNTHETIC_CATALOG_ID = "test-catalog"
+    }
     var libraryTab by mutableStateOf(0)
     var librarySort by mutableStateOf(0)
     var contextTrack by mutableStateOf<Track?>(null)
@@ -519,23 +528,39 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
      * cannot reach the real service, and search/save/queue for a streamed track still have to be
      * proven end to end. The track is an ordinary file with a catalogue-style id, so the code under
      * test is the product code, not a mock.
+     *
+     * It is seeded through the same catalogue the real streaming path fills ([RemoteTrack] →
+     * [Track]), and it *waits* for the library: on a cold start the seed request lands before the
+     * media scan has finished, and a seed that quietly returns would leave the suite hunting for a
+     * track that was never created. Retries are bounded, so a genuinely empty library still ends.
      */
     fun seedCatalog() {
-        val tracks = container.library.state.value.tracks
-        val source = tracks.firstOrNull { it.source == Track.Source.IMPORTED } ?: tracks.firstOrNull() ?: return
-        container.library.seedSynthetic(
-            Track(
-                id = "yandex:test-catalog",
-                title = "Каталожный трек",
-                artist = "Neptune Каталог",
-                album = "Проверка",
-                durationMs = source.durationMs,
-                uri = source.uri,
-                artworkUri = source.artworkUri,
-                source = Track.Source.STREAM,
-                artSeed = 7,
-            ),
-        )
+        catalogSeedJob?.cancel()
+        catalogSeedJob = viewModelScope.launch {
+            repeat(40) {
+                val tracks = container.library.state.value.tracks
+                if (tracks.isNotEmpty()) {
+                    val source = tracks.firstOrNull { it.source == Track.Source.IMPORTED } ?: tracks.first()
+                    val seeded = RemoteTrack(
+                        id = SYNTHETIC_CATALOG_ID,
+                        title = "Каталожный трек",
+                        artists = "Neptune Каталог",
+                        album = "Проверка",
+                        durationMs = source.durationMs,
+                        artworkUri = null,
+                    ).toTrack()
+                    // The row must be playable, so it keeps the real file behind the catalogue
+                    // metadata: a `neptune://` handle would need the service, which this suite has no
+                    // way to reach.
+                    // The catalogue, not only the library: "Из каталога" resolves a saved id through
+                    // it, and an id the cache has never seen renders as a blank row.
+                    container.remote.remember(listOf(seeded))
+                    container.library.seedSynthetic(seeded.copy(uri = source.uri))
+                    return@launch
+                }
+                delay(250)
+            }
+        }
     }
 
     /** Charts: opened when the user asks for them, never on app start (it is a network call). */

@@ -83,9 +83,14 @@ object DockMetrics {
     fun showsTrackPill(route: String?, hasTrack: Boolean): Boolean =
         hasTrack && route != "player" && route != "subscription"
 
-    /** Top clearance a screen must reserve so its header never sits underneath the pill. */
-    fun topHeight(route: String?, hasTrack: Boolean): Dp =
-        if (showsTrackPill(route, hasTrack)) PillTop + NeRow.pill + Gap else 0.dp
+    /**
+     * Top clearance a screen must reserve so its header never sits underneath the pill.
+     *
+     * Derives the answer from the *same* two rules the pill itself is drawn by, so the reservation and
+     * the capsule cannot disagree; the plan page is opaque and covers both, hence the separate flag.
+     */
+    fun topHeight(route: String?, hasTrack: Boolean, overlaid: Boolean = false): Dp =
+        if (!overlaid && showsTrackPill(route, hasTrack)) PillTop + NeRow.pill + Gap else 0.dp
 
     fun height(route: String?, hasTrack: Boolean): Dp {
         val nav = showsNavbar(route)

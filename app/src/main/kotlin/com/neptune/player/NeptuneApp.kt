@@ -91,6 +91,10 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
         val seed = (context.applicationContext as NeptuneApplication).container.settings.state.value.syntheticCatalogOn
         if (seed) state.seedCatalog()
     }
+    // The pill is a layout element, not an overlay with a mind of its own: reserve its height and
+    // draw it before anything else, so a screen never composes underneath it and then jumps when the
+    // first track arrives. It is derived from the flag below rather than from the playback state,
+    // which is what makes the two agree on the very first frame.
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
         state.refreshLibrary()
         state.toast(if (it) "Доступ открыт" else "Можно выбрать файлы вручную", NeIcon.Info, if (it) ToastTone.DONE else ToastTone.INFO)
@@ -147,7 +151,10 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
             val navigationBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
             val hasTrack = playback.track != null
             val bottomInset = navigationBottom + DockMetrics.height(route, hasTrack) + DockMetrics.Breath
-            val topInset = DockMetrics.topHeight(route, hasTrack)
+            // The pill is a header, not an overlay: a screen reserves its height so its own title is
+            // never drawn underneath it. The plan page is opaque and covers it, and the immersive
+            // player does not have it at all.
+            val topInset = DockMetrics.topHeight(route, hasTrack, overlaid = state.paywallOpen)
             Box(Modifier.fillMaxSize()) {
                 // Sibling backdrop source: glass panels inside the NavHost sample this layer.
                 AmbientBackground(Modifier.fillMaxSize().haze(backgroundHaze), ambientPhase)
@@ -301,5 +308,13 @@ private fun NavHostController.navigateCollection(kind: String, key: String) = na
 private fun NavHostController.navigateTab(tab: Tab) {
     if (currentDestination?.route == tab.route) return
     // Every section is a real back-stack entry: system Back returns to the actual previous page.
+    //
+    // The tab route is the *root* of its section, so a tab tap from a sub-screen ("Источники",
+    // "Внешний вид", a collection) has to pop those pages rather than stack the tab on top of them.
+    // Pushing it instead left the sub-screen's back arrow pointing at the tab it was already on, and
+    // Back walked through every page the user had visited to reach it.
+    // Popping first keeps one page per section; when nothing was above the tab (or the stack is
+    // down to the start destination, which cannot be popped) the tab is simply pushed.
+    popBackStack(tab.route, inclusive = false)
     navigate(tab.route) { launchSingleTop = true }
 }

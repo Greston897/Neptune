@@ -30,6 +30,18 @@ data class Track(
      * source instead of assuming a content:// URL.
      */
     enum class Source { DEVICE, IMPORTED, STREAM }
+
+    companion object {
+        /**
+         * The album name a file with no album tag is shown under.
+         *
+         * A named constant rather than a literal because the *shelf* has to be able to tell it apart
+         * from a real album: grouping untagged files by it produced one card per file, i.e. a shelf of
+         * albums that are not albums. Everything else (search, "Треки", the artist page) keeps
+         * showing them, under this name.
+         */
+        const val NO_ALBUM = "Без альбома"
+    }
 }
 
 data class Playlist(val id: String, val name: String, val trackIds: List<String> = emptyList())

@@ -12,6 +12,16 @@ object LibraryLogic {
         return terms.all { haystack.contains(it) }
     }
     fun search(tracks: List<Track>, query: String) = if (query.isBlank()) emptyList() else tracks.filter { matches(it, query) }
-    fun albums(tracks: List<Track>) = tracks.groupBy { it.artist to it.album }.entries.map { (key, items) -> key.first to key.second to items }
+    /**
+     * Albums, as the shelf means them.
+     *
+     * Tracks with no album tag at all are left out: a bare WAV has no metadata, and grouping by the
+     * "Без альбома" placeholder produced one shelf card per untagged file — a shelf of albums that
+     * are not albums. They stay reachable in "Треки" and under their artist.
+     */
+    fun albums(tracks: List<Track>) = tracks
+        .filter { it.album.isNotBlank() && it.album != Track.NO_ALBUM }
+        .groupBy { it.artist to it.album }
+        .entries.map { (key, items) -> key.first to key.second to items }
     fun artists(tracks: List<Track>) = tracks.groupBy { it.artist }.entries.map { it.key to it.value }
 }

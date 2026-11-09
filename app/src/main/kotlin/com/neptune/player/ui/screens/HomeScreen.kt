@@ -201,7 +201,15 @@ fun HomeScreen(
             }
         }
         if (settings.showAlbumRow && albums.isNotEmpty()) {
-            item { SectionHeader("Альбомы", action = "Медиатека", onAction = onAlbums, actionTag = "homeAlbumsAction") }
+            // The count opens the shelf, not only the word "Медиатека": on a phone the action word
+            // sits at the opposite end of the row from the albums it belongs to, and it was the part
+            // of the header that was easiest to tap by accident on the way to the first cover.
+            item {
+                SectionHeader(
+                    "Альбомы", subtitle = trackCount(albums.size), onTitleClick = onAlbums,
+                    action = "Медиатека", onAction = onAlbums, actionTag = "homeAlbumsAction",
+                )
+            }
             item {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(NeSpace.md)) {
                     items(albums, key = { ListKeys.album(it.first.first, it.first.second) }) { (meta, tracks) ->

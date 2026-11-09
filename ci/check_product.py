@@ -86,6 +86,16 @@ def check_toasts_live_in_the_pill() -> None:
     chrome = text(ROOT / "ui/Chrome.kt")
     if "toast: ToastNotice?" not in chrome:
         fail(f"{ROOT / 'ui/Chrome.kt'}: TrackPill must accept the notice — otherwise it renders somewhere else")
+    # ...and the *only* place the pill is composed has to pass that notice, or the parameter is dead
+    # and every confirmation silently renders nowhere. This is exactly the regression a parameter
+    # rename produced: the pill survived, the notices did not.
+    app_source = text(ROOT / "NeptuneApp.kt")
+    for call in re.finditer(r"TrackPill\((.*?)\)\s*\n\s*\}", app_source, re.S):
+        if "toast = toast" not in call.group(1):
+            fail(
+                f"{ROOT / 'NeptuneApp.kt'}: TrackPill is composed without `toast = toast` — the pill "
+                "renders, but every confirmation in the app has nowhere to appear."
+            )
     state = text(ROOT / "state/NeptuneState.kt")
     if "SnackbarHostState" in state or "receiveAsFlow" in state:
         fail(

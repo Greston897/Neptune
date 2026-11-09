@@ -106,9 +106,14 @@ class PlayerFlowTest {
      * (`YandexTest`).
      */
     private fun waitForCatalogTrack() {
+        // In the library, not only on screen: the seed is asynchronous (it waits for the media scan),
+        // and whether its row is currently visible depends on where the list happens to be scrolled.
         compose.waitUntil(20000) {
-            compose.onAllNodes(hasText("Каталожный трек")).fetchSemanticsNodes().isNotEmpty() ||
-                compose.onAllNodes(hasText("Каталожный")).fetchSemanticsNodes().isNotEmpty()
+            var seeded = false
+            compose.activityRule.scenario.onActivity { activity ->
+                seeded = container(activity).library.state.value.tracks.any { it.id == "yandex:test-catalog" }
+            }
+            seeded
         }
     }
 
@@ -298,11 +303,14 @@ class PlayerFlowTest {
         compose.activityRule.scenario.onActivity { activity ->
             val c = container(activity)
             val tracks = c.library.state.value.tracks
-            val broken = tracks[0].copy(
+            // The two seeded files differ in length, so the *second* one is the one with a real
+            // duration to advance into: the queue has to be [broken, playable], not [broken, broken].
+            val playable = tracks.maxByOrNull { it.durationMs } ?: tracks.first()
+            val broken = tracks.first().copy(
                 id = "broken:1", title = "Битый файл",
                 uri = "file:///data/user/0/${activity.packageName}/files/does-not-exist.mp3",
             )
-            c.playback.play(listOf(broken, tracks[1]), 0)
+            c.playback.play(listOf(broken, playable), 0)
         }
         compose.waitUntil(30000) {
             var moved = false
@@ -615,11 +623,18 @@ class PlayerFlowTest {
             compose.activityRule.scenario.onActivity { stillLocal = container(it).settings.state.value.sourceLocal }
             stillLocal
         }
-        // Put it back so the rest of the suite sees the default state.
+        // Put both back so the rest of the suite sees the default state: a stored preference is
+        // exactly what makes this test leak into the next one when it is left half-switched.
         compose.onNode(hasText("Яндекс Музыка") and isToggleable()).performClick()
         compose.waitUntil(5000) {
             var on = false
             compose.activityRule.scenario.onActivity { on = container(it).settings.state.value.sourceYandex }
+            on
+        }
+        compose.onNode(hasText("Медиатека телефона") and isToggleable()).performClick()
+        compose.waitUntil(5000) {
+            var on = false
+            compose.activityRule.scenario.onActivity { on = container(it).settings.state.value.sourceLocal }
             on
         }
     }

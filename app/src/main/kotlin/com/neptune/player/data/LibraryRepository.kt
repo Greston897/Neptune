@@ -82,7 +82,7 @@ class LibraryRepository(private val context: Context, private val scope: Corouti
                         if (tracks.none { it.uri == raw }) tracks += readImported(uri)
                     }.onFailure { error = "Часть файлов недоступна. Остальная музыка загружена." }
                 }
-                LibraryState(tracks.distinctBy { it.id }.sortedBy { it.title.lowercase() },
+                LibraryState((tracks + seeded.toList()).distinctBy { it.id }.sortedBy { it.title.lowercase() },
                     false, hasPermission(), error)
             }
             _state.value = result.copy(saved = resolveSaved(result.tracks))
@@ -130,9 +130,19 @@ class LibraryRepository(private val context: Context, private val scope: Corouti
      * search/save/queue path and not the signing code, which is covered by unit tests.
      */
     fun seedSynthetic(track: Track) {
-        if (_state.value.tracks.any { it.id == track.id }) return
+        if (seeded.any { it.id == track.id }) return
+        seeded += track
         _state.update { it.copy(tracks = (it.tracks + track).sortedBy { t -> t.title.lowercase() }) }
     }
+
+    /**
+     * Rows seeded by the debug catalogue build.
+     *
+     * Held beside the scan rather than inside it: a rescan rebuilds `tracks` from the disk, and a
+     * seeded row has no file to be found by — without this it would vanish the first time anyone
+     * pressed "обновить медиатеку". Empty in release builds, where nothing seeds.
+     */
+    private val seeded = mutableListOf<Track>()
 
     private fun scanDevice(): List<Track> {
         val tracks = mutableListOf<Track>()
@@ -154,7 +164,7 @@ class LibraryRepository(private val context: Context, private val scope: Corouti
                 val artId = c.getLong(albumId)
                 tracks += Track("device:$mediaId", c.getString(title) ?: "Без названия",
                     c.getString(artist)?.takeUnless { it == "<unknown>" || it.isBlank() } ?: "Неизвестный исполнитель",
-                    c.getString(album)?.ifBlank { "Без альбома" } ?: "Без альбома", c.getLong(duration),
+                    c.getString(album)?.ifBlank { Track.NO_ALBUM } ?: Track.NO_ALBUM, c.getLong(duration),
                     ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mediaId).toString(),
                     if (artId > 0) ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), artId).toString() else null,
                     Track.Source.DEVICE, c.getInt(year).takeIf { it > 0 }, mediaId.toInt())
