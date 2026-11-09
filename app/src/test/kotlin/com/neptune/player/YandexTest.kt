@@ -4,6 +4,7 @@ import com.neptune.player.data.LibraryLogic
 import com.neptune.player.data.yandex.MiniJson
 import com.neptune.player.data.yandex.YandexMap
 import com.neptune.player.data.yandex.YandexSign
+import com.neptune.player.model.PreviewLength
 import com.neptune.player.model.Sources
 import com.neptune.player.model.Track
 import org.junit.Assert.assertEquals
@@ -287,6 +288,18 @@ class YandexTest {
         val file = Track("device:1", "Невесомость", "Neptune", "Ночь", 1000, "content://a/1")
         assertEquals(listOf(file), LibraryLogic.search(listOf(file), "невесомость"))
         assertTrue(LibraryLogic.search(listOf(file), "яндекс").isEmpty())
+    }
+
+    @Test fun previewLengthIsOneFact() {
+        // The badge in the row and the sentence the player says when the excerpt ends both come from
+        // here, so a row saying "30 сек" and a notice saying "только 0 секунд" cannot happen.
+        assertEquals("30 сек", PreviewLength.text(30_000))
+        assertEquals("45 сек", PreviewLength.text(45_000))
+        // The service has sent fractional and sub-second values; rounding either of these to zero would
+        // put "пробуем 0 сек" in a row, which is worse than not mentioning the length at all.
+        assertEquals("30 сек", PreviewLength.text(29_999))
+        assertEquals("1 сек", PreviewLength.text(400))
+        assertEquals("1 сек", PreviewLength.text(0))
     }
 
     @Test fun previewsAreVisibleOnTheModel() {

@@ -14,6 +14,7 @@ import com.neptune.player.data.LibraryRepository
 import com.neptune.player.data.SettingsStore
 import com.neptune.player.data.UserStore
 import com.neptune.player.model.PlaybackState
+import com.neptune.player.model.PreviewLength
 import com.neptune.player.model.Track
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -112,9 +113,9 @@ class Media3PlaybackBackend(
         if (track.previewMs <= 0) return
         val title = player.currentMediaItem?.mediaMetadata?.title?.toString()?.ifBlank { null }
             ?.takeIf { player.currentMediaItem?.mediaId == mediaId } ?: track.title
-        val seconds = (track.previewMs / 1000).coerceAtLeast(1)
+        val seconds = PreviewLength.text(track.previewMs)
         _state.value = _state.value.copy(
-            message = "«$title» — только ${seconds} секунд: сервис отдаёт превью, а не файл",
+            message = "«$title» — только $seconds: сервис отдаёт превью, а не файл",
             messageSeq = _state.value.messageSeq + 1,
         )
     }

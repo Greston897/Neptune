@@ -47,6 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.neptune.player.model.PreviewLength
 import com.neptune.player.model.Track
 import com.neptune.player.model.formatTime
 import androidx.compose.foundation.layout.fillMaxSize
@@ -322,7 +323,7 @@ fun StreamBadge(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewBadge(previewMs: Long, modifier: Modifier = Modifier) {
     NeText(
-        "пробуем ${(previewMs / 1000).coerceAtLeast(1)} сек",
+        "пробуем ${PreviewLength.text(previewMs)}",
         modifier, size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Faint, maxLines = 1,
     )
 }

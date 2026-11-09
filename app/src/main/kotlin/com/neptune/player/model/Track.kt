@@ -21,6 +21,7 @@ data class Track(
      */
     val previewMs: Long = 0L,
 ) {
+
     /**
      * Where a track came from.
      *
@@ -90,4 +91,16 @@ fun trackCount(count: Int): String {
         else -> "треков"
     }
     return "$count $word"
+}
+
+/**
+ * How long an excerpt is, as a person would say it: `"45 сек"`.
+ *
+ * One function for the row badge and for the sentence the player says when an excerpt runs out, so the
+ * two cannot disagree — and so the rounding is tested off-device. The service sends milliseconds that
+ * are not always whole seconds, and a preview that rounded down to zero would read as "0 сек", which
+ * is worse than saying nothing; hence the floor of one second.
+ */
+object PreviewLength {
+    fun text(previewMs: Long): String = "${(previewMs / 1000L).coerceAtLeast(1L)} сек"
 }
