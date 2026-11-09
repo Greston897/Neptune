@@ -1,50 +1,49 @@
 == compile errors ==
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/state/NeptuneState.kt:50:9 Platform declaration clash: The following declarations have the same JVM signature (setSearch(Ljava/lang/String;)V):
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/state/NeptuneState.kt:60:5 Platform declaration clash: The following declarations have the same JVM signature (setSearch(Ljava/lang/String;)V):
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/state/NeptuneState.kt:50:9 Platform declaration clash: The following declarations have the same JVM signature (setSearch(Ljava/lang/String;)V):
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/state/NeptuneState.kt:60:5 Platform declaration clash: The following declarations have the same JVM signature (setSearch(Ljava/lang/String;)V):
 == failures ==
-74:> Task :app:compileReleaseKotlin FAILED
-82:> Task :app:compileDebugKotlin FAILED
-115:BUILD FAILED in 2m 26s
+77:YandexTest > aSearchResponseBecomesRemoteTracks FAILED
+78:    java.lang.AssertionError at YandexTest.kt:149
+80:YandexTest > aStreamBecomesAStableHandleThatIsRecognised FAILED
+83:YandexTest > jsonReaderHandlesEscapesAndNesting FAILED
+88:> Task :app:testDebugUnitTest FAILED
+101:BUILD FAILED in 4m 25s
 == tail ==
-    fun setSearch(text: String): Unit defined in com.neptune.player.state.NeptuneState
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/state/NeptuneState.kt:60:5 Platform declaration clash: The following declarations have the same JVM signature (setSearch(Ljava/lang/String;)V):
-    fun `<set-search>`(`<set-?>`: String): Unit defined in com.neptune.player.state.NeptuneState
-    fun setSearch(text: String): Unit defined in com.neptune.player.state.NeptuneState
+> Task :app:compileReleaseKotlin
+> Task :app:mergeExtDexRelease
+> Task :app:compileDebugJavaWithJavac
+> Task :app:processDebugJavaRes
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:compileReleaseJavaWithJavac
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes
 
-> Task :app:compileDebugKotlin FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794196167000.json
+> Task :app:testDebugUnitTest
 
-FAILURE: Build completed with 2 failures.
+YandexTest > aSearchResponseBecomesRemoteTracks FAILED
+    java.lang.AssertionError at YandexTest.kt:149
 
-1: Task failed with an exception.
------------
+YandexTest > aStreamBecomesAStableHandleThatIsRecognised FAILED
+    java.lang.RuntimeException at YandexTest.kt:226
+
+YandexTest > jsonReaderHandlesEscapesAndNesting FAILED
+    com.neptune.player.data.yandex.MiniJson$JsonException at YandexTest.kt:101
+
+86 tests completed, 3 failed
+
+> Task :app:testDebugUnitTest FAILED
+> Task :app:lintVitalAnalyzeRelease
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794196372548.json
+
+FAILURE: Build failed with an exception.
+
 * What went wrong:
-Execution failed for task ':app:compileReleaseKotlin'.
-> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
-   > Compilation error. See log for more details
+Execution failed for task ':app:testDebugUnitTest'.
+> There were failing tests. See the report at: file:///home/runner/work/Neptune/Neptune/app/build/reports/tests/testDebugUnitTest/index.html
 
 * Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
 > Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-==============================================================================
 
-2: Task failed with an exception.
------------
-* What went wrong:
-Execution failed for task ':app:compileDebugKotlin'.
-> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
-   > Compilation error. See log for more details
-
-* Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-==============================================================================
-
-BUILD FAILED in 2m 26s
-43 actionable tasks: 39 executed, 4 from cache
+BUILD FAILED in 4m 25s
+53 actionable tasks: 49 executed, 4 from cache
