@@ -127,6 +127,8 @@ class PlayerFlowTest {
      */
     private fun searchForCatalogueTrack() {
         compose.onNode(hasContentDescription("Поиск") and isSelectable()).performClick()
+        // "Поиск" is both the tab label and the screen's own title — at the moment of the tap both are
+        // on screen, so a text wait is ambiguous. The field is what says the screen has arrived.
         compose.waitUntil(10000) {
             compose.onAllNodes(hasSetTextAction()).fetchSemanticsNodes().isNotEmpty()
         }
@@ -177,10 +179,10 @@ class PlayerFlowTest {
         // also appears in the chip row of the destination.
         compose.onNodeWithTag("homeList").performScrollToNode(hasTestTag("homeAlbumsAction"))
         compose.onNodeWithTag("homeAlbumsAction").performClick()
+        // The library's own sort control is what proves the landing: it exists on that screen only, and
+        // the tab index lives in the ViewModel, which this rule cannot reach.
         compose.waitUntil(15000) {
-            var tab = -1
-            compose.activityRule.scenario.onActivity { tab = container(it).libraryTab }
-            tab == 1
+            compose.onAllNodes(hasContentDescription("Сортировка")).fetchSemanticsNodes().isNotEmpty()
         }
         compose.onNode(hasContentDescription("Медиатека") and isSelectable()).assertIsSelected()
         // The albums tab proves its own selection with a filter chip and the grid's own labels; the
