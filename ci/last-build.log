@@ -27,13 +27,13 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:javaPreCompileDebug
-> Task :app:processDebugManifestForPackage
-> Task :app:javaPreCompileDebugUnitTest
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :app:buildKotlinToolingMetadata
+> Task :app:processDebugManifestForPackage
 > Task :app:preReleaseBuild UP-TO-DATE
 > Task :app:generateReleaseBuildConfig
-> Task :app:checkReleaseAarMetadata
 > Task :app:generateReleaseResValues FROM-CACHE
+> Task :app:checkReleaseAarMetadata
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
 > Task :app:processDebugResources
@@ -45,40 +45,30 @@ Daemon will be stopped at the end of the build
 > Task :app:processReleaseMainManifest
 > Task :app:processReleaseManifest
 > Task :app:javaPreCompileRelease FROM-CACHE
-> Task :app:processReleaseManifestForPackage
 > Task :app:extractProguardFiles
 > Task :app:mergeReleaseJniLibFolders
+> Task :app:processReleaseManifestForPackage
 > Task :app:processReleaseResources
 > Task :app:mergeReleaseNativeLibs
 > Task :app:checkReleaseDuplicateClasses
 > Task :app:desugarReleaseFileDependencies
 > Task :app:mergeReleaseStartupProfile
-> Task :app:compileDebugKotlin
-> Task :app:compileReleaseKotlin
-> Task :app:stripReleaseDebugSymbols
-> Task :app:mergeExtDexRelease
-
-> Task :app:compileReleaseKotlin FAILED
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:13:33 Unresolved reference 'UserData'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:96:34 Unresolved reference 'UserData'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:18 Unresolved reference 'liked'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:31 Unresolved reference 'recent'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:45 Unresolved reference 'playlists'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:63 Unresolved reference 'trackIds'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:65 Unresolved reference 'it'.
-
-> Task :app:compileDebugKotlin FAILED
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:13:33 Unresolved reference 'UserData'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:96:34 Unresolved reference 'UserData'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:18 Unresolved reference 'liked'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:31 Unresolved reference 'recent'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:45 Unresolved reference 'playlists'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:63 Unresolved reference 'trackIds'.
-e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:65 Unresolved reference 'it'.
 
 > Task :app:stripReleaseDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794224443119.json
+
+> Task :app:compileDebugKotlin
+> Task :app:compileReleaseKotlin
+> Task :app:mergeExtDexRelease
+
+> Task :app:compileReleaseKotlin FAILED
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:13 Return type mismatch: expected 'kotlin.collections.List<kotlin.String>', actual 'kotlin.collections.Set<kotlin.String>'.
+
+> Task :app:compileDebugKotlin
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/NeptuneApplication.kt:97:13 Return type mismatch: expected 'kotlin.collections.List<kotlin.String>', actual 'kotlin.collections.Set<kotlin.String>'.
+
+> Task :app:compileDebugKotlin FAILED
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794224685563.json
 
 FAILURE: Build completed with 2 failures.
 
@@ -110,5 +100,5 @@ Execution failed for task ':app:compileDebugKotlin'.
 > Get more help at https://help.gradle.org.
 ==============================================================================
 
-BUILD FAILED in 2m 35s
-42 actionable tasks: 38 executed, 4 from cache
+BUILD FAILED in 2m 27s
+42 actionable tasks: 37 executed, 5 from cache
