@@ -3,6 +3,7 @@ package com.neptune.player
 import com.neptune.player.data.LibraryLogic
 import com.neptune.player.data.yandex.MiniJson
 import com.neptune.player.data.yandex.YandexMap
+import com.neptune.player.data.yandex.YandexOAuth
 import com.neptune.player.data.yandex.YandexSign
 import com.neptune.player.model.PreviewLength
 import com.neptune.player.model.Sources
@@ -288,6 +289,34 @@ class YandexTest {
         val file = Track("device:1", "Невесомость", "Neptune", "Ночь", 1000, "content://a/1")
         assertEquals(listOf(file), LibraryLogic.search(listOf(file), "невесомость"))
         assertTrue(LibraryLogic.search(listOf(file), "яндекс").isEmpty())
+    }
+
+    // ---------------------------------------------------------------- sign-in
+
+    @Test fun signInKeepsWaitingWhileTheCodeIsUnconfirmed() {
+        // "authorization_pending" is a normal answer, not a failure: reporting it as an error closes the
+        // window the user is still typing the code into. This is the one branch that must never change.
+        val pending = YandexOAuth.poll(400, """{"error":"authorization_pending"}""")
+        assertEquals(YandexOAuth.Poll.Pending, pending)
+    }
+
+    @Test fun signInReadsTheTokenAndTheReasonsItCanFail() {
+        val ok = YandexOAuth.poll(200, """{"access_token":"y0_abc","token_type":"bearer","expires_in":31536000}""")
+        assertEquals(YandexOAuth.Poll.Token("y0_abc"), ok)
+        // A 200 without a token is not success; an OAuth proxy that answers 200 with an error body is
+        // exactly how an app ends up storing the word "null" as a credential.
+        assertTrue(YandexOAuth.poll(200, """{"error":"invalid_client"}""") is YandexOAuth.Poll.Failed)
+        assertTrue(YandexOAuth.poll(400, """{"error":"expired_token"}""") is YandexOAuth.Poll.Failed)
+        assertTrue(YandexOAuth.poll(400, """{"error":"access_denied"}""") is YandexOAuth.Poll.Failed)
+    }
+
+    @Test fun signInSendsTheFieldsTheFlowNeeds() {
+        val code = YandexOAuth.codeRequest("device42")
+        assertTrue(code.contains("client_id=${YandexOAuth.CLIENT_ID}"))
+        assertTrue(code.contains("device_id=device42"))
+        val token = YandexOAuth.tokenRequest("CODE-1")
+        assertTrue(token.contains("grant_type=device_code"))
+        assertTrue(token.contains("code=CODE-1"))
     }
 
     @Test fun previewLengthIsOneFact() {

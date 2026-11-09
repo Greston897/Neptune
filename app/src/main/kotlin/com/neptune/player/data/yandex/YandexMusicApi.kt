@@ -1,6 +1,7 @@
 package com.neptune.player.data.yandex
 
 import com.neptune.player.model.ChartPage
+import com.neptune.player.model.DeviceCode
 import com.neptune.player.model.RemoteSearch
 import com.neptune.player.model.RemoteTrack
 import com.neptune.player.model.Track
@@ -45,6 +46,8 @@ class YandexMusicApi(
     private val base: String = BASE_URL,
     /** Read at call time: the user can paste or clear a token while the app is running. */
     private val token: () -> String?,
+    /** Per-install OAuth device id. Supplied by the app wiring, which is what persists it. */
+    private val deviceId: () -> String = { randomDeviceId() },
 ) {
     /**
      * The identity the service expects. It is the Android client string the reference library sends;
@@ -104,6 +107,74 @@ class YandexMusicApi(
     suspend fun account(pasted: String? = null): Result<YandexAccount> = call {
         val raw = get("$base/account/status", explicitToken = pasted ?: token())
         YandexMap.account(raw)
+    }
+
+    // ------------------------------------------------------------------ OAuth Device Flow
+
+    /**
+     * Step one of the OAuth Device Flow: ask Yandex for a code the user types into a browser.
+     *
+     * The flow exists so that signing in does not require the app to see a password: it shows a short
+     * code, the user confirms it on Yandex's own page — on this phone or on any other device — and the
+     * app polls until a token appears. That is the only way to get a token on a phone without a
+     * browser redirect back into the app, and the `client_id` is the one the official Android client
+     * uses, which is what makes the confirmation page offer "Яндекс Музыка" rather than a nameless
+     * third-party oauth app. Reproduced from `yandex-music` (MarshalX), `device_auth.py`; it is not a
+     * secret of ours and confers no access by itself.
+     */
+    suspend fun requestDeviceCode(): Result<DeviceCode> = call {
+        val body = YandexOAuth.codeRequest(deviceId())
+        val raw = MiniJson.obj(postJson(YandexOAuth.DEVICE_CODE_URL, body))
+        val code = raw["device_code"] as? String ?: throw ApiError.Unavailable
+        val user = raw["user_code"] as? String ?: throw ApiError.Unavailable
+        DeviceCode(
+            deviceCode = code,
+            userCode = user,
+            verificationUrl = raw["verification_url"] as? String ?: "https://oauth.yandex.ru/device",
+            expiresInSec = (raw["expires_in"] as? Number)?.toInt() ?: 300,
+            intervalSec = ((raw["interval"] as? Number)?.toInt() ?: 5).coerceAtLeast(1),
+        )
+    }
+
+    /**
+     * Step two: one poll. `null` means the user has not confirmed yet — that is the normal answer for
+     * as long as it takes them to type the code, and it must not be reported as an error.
+     */
+    suspend fun pollDeviceToken(deviceCode: String): Result<String?> = call {
+        val (status, text) = postStatus(YandexOAuth.TOKEN_URL, YandexOAuth.tokenRequest(deviceCode))
+        when (val poll = YandexOAuth.poll(status, text)) {
+            is YandexOAuth.Poll.Token -> poll.value
+            YandexOAuth.Poll.Pending -> null
+            is YandexOAuth.Poll.Failed -> throw ApiError.SignIn(poll.message)
+        }
+    }
+
+    private suspend fun postJson(url: String, body: String): Any? =
+        MiniJson.parse(postStatus(url, body).second)
+
+    /** Returns the status and the body: OAuth answers 400 with the reason in the body, not in a header. */
+    private suspend fun postStatus(url: String, body: String): Pair<Int, String> = withContext(Dispatchers.IO) {
+        try {
+            val c = URL(url).openConnection() as HttpURLConnection
+            c.requestMethod = "POST"
+            c.doOutput = true
+            c.connectTimeout = 10_000
+            c.readTimeout = 15_000
+            c.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            c.setRequestProperty("User-Agent", USER_AGENT)
+            c.outputStream.use { it.write(body.toByteArray()) }
+            val status = c.responseCode
+            val stream = if (status in 200..299) c.inputStream else c.errorStream
+            val text = stream?.bufferedReader()?.use { it.readText() } ?: ""
+            c.disconnect()
+            status to text
+        } catch (e: java.net.UnknownHostException) {
+            throw ApiError.Offline
+        } catch (e: java.net.SocketTimeoutException) {
+            throw ApiError.Timeout
+        } catch (e: IOException) {
+            throw ApiError.Offline
+        }
     }
 
     /**
@@ -171,11 +242,31 @@ class YandexMusicApi(
         data object NoVariants : ApiError("У трека нет доступного файла")
         data object BadToken : ApiError("Токен не подошёл")
         data object Unavailable : ApiError("Сервис не ответил — попробуйте позже")
+        /** Anything the sign-in flow itself decided, with the sentence the dialog shows. */
+        data class SignIn(val reason: String) : ApiError(reason)
         data class Http(val code: Int) : ApiError("Сервис ответил $code")
     }
 
     companion object {
         const val BASE_URL = "https://api.music.yandex.net"
+        private const val USER_AGENT = "Yandex-Music-API"
+        private const val ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+        /** What the reference client sends: ten characters of mixed case and digits. */
+        private fun randomDeviceId(): String = (1..10).map { ALPHABET.random() }.joinToString("")
+
+        /**
+         * A stable per-install device id, kept beside the token.
+         *
+         * Yandex lists a device per id, so generating a fresh one per sign-in would fill the account's
+         * device list with ghosts. It is an identifier, not a credential: it says "this installation",
+         * nothing more.
+         */
+        fun deviceId(context: android.content.Context): String {
+            val prefs = context.getSharedPreferences("neptune.v4.yandex", android.content.Context.MODE_PRIVATE)
+            prefs.getString("deviceId", null)?.let { return it }
+            return randomDeviceId().also { prefs.edit().putString("deviceId", it).apply() }
+        }
 
         /** One sentence per failure, for the screens that show them. */
         fun describe(error: Throwable): String = when (error) {

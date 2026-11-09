@@ -191,3 +191,19 @@ data class YandexAccount(
         else -> "Аккаунт подключён"
     }
 }
+
+/**
+ * The code a person types into Yandex's own page to sign in.
+ *
+ * The app never sees a password: it shows [userCode], the user confirms on [verificationUrl] — on this
+ * phone or on another device — and the app polls until a token appears. [expiresInSec] and
+ * [intervalSec] are the server's, not ours: polling faster than it asked is how these endpoints start
+ * answering 429, and a code that outlives its stated life is a code the UI should stop showing.
+ */
+data class DeviceCode(
+    val deviceCode: String,
+    val userCode: String,
+    val verificationUrl: String,
+    val expiresInSec: Int,
+    val intervalSec: Int,
+)

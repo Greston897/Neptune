@@ -642,6 +642,16 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
             )
         }
     }
+    /**
+     * Signing in to the catalogue, without a password and without leaving the app.
+     *
+     * Offered, never required: the catalogue is free anonymously, so this only adds the account's own
+     * charts and bitrates. The flow itself lives in the repository — it owns the poll and the persisted
+     * device id — and the screens only ever see the code to show.
+     */
+    fun startYandexSignIn() = container.yandex.startSignIn()
+    fun cancelYandexSignIn() = container.yandex.cancelSignIn()
+
     fun playbackJump(index: Int) = container.playback.jumpTo(index)
     fun moveQueue(from: Int, to: Int) = container.playback.move(from, to)
     fun removeQueue(index: Int) = container.playback.remove(index)

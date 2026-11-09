@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.neptune.player.model.ChartEntry
 import com.neptune.player.model.ChartPage
+import com.neptune.player.model.DeviceCode
 import com.neptune.player.model.DownloadedTrack
 import com.neptune.player.model.RemoteSearch
 import com.neptune.player.model.RemoteTrack
@@ -14,6 +15,7 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +38,19 @@ data class StreamState(
 
     val account: YandexAccount = YandexAccount(),
     val accountBusy: Boolean = false,
+
+    /**
+     * The code being shown during a sign-in, or null when the flow is not running.
+     *
+     * Kept in the state rather than in the screen because the poll outlives a recomposition: turning the
+     * phone, opening the plan page, or coming back to the screen must find the same code and the same
+     * deadline instead of starting a second one.
+     */
+    val deviceCode: DeviceCode? = null,
+    /** True while the app is asking Yandex for the next poll — not while it waits for the user. */
+    val devicePolling: Boolean = false,
+    val deviceError: String? = null,
+    val deviceDone: Boolean = false,
 
     /** Offline is a first-class state here: streaming is the only part of the app that needs a network. */
     val offline: Boolean = false,
@@ -144,7 +159,7 @@ class YandexMusicRepository(
         val seq = ++searchSeq
         _state.update { it.copy(searchLoading = true, searchError = null) }
         searchJob = scope.launch {
-            if (!immediate) kotlinx.coroutines.delay(350)
+            if (!immediate) delay(350)
             api.search(text).fold(
                 onSuccess = { result ->
                     if (seq != searchSeq) return@fold
@@ -367,6 +382,77 @@ class YandexMusicRepository(
                 },
             )
         }
+    }
+
+    // ------------------------------------------------------------------ sign-in without a password
+
+    private var deviceJob: Job? = null
+
+    /**
+     * Starts the OAuth Device Flow: shows a code, then polls until the user confirms it.
+     *
+     * Why the app does this instead of asking for a token in a field: a token is a credential the user
+     * has to obtain by hand from a page that is not ours, and the flow below is the mechanism the
+     * service itself provides for a device with no browser redirect. Neither path is required — the
+     * catalogue works anonymously — so this is offered, never demanded.
+     *
+     * The poll honours the server's `interval` and `expires_in`, stops on the first token, and is
+     * cancelled when the user closes the dialog: a background loop that keeps asking after the screen
+     * is gone is how an app gets rate-limited out of an endpoint.
+     */
+    fun startSignIn() {
+        // A second tap is the same sign-in, not a second one: the code already on screen is the one the
+        // user may be typing right now, and replacing it would silently invalidate what they read.
+        if (_state.value.deviceCode != null) return
+        if (deviceJob?.isActive == true) return
+        deviceJob?.cancel()
+        _state.update { it.copy(deviceCode = null, deviceError = null, deviceDone = false, devicePolling = true) }
+        deviceJob = scope.launch {
+            api.requestDeviceCode().fold(
+                onSuccess = { code ->
+                    _state.update { it.copy(deviceCode = code, devicePolling = false, offline = false) }
+                    val deadline = System.currentTimeMillis() + code.expiresInSec * 1000L
+                    while (_state.value.deviceCode?.deviceCode == code.deviceCode && System.currentTimeMillis() < deadline) {
+                        delay(code.intervalSec * 1000L)
+                        _state.update { it.copy(devicePolling = true) }
+                        val token = api.pollDeviceToken(code.deviceCode).getOrElse { e ->
+                            _state.update { it.copy(devicePolling = false, deviceError = YandexMusicApi.describe(e)) }
+                            return@launch
+                        }
+                        _state.update { it.copy(devicePolling = false) }
+                        if (token != null) {
+                            // Same path as a pasted token: the account is verified before it is stored,
+                            // so a token the service rejects cannot leave the app half signed in.
+                            setToken(token) { ok ->
+                                _state.update {
+                                    it.copy(deviceDone = ok, deviceError = if (ok) null else "Токен не подошёл")
+                                }
+                            }
+                            return@launch
+                        }
+                    }
+                    _state.update {
+                        it.copy(
+                            devicePolling = false,
+                            // The code is gone once it expires: leaving it on screen invites the user to
+                            // type something the server has already forgotten.
+                            deviceCode = null,
+                            deviceError = "Код истёк — начните вход заново",
+                        )
+                    }
+                },
+                onFailure = { e ->
+                    _state.update { it.copy(devicePolling = false, deviceError = YandexMusicApi.describe(e)) }
+                },
+            )
+        }
+    }
+
+    /** Closes the dialog: the code stops being shown and the poll stops asking. */
+    fun cancelSignIn() {
+        deviceJob?.cancel()
+        deviceJob = null
+        _state.update { it.copy(deviceCode = null, devicePolling = false, deviceError = null, deviceDone = false) }
     }
 
     fun refreshAccount() {

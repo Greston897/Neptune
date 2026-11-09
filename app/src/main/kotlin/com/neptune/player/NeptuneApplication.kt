@@ -71,7 +71,15 @@ class AppContainer(application: Application) {
      * anything being rebuilt.
      */
     val remote = RemoteCatalog(application)
-    val yandex = YandexMusicRepository(application, scope, YandexMusicApi(token = { remoteToken() }))
+    val yandex = YandexMusicRepository(
+        application, scope,
+        // The device id is persisted next to the token: a sign-in from the same install must show up
+        // as one device on the account page, not as a new one every time the app starts.
+        YandexMusicApi(
+            token = { remoteToken() },
+            deviceId = { YandexMusicApi.deviceId(application) },
+        ),
+    )
     val playback: PlaybackBackend = Media3PlaybackBackend(application, library, settings, users, scope)
 
     init {
