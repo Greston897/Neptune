@@ -27,10 +27,10 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:javaPreCompileDebug
-> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:javaPreCompileDebugUnitTest
+> Task :app:processDebugManifestForPackage
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
-> Task :app:processDebugManifestForPackage
 > Task :app:generateReleaseBuildConfig
 > Task :app:checkReleaseAarMetadata
 > Task :app:generateReleaseResValues FROM-CACHE
@@ -65,11 +65,11 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:mergeExtDexRelease
 > Task :app:compileDebugJavaWithJavac
 > Task :app:processDebugJavaRes
-> Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:bundleDebugClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:compileReleaseJavaWithJavac
-> Task :app:compileDebugUnitTestKotlin
 > Task :app:generateReleaseLintVitalReportModel
+> Task :app:compileDebugUnitTestKotlin
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes
 > Task :app:testDebugUnitTest
@@ -92,8 +92,8 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:preDebugAndroidTestBuild SKIPPED
 > Task :app:processDebugAndroidTestManifest
 > Task :app:generateDebugAndroidTestBuildConfig
-> Task :app:checkDebugAndroidTestAarMetadata
 > Task :app:generateDebugAndroidTestResValues FROM-CACHE
+> Task :app:checkDebugAndroidTestAarMetadata
 > Task :app:mapDebugAndroidTestSourceSetPaths
 > Task :app:generateDebugAndroidTestResources
 > Task :app:javaPreCompileDebugAndroidTest FROM-CACHE
@@ -105,10 +105,12 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:desugarDebugAndroidTestFileDependencies
 > Task :app:mergeDebugAndroidTestResources
 > Task :app:checkDebugAndroidTestDuplicateClasses
+> Task :app:processDebugAndroidTestResources
 > Task :app:mergeDexRelease
 > Task :app:lintVitalAnalyzeRelease
-> Task :app:processDebugAndroidTestResources
 > Task :app:mergeExtDexDebugAndroidTest
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
 > Task :app:mergeLibDexDebugAndroidTest
 > Task :app:mergeDebugAndroidTestJniLibFolders
 > Task :app:mergeDebugJniLibFolders
@@ -118,22 +120,20 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:compileReleaseArtProfile
 > Task :app:validateSigningDebugAndroidTest
 > Task :app:writeDebugAndroidTestSigningConfigVersions
-> Task :app:packageRelease
-> Task :app:createReleaseApkListingFileRedirect
 > Task :app:compileDebugAndroidTestKotlin
 > Task :app:compileDebugAndroidTestJavaWithJavac
 > Task :app:dexBuilderDebugAndroidTest
-> Task :app:processDebugAndroidTestJavaRes
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:assembleRelease
 > Task :app:mergeDebugAndroidTestGlobalSynthetics
+> Task :app:processDebugAndroidTestJavaRes
 > Task :app:mergeProjectDexDebugAndroidTest
 > Task :app:mergeDebugAndroidTestJavaResource
 > Task :app:packageDebugAndroidTest
 > Task :app:createDebugAndroidTestApkListingFileRedirect
 > Task :app:assembleDebugAndroidTest
-> Task :app:lintVitalReportRelease
-> Task :app:lintVitalRelease
-> Task :app:assembleRelease
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794236912150.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794237668259.json
 
-BUILD SUCCESSFUL in 4m 37s
-104 actionable tasks: 97 executed, 7 from cache
+BUILD SUCCESSFUL in 4m 50s
+104 actionable tasks: 98 executed, 6 from cache

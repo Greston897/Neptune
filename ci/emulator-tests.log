@@ -82,33 +82,33 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 [EmulatorConsole]: Failed to start Emulator console for 5554
 
 > Task :app:connectedDebugAndroidTest
-Starting 47 tests on emulator-5554 - 15
+Starting 48 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 4/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 8/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 12/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 16/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 20/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 24/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 29/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 30/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 32/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 33/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 34/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 36/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 37/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 39/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 40/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 41/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 43/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 45/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 46/47 completed. (0 skipped) (0 failed)
-Finished 47 tests on emulator-5554 - 15
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794237271058.json
+emulator-5554 - 15 Tests 3/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 8/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 12/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 17/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 23/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 29/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 30/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 32/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 34/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 35/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 37/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 39/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 40/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 41/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 42/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 44/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 45/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 46/48 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 47/48 completed. (0 skipped) (0 failed)
+Finished 48 tests on emulator-5554 - 15
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794238043918.json
 
-BUILD SUCCESSFUL in 5m 27s
+BUILD SUCCESSFUL in 4m 57s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
-OK: 47 instrumented tests ran, 0 failures (declared 47)
+OK: 48 instrumented tests ran, 0 failures (declared 48)
 instrumented suite exit status: 0
