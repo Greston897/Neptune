@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.neptune.player.DesignSystemTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-11-09T12:17:30" hostname="runnervmwuk1x" time="0.036">
+<testsuite name="com.neptune.player.DesignSystemTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-11-09T12:29:41" hostname="runnervmwuk1x" time="0.032">
   <properties/>
-  <testcase name="pillTokensAreOnGridAndLeaveRoomForArtwork" classname="com.neptune.player.DesignSystemTest" time="0.003"/>
-  <testcase name="typeScaleUsesWholeSpWithRoomForDescenders" classname="com.neptune.player.DesignSystemTest" time="0.01"/>
-  <testcase name="combinedFontScaleIsBoundedBothWays" classname="com.neptune.player.DesignSystemTest" time="0.0"/>
+  <testcase name="pillTokensAreOnGridAndLeaveRoomForArtwork" classname="com.neptune.player.DesignSystemTest" time="0.002"/>
+  <testcase name="typeScaleUsesWholeSpWithRoomForDescenders" classname="com.neptune.player.DesignSystemTest" time="0.009"/>
+  <testcase name="combinedFontScaleIsBoundedBothWays" classname="com.neptune.player.DesignSystemTest" time="0.001"/>
   <testcase name="iconSizesAreWholeDpAndOrdered" classname="com.neptune.player.DesignSystemTest" time="0.0"/>
-  <testcase name="listKeysCannotCollideAcrossOrWithinDomains" classname="com.neptune.player.DesignSystemTest" time="0.007"/>
+  <testcase name="listKeysCannotCollideAcrossOrWithinDomains" classname="com.neptune.player.DesignSystemTest" time="0.012"/>
   <testcase name="trackPillClearanceMatchesItsVisibility" classname="com.neptune.player.DesignSystemTest" time="0.002"/>
   <testcase name="everyIconHasAResourceAndTabsHaveBoldTwins" classname="com.neptune.player.DesignSystemTest" time="0.001"/>
   <testcase name="touchTargetsMeetAccessibilityFloor" classname="com.neptune.player.DesignSystemTest" time="0.0"/>
