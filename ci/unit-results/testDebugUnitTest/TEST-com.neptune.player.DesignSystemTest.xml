@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.neptune.player.DesignSystemTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-11-09T12:47:02" hostname="runnervmwuk1x" time="0.041">
+<testsuite name="com.neptune.player.DesignSystemTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-11-09T13:49:27" hostname="runnervmwuk1x" time="0.023">
   <properties/>
   <testcase name="pillTokensAreOnGridAndLeaveRoomForArtwork" classname="com.neptune.player.DesignSystemTest" time="0.002"/>
-  <testcase name="typeScaleUsesWholeSpWithRoomForDescenders" classname="com.neptune.player.DesignSystemTest" time="0.007"/>
-  <testcase name="combinedFontScaleIsBoundedBothWays" classname="com.neptune.player.DesignSystemTest" time="0.0"/>
-  <testcase name="iconSizesAreWholeDpAndOrdered" classname="com.neptune.player.DesignSystemTest" time="0.001"/>
-  <testcase name="listKeysCannotCollideAcrossOrWithinDomains" classname="com.neptune.player.DesignSystemTest" time="0.021"/>
-  <testcase name="trackPillClearanceMatchesItsVisibility" classname="com.neptune.player.DesignSystemTest" time="0.002"/>
-  <testcase name="everyIconHasAResourceAndTabsHaveBoldTwins" classname="com.neptune.player.DesignSystemTest" time="0.001"/>
+  <testcase name="typeScaleUsesWholeSpWithRoomForDescenders" classname="com.neptune.player.DesignSystemTest" time="0.009"/>
+  <testcase name="combinedFontScaleIsBoundedBothWays" classname="com.neptune.player.DesignSystemTest" time="0.001"/>
+  <testcase name="iconSizesAreWholeDpAndOrdered" classname="com.neptune.player.DesignSystemTest" time="0.0"/>
+  <testcase name="listKeysCannotCollideAcrossOrWithinDomains" classname="com.neptune.player.DesignSystemTest" time="0.007"/>
+  <testcase name="trackPillClearanceMatchesItsVisibility" classname="com.neptune.player.DesignSystemTest" time="0.001"/>
+  <testcase name="everyIconHasAResourceAndTabsHaveBoldTwins" classname="com.neptune.player.DesignSystemTest" time="0.0"/>
   <testcase name="touchTargetsMeetAccessibilityFloor" classname="com.neptune.player.DesignSystemTest" time="0.0"/>
   <testcase name="motionScaleIsOrderedAndTheSheenIsBriskNotFlickery" classname="com.neptune.player.DesignSystemTest" time="0.0"/>
-  <testcase name="spacingScaleIsMonotonicAndOnGrid" classname="com.neptune.player.DesignSystemTest" time="0.003"/>
+  <testcase name="spacingScaleIsMonotonicAndOnGrid" classname="com.neptune.player.DesignSystemTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
