@@ -120,7 +120,10 @@ class YandexTest {
         val newline = "\\n"
         val body = """{"a":[1,2,{"b":"x${quote}y${newline}"}],"c":true,"d":null,"e":-1.5}"""
         val root = MiniJson.obj(MiniJson.parse(body))
-        assertEquals(2.0, (MiniJson.list(root["a"])[0] as Number).toDouble(), 0.0001)
+        // Index 1 is the 2: the fixture arrays are [1, 2, {...}], and asserting the wrong element is
+        // how this test passed review while being wrong about what it checked.
+        assertEquals(1.0, (MiniJson.list(root["a"])[0] as Number).toDouble(), 0.0001)
+        assertEquals(2.0, (MiniJson.list(root["a"])[1] as Number).toDouble(), 0.0001)
         assertEquals("x\"y\n", MiniJson.obj(MiniJson.list(root["a"])[2])["b"])
         assertEquals(true, root["c"])
         assertNull(root["d"])
