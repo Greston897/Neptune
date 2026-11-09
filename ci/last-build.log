@@ -19,20 +19,20 @@ Daemon will be stopped at the end of the build
 > Task :app:mapDebugSourceSetPaths
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
-> Task :app:mergeDebugResources
 > Task :app:createDebugCompatibleScreenManifests
 > Task :app:extractDeepLinksDebug
 > Task :app:parseDebugLocalResources
+> Task :app:mergeDebugResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:javaPreCompileDebug
-> Task :app:javaPreCompileDebugUnitTest
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
 > Task :app:generateReleaseBuildConfig
-> Task :app:checkReleaseAarMetadata
 > Task :app:generateReleaseResValues FROM-CACHE
+> Task :app:checkReleaseAarMetadata
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
 > Task :app:packageReleaseResources
@@ -41,14 +41,14 @@ Daemon will be stopped at the end of the build
 > Task :app:extractDeepLinksRelease FROM-CACHE
 > Task :app:processReleaseMainManifest
 > Task :app:processReleaseManifest
-> Task :app:processDebugManifestForPackage
-> Task :app:mergeReleaseResources
-> Task :app:processReleaseManifestForPackage
 > Task :app:javaPreCompileRelease FROM-CACHE
 > Task :app:extractProguardFiles
+> Task :app:processReleaseManifestForPackage
+> Task :app:processDebugManifestForPackage
+> Task :app:mergeReleaseResources
 > Task :app:mergeReleaseJniLibFolders
-> Task :app:processDebugResources
 > Task :app:processReleaseResources
+> Task :app:processDebugResources
 > Task :app:mergeReleaseNativeLibs
 
 > Task :app:stripReleaseDebugSymbols
@@ -56,8 +56,8 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 
 > Task :app:extractReleaseNativeSymbolTables
 > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :app:checkReleaseDuplicateClasses
 > Task :app:desugarReleaseFileDependencies
+> Task :app:checkReleaseDuplicateClasses
 > Task :app:mergeReleaseStartupProfile
 > Task :app:compileDebugKotlin
 > Task :app:compileReleaseKotlin
@@ -75,19 +75,16 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:testDebugUnitTest
 
 YandexTest > aSearchResponseBecomesRemoteTracks FAILED
-    java.lang.AssertionError at YandexTest.kt:149
-
-YandexTest > aStreamBecomesAStableHandleThatIsRecognised FAILED
-    java.lang.RuntimeException at YandexTest.kt:226
+    org.junit.ComparisonFailure at YandexTest.kt:167
 
 YandexTest > jsonReaderHandlesEscapesAndNesting FAILED
     com.neptune.player.data.yandex.MiniJson$JsonException at YandexTest.kt:101
 
-86 tests completed, 3 failed
+87 tests completed, 2 failed
 
 > Task :app:testDebugUnitTest FAILED
 > Task :app:lintVitalAnalyzeRelease
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794196372548.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794197360020.json
 
 FAILURE: Build failed with an exception.
 
@@ -98,5 +95,5 @@ Execution failed for task ':app:testDebugUnitTest'.
 * Try:
 > Run with --scan to get full insights.
 
-BUILD FAILED in 4m 25s
-53 actionable tasks: 49 executed, 4 from cache
+BUILD FAILED in 3m 52s
+53 actionable tasks: 48 executed, 5 from cache

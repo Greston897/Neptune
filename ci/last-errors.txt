@@ -1,12 +1,14 @@
 == compile errors ==
 == failures ==
 77:YandexTest > aSearchResponseBecomesRemoteTracks FAILED
-78:    java.lang.AssertionError at YandexTest.kt:149
-80:YandexTest > aStreamBecomesAStableHandleThatIsRecognised FAILED
-83:YandexTest > jsonReaderHandlesEscapesAndNesting FAILED
-88:> Task :app:testDebugUnitTest FAILED
-101:BUILD FAILED in 4m 25s
+78:    org.junit.ComparisonFailure at YandexTest.kt:167
+80:YandexTest > jsonReaderHandlesEscapesAndNesting FAILED
+85:> Task :app:testDebugUnitTest FAILED
+98:BUILD FAILED in 3m 52s
 == tail ==
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:mergeReleaseStartupProfile
+> Task :app:compileDebugKotlin
 > Task :app:compileReleaseKotlin
 > Task :app:mergeExtDexRelease
 > Task :app:compileDebugJavaWithJavac
@@ -22,19 +24,16 @@
 > Task :app:testDebugUnitTest
 
 YandexTest > aSearchResponseBecomesRemoteTracks FAILED
-    java.lang.AssertionError at YandexTest.kt:149
-
-YandexTest > aStreamBecomesAStableHandleThatIsRecognised FAILED
-    java.lang.RuntimeException at YandexTest.kt:226
+    org.junit.ComparisonFailure at YandexTest.kt:167
 
 YandexTest > jsonReaderHandlesEscapesAndNesting FAILED
     com.neptune.player.data.yandex.MiniJson$JsonException at YandexTest.kt:101
 
-86 tests completed, 3 failed
+87 tests completed, 2 failed
 
 > Task :app:testDebugUnitTest FAILED
 > Task :app:lintVitalAnalyzeRelease
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794196372548.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794197360020.json
 
 FAILURE: Build failed with an exception.
 
@@ -45,5 +44,5 @@ Execution failed for task ':app:testDebugUnitTest'.
 * Try:
 > Run with --scan to get full insights.
 
-BUILD FAILED in 4m 25s
-53 actionable tasks: 49 executed, 4 from cache
+BUILD FAILED in 3m 52s
+53 actionable tasks: 48 executed, 5 from cache
