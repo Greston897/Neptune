@@ -178,8 +178,9 @@ fun NeptuneApp(state: NeptuneState, nav: NavHostController = rememberNavControll
                             }
                             composable("search") { SearchScreen(state, { kind, key -> nav.navigateCollection(kind, key) }, { album ->
                                 // A catalogue album is not a local collection: its tracks have to be
-                                // fetched, remembered, and only then played in order.
-                                state.openChartAlbum(album)
+                                // fetched, remembered, and only then played in order. One row of it is
+                                // enough to identify the album.
+                                state.openRemoteAlbum(album.id)
                             }) }
                             composable("charts") { ChartScreen(state) { nav.popBackStack() } }
                             composable("sources") { SourcesScreen(state, { nav.popBackStack() }, { nav.navigateOnce("charts") }) }

@@ -2,10 +2,17 @@ package com.neptune.player.data.yandex
 
 import android.content.Context
 import android.net.Uri
+import com.neptune.player.model.ChartEntry
+import com.neptune.player.model.ChartPage
 import com.neptune.player.model.DownloadedTrack
+import com.neptune.player.model.RemoteSearch
 import com.neptune.player.model.RemoteTrack
 import com.neptune.player.model.Track
 import com.neptune.player.model.YandexAccount
+import java.io.File
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -13,10 +20,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
 
 data class StreamState(
     val chart: ChartPage? = null,
@@ -50,6 +53,7 @@ data class StreamState(
 ) {
     fun isDownloaded(id: String) = downloads.containsKey(id)
     fun isDownloading(id: String) = downloading.containsKey(id)
+    /** The rows of the current chart, empty while it loads or when it failed. */
     val chartPositions: List<ChartEntry> get() = chart?.entries ?: emptyList()
 }
 
@@ -145,12 +149,14 @@ class YandexMusicRepository(
                 onSuccess = { result ->
                     if (seq != searchSeq) return@fold
                     onTracks(result.tracks)
+                    // The correction hint rides along in the response, so both land in one update:
+                    // asking again for it would double the traffic of every keystroke.
                     _state.update {
-                        it.copy(results = result, searchLoading = false, searchError = null, offline = false, corrected = null)
+                        it.copy(
+                            results = result, searchLoading = false, searchError = null,
+                            offline = false, corrected = result.corrected,
+                        )
                     }
-                    // The correction hint rides along in the response: asking again for it would
-                    // double the traffic of every keystroke.
-                    if (result.corrected != null) _state.update { it.copy(corrected = result.corrected) }
                 },
                 onFailure = { e ->
                     if (seq != searchSeq) return@fold

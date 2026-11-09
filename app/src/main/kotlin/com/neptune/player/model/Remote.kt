@@ -116,6 +116,8 @@ data class RemoteSearch(
     val albums: List<RemoteAlbum> = emptyList(),
     val artists: List<RemoteArtist> = emptyList(),
     val query: String = "",
+    /** What the service thinks the user meant, when it fixed the spelling. Null when it did not. */
+    val corrected: String? = null,
 ) {
     val isEmpty: Boolean get() = tracks.isEmpty() && albums.isEmpty() && artists.isEmpty()
 }

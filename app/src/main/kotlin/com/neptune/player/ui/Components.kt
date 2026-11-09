@@ -49,6 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neptune.player.model.Track
 import com.neptune.player.model.formatTime
+import androidx.compose.foundation.layout.fillMaxSize
+import coil.compose.AsyncImage
 
 /**
  * Host-provided pickers, injected once at the top of the tree.

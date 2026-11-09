@@ -15,7 +15,6 @@ import com.neptune.player.model.LyricsDoc
 import com.neptune.player.model.PlanFeature
 import com.neptune.player.model.PlanTier
 import com.neptune.player.model.Pricing
-import com.neptune.player.model.RemoteAlbum
 
 import com.neptune.player.model.RemoteTrack
 import com.neptune.player.model.Settings
@@ -545,8 +544,24 @@ class NeptuneState(application: Application) : AndroidViewModel(application) {
         container.yandex.loadChart(postfix, force)
     }
 
-    fun openChartAlbum(album: RemoteAlbum) {
-        container.yandex.albumTracks(album.id) { tracks ->
+    /**
+     * Opens an album a track came from: fetch its rows, remember them, play them in order.
+     *
+     * Takes the track rather than an [RemoteAlbum] because both entry points have a track in hand (the
+     * search result row and the track sheet) and neither has an album object — and because an album
+     * without its own track list is not something the catalogue ever hands out.
+     */
+    fun openChartAlbum(track: RemoteTrack) {
+        val albumId = track.albumId ?: run {
+            toast("У трека не указан альбом", NeIcon.Info, ToastTone.WARN)
+            return
+        }
+        openRemoteAlbum(albumId)
+    }
+
+    /** Opens a catalogue album by id: fetch, remember, play in the service's own order. */
+    fun openRemoteAlbum(albumId: String) {
+        container.yandex.albumTracks(albumId) { tracks ->
             if (tracks.isEmpty()) toast("Альбом не открылся", NeIcon.Info, ToastTone.WARN)
             else { rememberRemote(tracks); playRemoteAll(tracks) }
         }
