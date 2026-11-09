@@ -1,47 +1,48 @@
 == compile errors ==
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/state/NeptuneState.kt:557:47 Argument type mismatch: actual type is 'kotlin.collections.List<com.neptune.player.model.Track>', but 'kotlin.collections.List<com.neptune.player.model.RemoteTrack>' was expected.
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/state/NeptuneState.kt:557:47 Argument type mismatch: actual type is 'kotlin.collections.List<com.neptune.player.model.Track>', but 'kotlin.collections.List<com.neptune.player.model.RemoteTrack>' was expected.
 == failures ==
-76:YandexTest > jsonReaderHandlesEscapesAndNesting FAILED
-77:    java.lang.AssertionError at YandexTest.kt:123
-81:> Task :app:testDebugUnitTest FAILED
-93:BUILD FAILED in 2m 38s
+61:> Task :app:compileDebugKotlin FAILED
+67:> Task :app:compileReleaseKotlin FAILED
+103:BUILD FAILED in 2m 31s
 == tail ==
-> Task :app:mergeReleaseStartupProfile
-> Task :app:compileDebugKotlin
-> Task :app:compileReleaseKotlin
-> Task :app:stripReleaseDebugSymbols
-> Task :app:mergeExtDexRelease
+e: file:///home/runner/work/Neptune/Neptune/app/src/main/kotlin/com/neptune/player/state/NeptuneState.kt:557:47 Argument type mismatch: actual type is 'kotlin.collections.List<com.neptune.player.model.Track>', but 'kotlin.collections.List<com.neptune.player.model.RemoteTrack>' was expected.
+
+> Task :app:compileReleaseKotlin FAILED
 
 > Task :app:stripReleaseDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794221672632.json
 
-> Task :app:compileDebugJavaWithJavac
-> Task :app:processDebugJavaRes
-> Task :app:bundleDebugClassesToRuntimeJar
-> Task :app:bundleDebugClassesToCompileJar
-> Task :app:compileReleaseJavaWithJavac
-> Task :app:compileDebugUnitTestKotlin
-> Task :app:generateReleaseLintVitalReportModel
-> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
-> Task :app:processDebugUnitTestJavaRes
+FAILURE: Build completed with 2 failures.
 
-> Task :app:testDebugUnitTest
-
-YandexTest > jsonReaderHandlesEscapesAndNesting FAILED
-    java.lang.AssertionError at YandexTest.kt:123
-
-87 tests completed, 1 failed
-
-> Task :app:testDebugUnitTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794197737260.json
-
-FAILURE: Build failed with an exception.
-
+1: Task failed with an exception.
+-----------
 * What went wrong:
-Execution failed for task ':app:testDebugUnitTest'.
-> There were failing tests. See the report at: file:///home/runner/work/Neptune/Neptune/app/build/reports/tests/testDebugUnitTest/index.html
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
 
 * Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
 > Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
 
-BUILD FAILED in 2m 38s
-51 actionable tasks: 46 executed, 5 from cache
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 2m 31s
+42 actionable tasks: 38 executed, 4 from cache
