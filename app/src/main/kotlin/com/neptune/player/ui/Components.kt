@@ -265,7 +265,7 @@ fun TrackRow(
                 }
                 if (track.previewMs > 0) {
                     Spacer(Modifier.width(NeSpace.xs))
-                    NeText("30 сек", size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Faint, maxLines = 1)
+                    PreviewBadge(track.previewMs)
                 }
             }
             Spacer(Modifier.height(NeSpace.xxs))
@@ -308,6 +308,23 @@ fun TrackRow(
 @Composable
 fun StreamBadge(modifier: Modifier = Modifier) {
     NeIconView(NeIcon.Globe, NeIconSize.xs, Ne.Faint, modifier = modifier)
+}
+
+/**
+ * The whole track is not on offer: the service's free tier hands over an excerpt.
+ *
+ * One composable rather than a literal per row, because the same length is described in four places
+ * (library row, search row, chart row, full player) and a seconds-long form in one of them against a
+ * short form in another reads like two different limitations. The length comes from the service, not
+ * from a constant: a preview is whatever `previewDurationMs` said, and a row that writes the number
+ * itself goes wrong the day the service sends a different one.
+ */
+@Composable
+fun PreviewBadge(previewMs: Long, modifier: Modifier = Modifier) {
+    NeText(
+        "пробуем ${(previewMs / 1000).coerceAtLeast(1)} сек",
+        modifier, size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Faint, maxLines = 1,
+    )
 }
 
 /**

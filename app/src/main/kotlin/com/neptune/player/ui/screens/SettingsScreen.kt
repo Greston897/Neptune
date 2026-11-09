@@ -112,7 +112,7 @@ fun SettingsScreen(
             SettingRow("Внешний вид", "Цвета, форма, движение и размер текста", NeIcon.Palette, onClick = onAppearance)
             SettingRow("Воспроизведение", "Скорость, громкость и таймер сна", NeIcon.Wave, onClick = onPlayback)
             SettingRow("Музыка и данные", "Доступ к файлам, импорт и история", NeIcon.Folder, onClick = onData)
-            SettingRow("О Neptune", "Версия ${BuildConfig.VERSION_NAME} · локальный плеер", NeIcon.Info, onClick = onAbout)
+            SettingRow("О Neptune", "Версия ${BuildConfig.VERSION_NAME} · медиатека и каталог", NeIcon.Info, onClick = onAbout)
         } }
         item { NeText("Настройки сохраняются автоматически", Modifier.fillMaxWidth().padding(top = NeSpace.xxl), size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint, align = TextAlign.Center, maxLines = 2) }
     }
@@ -444,7 +444,8 @@ fun DataScreen(state: NeptuneState, onBack: () -> Unit, onRecent: () -> Unit) {
                 "Доступ к медиатеке нужен только для автоматического поиска музыки на устройстве: он " +
                     "ничего не копирует и не превращает папки в альбомы. Файлы, выбранные через импорт, " +
                     "приложение читает по одному разрешению на файл — можно добавить один трек или сразу " +
-                    "несколько. Встроенной музыки нет.",
+                    "несколько. Своей музыки внутри приложения нет: каталог приходит из Яндекс Музыки, " +
+                    "а всё остальное — файлы на устройстве.",
                 Modifier.padding(top = NeSpace.xl),
                 size = NeType.caption, lineHeight = NeType.captionLine, color = Ne.Faint, maxLines = 6,
             )
@@ -468,7 +469,7 @@ fun AboutScreen(onBack: () -> Unit) {
             SettingRow("Версия", "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})", NeIcon.Info)
             SettingRow("Аудиодвижок", "Media3 / ExoPlayer · фоновая медиасессия", NeIcon.Wave)
             SettingRow("Интерфейс", "Kotlin · Jetpack Compose · Material 3", NeIcon.Palette)
-            SettingRow("Приватность", "Без аккаунта, рекламы и аналитики", NeIcon.Device)
+            SettingRow("Приватность", "Без рекламы и аналитики · аккаунт — только для каталога", NeIcon.Device)
         } }
     }
 }

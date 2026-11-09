@@ -85,9 +85,37 @@ class Media3PlaybackBackend(
      */
     private fun advanceIfEnded(player: Player) {
         if (player.playbackState != Player.STATE_ENDED) return
-        if (!player.hasNextMediaItem()) return
-        player.seekToNextMediaItem()
-        player.play()
+        // The verdict is taken *before* the queue moves: after `seekToNextMediaItem()` the current item
+        // is the next track, and asking it whether it was a preview would describe the wrong song.
+        val endedId = player.currentMediaItem?.mediaId
+        val hasNext = player.hasNextMediaItem()
+        if (hasNext) {
+            player.seekToNextMediaItem()
+            player.play()
+        }
+        announcePreviewEnd(player, endedId)
+    }
+
+    /**
+     * Says why the song stopped halfway, the moment it does.
+     *
+     * A preview ends at [Player.STATE_ENDED] exactly like a finished track, so without this the free
+     * tier looks broken: a three-minute song "ends" at thirty seconds and the next one starts, with
+     * nothing on screen to explain it. The notice names the track and what it was — an excerpt the
+     * service offers instead of the file. It is said once per play of that item, because a preview the
+     * user replays deserves to be explained again, and a queue of previews should not spam the pill.
+     */
+    private fun announcePreviewEnd(player: Player, endedId: String?) {
+        val mediaId = endedId ?: return
+        val track = library.state.value.byId[mediaId] ?: return
+        if (track.previewMs <= 0) return
+        val title = player.currentMediaItem?.mediaMetadata?.title?.toString()?.ifBlank { null }
+            ?.takeIf { player.currentMediaItem?.mediaId == mediaId } ?: track.title
+        val seconds = (track.previewMs / 1000).coerceAtLeast(1)
+        _state.value = _state.value.copy(
+            message = "«$title» — только ${seconds} секунд: сервис отдаёт превью, а не файл",
+            messageSeq = _state.value.messageSeq + 1,
+        )
     }
 
     /**

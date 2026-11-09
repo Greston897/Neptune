@@ -217,6 +217,13 @@ private fun ChartRow(
                     NeIconView(if (entry.shift > 0) NeIcon.ArrowUp else NeIcon.ArrowDown, NeIconSize.xs,
                         if (entry.shift > 0) tint else Ne.Faint)
                 }
+                // A chart is where previews are most visible: the top of the chart is full of tracks the
+                // service will not hand over whole, and a row that does not say so looks like a bug when
+                // the song stops at half a minute.
+                if (track.preview > 0) {
+                    Spacer(Modifier.width(NeSpace.xs))
+                    PreviewBadge(track.preview)
+                }
             }
             Spacer(Modifier.height(NeSpace.xxs))
             Row(verticalAlignment = Alignment.CenterVertically) {

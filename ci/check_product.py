@@ -336,6 +336,24 @@ def check_streaming_layer() -> None:
     search = text(ROOT / "ui/screens/SearchScreen.kt")
     if search.count("BasicTextField(") != 1:
         fail(f"{search}: exactly one search field — files and the catalogue share one query")
+    # A preview is explained, never hidden and never hardcoded. The free tier of the service hands over
+    # an excerpt for some tracks; the app says so where the track is listed and again when the excerpt
+    # ends. Three checks, because each one fails differently: a row without the badge looks like a
+    # broken file, a literal "30 сек" goes wrong the day the service sends 45, and a preview that ends
+    # in silence is indistinguishable from a crash.
+    components = text(ROOT / "ui/Components.kt")
+    if "fun PreviewBadge(previewMs: Long" not in components:
+        fail(f"{components}: a preview badge must exist — a row that stays silent about a 30-second excerpt reads as a bug")
+    for screen in ("ui/Components.kt", "ui/screens/SearchScreen.kt", "ui/screens/ChartScreen.kt", "ui/screens/NowPlaying.kt"):
+        body = text(ROOT / screen)
+        if '"30 сек"' in body or "'30 сек'" in body:
+            fail(f"{ROOT / screen}: the preview length is spelled out — it comes from the service, render `PreviewBadge(previewMs)`")
+    for screen in ("ui/Components.kt", "ui/screens/SearchScreen.kt", "ui/screens/ChartScreen.kt", "ui/screens/NowPlaying.kt"):
+        if "PreviewBadge(" not in text(ROOT / screen):
+            fail(f"{ROOT / screen}: a previewed track must say so here as well — the length and the wording are one product fact")
+    backend = text(ROOT / "playback/Media3PlaybackBackend.kt")
+    if "announcePreviewEnd" not in backend:
+        fail(f"{backend}: a preview that runs out must be explained when it runs out, not silently followed by the next track")
 
 
 def main() -> int:
@@ -355,7 +373,8 @@ def main() -> int:
         return 1
     print(
         "OK: product invariants hold (no row plate, no avatar palette, pill notices everywhere, "
-        "one opaque paywall, confirmed deletion, free player, timed lyrics, free catalogue)"
+        "one opaque paywall, confirmed deletion, free player, timed lyrics, free catalogue, "
+        "explained previews)"
     )
     return 0
 

@@ -119,11 +119,20 @@ fun NowPlayingScreen(
                     weight = FontWeight.ExtraBold, tracking = (-0.6).sp, maxLines = 2,
                 )
                 Spacer(Modifier.height(NeSpace.xs))
-                NeText(
-                    track.artist,
-                    Modifier.clip(CircleShape).clickable { onCollection("artist", track.artist) }.padding(vertical = NeSpace.xxs),
-                    size = NeType.label, lineHeight = NeType.labelLine, color = Ne.Dim, maxLines = 1,
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    NeText(
+                        track.artist,
+                        Modifier.weight(1f, fill = false).clip(CircleShape).clickable { onCollection("artist", track.artist) }
+                            .padding(vertical = NeSpace.xxs),
+                        size = NeType.label, lineHeight = NeType.labelLine, color = Ne.Dim, maxLines = 1,
+                    )
+                    // The player is where a preview has to be named: the scrubber will end well before
+                    // the duration on the cover, and without this line that reads as a broken file.
+                    if (nowPlaying.previewMs > 0) {
+                        Spacer(Modifier.width(NeSpace.sm))
+                        PreviewBadge(nowPlaying.previewMs)
+                    }
+                }
             }
             Spacer(Modifier.width(NeSpace.sm))
             NeIconButton(

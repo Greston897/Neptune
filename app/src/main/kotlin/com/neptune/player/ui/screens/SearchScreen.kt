@@ -310,7 +310,7 @@ private fun RemoteTrackRow(
                 )
                 if (track.preview > 0) {
                     Spacer(Modifier.width(NeSpace.sm))
-                    NeText("30 сек", size = NeType.micro, lineHeight = NeType.microLine, color = Ne.Faint, maxLines = 1)
+                    PreviewBadge(track.preview)
                 }
             }
             Spacer(Modifier.height(NeSpace.xxs))
