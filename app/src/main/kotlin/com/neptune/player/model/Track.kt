@@ -15,8 +15,9 @@ data class Track(
     /**
      * Length of the preview the catalogue offers instead of a whole file, or 0 for a full track.
      *
-     * Only meaningful for [Source.STREAM]. A preview is playable, and the row says so with "30 сек"
-     * rather than letting the audio stop on its own mid-verse.
+     * Only meaningful for [Source.STREAM]. A preview is playable, and the row says so with
+     * `PreviewBadge` rather than letting the audio stop on its own mid-verse — and the player repeats
+     * it when the excerpt actually ends.
      */
     val previewMs: Long = 0L,
 ) {

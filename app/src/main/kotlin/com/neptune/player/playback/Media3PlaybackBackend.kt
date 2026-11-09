@@ -100,10 +100,11 @@ class Media3PlaybackBackend(
      * Says why the song stopped halfway, the moment it does.
      *
      * A preview ends at [Player.STATE_ENDED] exactly like a finished track, so without this the free
-     * tier looks broken: a three-minute song "ends" at thirty seconds and the next one starts, with
+     * tier looks broken: a three-minute song ends at thirty seconds and the next one starts, with
      * nothing on screen to explain it. The notice names the track and what it was — an excerpt the
-     * service offers instead of the file. It is said once per play of that item, because a preview the
-     * user replays deserves to be explained again, and a queue of previews should not spam the pill.
+     * service offers instead of the file. It is said every time such an item ends, which is the only
+     * moment the fact is useful: a replayed preview is explained again, and the pill still only holds
+     * one message at a time, so a queue of previews updates the same sentence instead of stacking.
      */
     private fun announcePreviewEnd(player: Player, endedId: String?) {
         val mediaId = endedId ?: return
