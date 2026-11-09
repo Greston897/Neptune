@@ -231,11 +231,13 @@ class PlayerFlowTest {
 
     @Test fun sleepTimerOpensOnlyFromItsRowAndAlwaysCloses() {
         compose.onNode(hasContentDescription("Настройки") and isSelectable()).performClick()
-        waitText("Воспроизведение")
-        // "Воспроизведение" is also the title of the page this row opens, so the row is addressed by
-        // its click action; on a short viewport it sits below the dock until the list is scrolled.
-        compose.onNode(hasScrollAction()).performScrollToNode(hasText("Воспроизведение") and hasClickAction())
-        compose.onNode(hasText("Воспроизведение") and hasClickAction()).performClick()
+        // The row is addressed by its click action, not by its text: "Воспроизведение" is also the
+        // title of the page it opens. It sits below the dock on a short viewport, and a LazyColumn only
+        // composes what is near the viewport — so the list is scrolled to it by its *subtitle*, which
+        // is unique to that row, and only then is the row tapped.
+        compose.onNode(hasScrollAction()).performScrollToNode(hasText("Скорость, громкость и таймер сна"))
+        compose.onNode(hasText("Скорость, громкость и таймер сна") and hasAnyAncestor(hasClickAction()))
+            .performClick()
         waitText("ЗВУК")
 
         // Other rows must not open the sleep dialog.
