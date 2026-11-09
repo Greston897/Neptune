@@ -295,9 +295,10 @@ class YandexTest {
         // here, so a row saying "30 сек" and a notice saying "только 0 секунд" cannot happen.
         assertEquals("30 сек", PreviewLength.text(30_000))
         assertEquals("45 сек", PreviewLength.text(45_000))
-        // The service has sent fractional and sub-second values; rounding either of these to zero would
-        // put "пробуем 0 сек" in a row, which is worse than not mentioning the length at all.
-        assertEquals("30 сек", PreviewLength.text(29_999))
+        // Truncated, not rounded: a length is a lower bound the user can trust, and 29.999 s is 29
+        // whole seconds of audio. What the floor is really for is the sub-second case below — the
+        // service has sent fractional values, and "пробуем 0 сек" in a row reads as a bug.
+        assertEquals("29 сек", PreviewLength.text(29_999))
         assertEquals("1 сек", PreviewLength.text(400))
         assertEquals("1 сек", PreviewLength.text(0))
     }
