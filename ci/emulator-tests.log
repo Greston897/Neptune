@@ -84,54 +84,41 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:connectedDebugAndroidTest
 Starting 47 tests on emulator-5554 - 15
 
-emulator-5554 - 15 Tests 3/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 7/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 12/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 15/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 20/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 25/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 4/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 8/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 13/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 18/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 22/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 26/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 29/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 30/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 31/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 32/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 33/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 34/47 completed. (0 skipped) (0 failed)
 emulator-5554 - 15 Tests 35/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 37/47 completed. (0 skipped) (0 failed)
-emulator-5554 - 15 Tests 39/47 completed. (0 skipped) (0 failed)
-
-> Task :app:connectedDebugAndroidTest
-
-com.neptune.player.PlayerFlowTest > aSavedCatalogueTrackAppearsInItsOwnLibraryTab[emulator-5554 - 15] [31mFAILED [0m
-	androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
-	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
-
-emulator-5554 - 15 Tests 40/47 completed. (0 skipped) (1 failed)
-emulator-5554 - 15 Tests 41/47 completed. (0 skipped) (1 failed)
+emulator-5554 - 15 Tests 36/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 38/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 40/47 completed. (0 skipped) (0 failed)
+emulator-5554 - 15 Tests 41/47 completed. (0 skipped) (0 failed)
 
 > Task :app:connectedDebugAndroidTest
 
 com.neptune.player.PlayerFlowTest > sleepTimerOpensOnlyFromItsRowAndAlwaysCloses[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Timed out waiting for 'Настоящий звук. Полный контроль.'. Roots: Printing with useUnmergedTree = 'true'
-	Node #5899 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+	java.lang.AssertionError: Timed out waiting for 'ЗВУК'. Roots: Printing with useUnmergedTree = 'true'
+	Node #6001 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
 
-emulator-5554 - 15 Tests 42/47 completed. (0 skipped) (2 failed)
-emulator-5554 - 15 Tests 44/47 completed. (0 skipped) (2 failed)
-
-> Task :app:connectedDebugAndroidTest
-
-com.neptune.player.PlayerFlowTest > sourcesSwitchBetweenThePhoneAndTheCatalogue[emulator-5554 - 15] [31mFAILED [0m
-	java.lang.AssertionError: Action performScrollTo() failed.
-	Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + EditableText contains 'Яндекс Музыка' (ignoreCase: false)) && (ToggleableState is defined))
-
-emulator-5554 - 15 Tests 46/47 completed. (0 skipped) (3 failed)
+emulator-5554 - 15 Tests 42/47 completed. (0 skipped) (1 failed)
+emulator-5554 - 15 Tests 43/47 completed. (0 skipped) (1 failed)
+emulator-5554 - 15 Tests 45/47 completed. (0 skipped) (1 failed)
+emulator-5554 - 15 Tests 46/47 completed. (0 skipped) (1 failed)
+emulator-5554 - 15 Tests 47/47 completed. (0 skipped) (1 failed)
 Finished 47 tests on emulator-5554 - 15
 
 > Task :app:connectedDebugAndroidTest
-Tests on emulator-5554 - 15 failed: There was 3 failure(s).
+Tests on emulator-5554 - 15 failed: There was 1 failure(s).
 
 > Task :app:connectedDebugAndroidTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794225274770.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1794226086086.json
 
 FAILURE: Build failed with an exception.
 
@@ -145,48 +132,34 @@ Execution failed for task ':app:connectedDebugAndroidTest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 5m 42s
+BUILD FAILED in 5m 26s
 67 actionable tasks: 14 executed, 4 from cache, 49 up-to-date
 
 ================ instrumented gate ================
-FAIL: 3 instrumented test(s) failed
-  aSavedCatalogueTrackAppearsInItsOwnLibraryTab
-    androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
-at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:441)
-at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:306)
-at com.neptune.player.PlayerFlowTest.aSavedCatalogueTrackAppearsInItsOwnLibraryTab(PlayerFlowTest.kt:735)
+FAIL: 1 instrumented test(s) failed
   sleepTimerOpensOnlyFromItsRowAndAlwaysCloses
-    java.lang.AssertionError: Timed out waiting for 'Настоящий звук. Полный контроль.'. Roots: Printing with useUnmergedTree = 'true'
-Node #5899 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
-|-Node #6132 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
+    java.lang.AssertionError: Timed out waiting for 'ЗВУК'. Roots: Printing with useUnmergedTree = 'true'
+Node #6001 at (l=0.0, t=0.0, r=1080.0, b=2400.0)px
+|-Node #6234 at (l=0.0, t=128.0, r=1080.0, b=2400.0)px
 | IsTraversalGroup = 'true'
 | VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=100.0, reverseScrolling=false)'
-| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@7a99d1b'
+| CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@c500541'
 | Actions = [ScrollBy, ScrollByOffset, IndexForKey, ScrollToIndex, GetScrollViewportLength]
-|  |-Node #6136 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
+|  |-Node #6238 at (l=53.0, t=373.0, r=1027.0, b=460.0)px
 |  | Text = '[Настройки]'
 |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #6138 at (l=53.0, t=501.0, r=451.0, b=544.0)px
+|  |-Node #6240 at (l=53.0, t=501.0, r=451.0, b=544.0)px
 |  | Text = '[Всё под тебя. Без лишнего.]'
 |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #6140 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
+|  |-Node #6242 at (l=53.0, t=597.0, r=1027.0, b=1039.0)px
 |  | Focused = 'false'
 |  | Actions = [OnClick, RequestFocus]
 |  | MergeDescendants = 'true'
-|  |  |-Node #6144 at (l=418.0, t=860.0, r=662.0, b=922.0)px
+|  |  |-Node #6246 at (l=418.0, t=860.0, r=662.0, b=922.0)px
 |  |  | Text = '[Слушатель]'
 |  |  | Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |  |-Node #6146 at (l=333.0, t=933.0, r=747.0, b=976.0)px
+|  |  |-Node #6248 at (l=333.0, t=933.0, r=747.0, b=976.0)px
 |  |    Text = '[Изменить профиль и аватар]'
 |  |    Actions = [SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
-|  |-Node #6149 at (l=9
-  sourcesSwitchBetweenThePhoneAndTheCatalogue
-    java.lang.AssertionError: Action performScrollTo() failed.
-Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + EditableText contains 'Яндекс Музыка' (ignoreCase: false)) && (ToggleableState is defined))
-
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
-at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
-at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:76)
-at com.neptune.player.PlayerFlowTest.sourcesSwitchBetweenThePhoneAndTheCatalogue(PlayerFlowTest.kt:665)
+|  |-Node #6251 at (l=95.0, t=1102.0, r=277.0, b=11
 instrumented suite exit status: 1

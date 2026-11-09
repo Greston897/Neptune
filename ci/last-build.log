@@ -25,9 +25,9 @@ Daemon will be stopped at the end of the build
 > Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
-> Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:processDebugManifestForPackage
 > Task :app:javaPreCompileDebug
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
@@ -50,18 +50,17 @@ Daemon will be stopped at the end of the build
 > Task :app:mergeReleaseJniLibFolders
 > Task :app:processReleaseResources
 > Task :app:mergeReleaseNativeLibs
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:desugarReleaseFileDependencies
+> Task :app:mergeReleaseStartupProfile
+> Task :app:compileDebugKotlin
+> Task :app:compileReleaseKotlin
+> Task :app:stripReleaseDebugSymbols
+> Task :app:mergeExtDexRelease
 
 > Task :app:stripReleaseDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
 
-> Task :app:extractReleaseNativeSymbolTables
-> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :app:desugarReleaseFileDependencies
-> Task :app:checkReleaseDuplicateClasses
-> Task :app:mergeReleaseStartupProfile
-> Task :app:compileDebugKotlin
-> Task :app:compileReleaseKotlin
-> Task :app:mergeExtDexRelease
 > Task :app:compileDebugJavaWithJavac
 > Task :app:processDebugJavaRes
 > Task :app:bundleDebugClassesToCompileJar
@@ -72,10 +71,12 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes
 > Task :app:testDebugUnitTest
+> Task :app:extractReleaseNativeSymbolTables
 > Task :app:dexBuilderRelease
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :app:mergeReleaseArtProfile
-> Task :app:mergeReleaseGlobalSynthetics
 > Task :app:mergeReleaseShaders
+> Task :app:mergeReleaseGlobalSynthetics
 > Task :app:compileReleaseShaders NO-SOURCE
 > Task :app:generateReleaseAssets UP-TO-DATE
 > Task :app:mergeReleaseAssets
@@ -83,8 +84,8 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:extractReleaseVersionControlInfo
 > Task :app:processReleaseJavaRes
 > Task :app:mergeReleaseJavaResource
-> Task :app:optimizeReleaseResources
 > Task :app:collectReleaseDependencies
+> Task :app:optimizeReleaseResources
 > Task :app:sdkReleaseDependencyData
 > Task :app:validateSigningRelease
 > Task :app:writeReleaseAppMetadata
@@ -105,10 +106,9 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:desugarDebugAndroidTestFileDependencies
 > Task :app:mergeDebugAndroidTestResources
 > Task :app:checkDebugAndroidTestDuplicateClasses
+> Task :app:processDebugAndroidTestResources
 > Task :app:mergeDexRelease
 > Task :app:lintVitalAnalyzeRelease
-> Task :app:processDebugAndroidTestResources
-> Task :app:compileReleaseArtProfile
 > Task :app:mergeExtDexDebugAndroidTest
 > Task :app:lintVitalReportRelease
 > Task :app:lintVitalRelease
@@ -116,9 +116,10 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:mergeDebugAndroidTestJniLibFolders
 > Task :app:mergeDebugJniLibFolders
 > Task :app:mergeDebugNativeLibs
-> Task :app:validateSigningDebugAndroidTest
 > Task :app:mergeDebugAndroidTestNativeLibs NO-SOURCE
 > Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
+> Task :app:compileReleaseArtProfile
+> Task :app:validateSigningDebugAndroidTest
 > Task :app:writeDebugAndroidTestSigningConfigVersions
 > Task :app:packageRelease
 > Task :app:createReleaseApkListingFileRedirect
@@ -126,14 +127,14 @@ Unable to strip the following libraries, packaging them as they are: libandroidx
 > Task :app:compileDebugAndroidTestKotlin
 > Task :app:compileDebugAndroidTestJavaWithJavac
 > Task :app:dexBuilderDebugAndroidTest
-> Task :app:mergeDebugAndroidTestGlobalSynthetics
 > Task :app:processDebugAndroidTestJavaRes
+> Task :app:mergeDebugAndroidTestGlobalSynthetics
 > Task :app:mergeProjectDexDebugAndroidTest
 > Task :app:mergeDebugAndroidTestJavaResource
 > Task :app:packageDebugAndroidTest
 > Task :app:createDebugAndroidTestApkListingFileRedirect
 > Task :app:assembleDebugAndroidTest
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794224882184.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_9-1794225743441.json
 
-BUILD SUCCESSFUL in 4m 39s
+BUILD SUCCESSFUL in 4m 24s
 104 actionable tasks: 97 executed, 7 from cache
